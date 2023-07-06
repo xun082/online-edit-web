@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "target": "ESNext", // 指定 ECMAScript 目标版本
+    "module": "ESNext", //指定生成那个模块的代码
+    "strict": true, // 开启所有的严格检查配置
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"], // 指定要包含在编译中的库文件
+    "checkJs": true, // 检查js文件
+    "allowJs": true, // 允许编译js文件
+    "skipLibCheck": true, // 跳过所有声明文件的检查
+    "jsx": "preserve", // 保存不变,使用babel转化
+    "noEmit": true, // 禁止编译器生成文件
+    "moduleResolution": "node", // 将模块解析模式设置为 node 模式
+    "removeComments": true, // 删除编译后的所有的注释
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true, // 运行合成默认模块导出
+
+    "noImplicitAny": true, // 在表达式和声明上有隐含的 any 类型时报错
+    "strictNullChecks": true, // 启用严格的 null 检查
+    "noImplicitThis": false, // 当 this 表达式值为 any 类型的时候，生成一个错误
+
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@pages/*": ["./src/pages/*"]
+    }
+  },
+  "include": ["src", "src/react.d.ts"],
+  "exclude": ["node_module", "dist"]
+}

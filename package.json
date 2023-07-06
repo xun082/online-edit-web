@@ -1,0 +1,59 @@
+{
+  "name": "edit",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "candy-script start",
+    "build": "candy-script build",
+    "commit": "git-cz && git push",
+    "release": "standard-version",
+    "release:alpha": "standard-version --prerelease alpha",
+    "release:rc": "standard-version --prerelease rc",
+    "release:major": "pnpm run release -- --release-as major",
+    "release:minor": "pnpm run release -- --release-as minor",
+    "release:patch": "pnpm run release -- --release-as patch"
+  },
+  "keywords": [],
+  "author": "xun",
+  "license": "MIT",
+  "dependencies": {
+    "@monaco-editor/react": "^4.5.1",
+    "monaco-editor": "^0.39.0",
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-monaco-editor": "^0.53.0",
+    "sass": "^1.63.6"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.5",
+    "@commitlint/config-conventional": "^17.6.5",
+    "@laconic/react-script": "^1.0.1",
+    "@types/node": "^20.2.3",
+    "@types/prettier": "^2.7.3",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.10",
+    "commitizen": "^4.3.0",
+    "cz-git": "^1.6.1",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.5",
+    "standard-version": "^9.5.0",
+    "typescript": "^4.9.5"
+  },
+  "browserslist": [
+    "last 2 version",
+    "> 1%",
+    "not dead"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  }
+}
