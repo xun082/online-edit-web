@@ -2,7 +2,7 @@
   flex: 0 0 1.5em;
   position: relative;
   outline: none;
-  background-color: transparent;
+  background-color: #333642;
   .ResizeHandleInner {
     position: absolute;
     top: 0.25em;
@@ -11,12 +11,14 @@
     right: 0.25em;
     border-radius: 0.25em;
     transition: background-color 0.2s linear;
+    display: flex;
+    align-items: center;
+    color: #aaaebc;
+    font-size: 12px;
     .icon {
       width: 1em;
       height: 1em;
       position: absolute;
-      left: calc(50% - 0.5rem);
-      top: calc(50% - 0.5rem);
     }
   }
 }

@@ -34,4 +34,16 @@ const JavaScript: MenuProps["items"] = [
   },
 ];
 
-export { Html, Css, JavaScript };
+interface editorLanguageType {
+  languages: string;
+  menu: MenuProps["items"];
+  index: number;
+}
+
+const editorLanguage: Array<editorLanguageType> = [
+  { languages: "html", menu: Html, index: 1 },
+  { languages: "css", menu: Css, index: 2 },
+  { languages: "javascript", menu: JavaScript, index: 3 },
+];
+
+export default editorLanguage;

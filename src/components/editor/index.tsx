@@ -8,7 +8,6 @@ import { CaretDownOutlined } from "@ant-design/icons";
 import { EditorTitleObjects } from "@/common/constant";
 import { EditorTitleType } from "@/common/edit-title";
 import type { MenuProps } from "antd";
-
 import { Dropdown } from "antd";
 
 interface EditorProps {
@@ -18,6 +17,7 @@ interface EditorProps {
 
 const Editor: FC<EditorProps> = (props: EditorProps) => {
   const { language, items } = props;
+  console.log("🚀 ~ file: index.tsx:20 ~ language:", language);
   const [editTitle] = useState<EditorTitleType>(() => {
     const res = EditorTitleObjects.find(value => value.tag === language);
     return res as EditorTitleType;
@@ -55,7 +55,7 @@ const Editor: FC<EditorProps> = (props: EditorProps) => {
   };
 
   const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
-    editor.focus();
+    if (language === "javascript") editor.focus();
   };
 
   return (
@@ -74,8 +74,8 @@ const Editor: FC<EditorProps> = (props: EditorProps) => {
       <div className={styles["monaco-editor"]}>
         <MonacoEditor
           language={language}
-          height="100%"
-          width="100%"
+          height="100vh"
+          width="100vw"
           theme="vs-dark"
           value={code}
           options={{ selectOnLineNumbers: true, folding: true }}

@@ -6,7 +6,7 @@ interface editStateType {
 }
 
 const initialState = {
-  layoutMode: "center",
+  layoutMode: "right",
 } as editStateType;
 
 const homeSlice = createSlice({
@@ -15,7 +15,6 @@ const homeSlice = createSlice({
   reducers: {
     switchLayoutMode(state, action): void {
       const { payload } = action;
-
       state.layoutMode = payload;
     },
   },

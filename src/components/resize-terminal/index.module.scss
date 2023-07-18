@@ -1,0 +1,32 @@
+.root {
+  background-color: #fff;
+}
+.Panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.PanelContent {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+.console {
+  background-color: #131417;
+  display: flex;
+  flex-direction: column;
+  .top,
+  .bottom {
+    width: 100%;
+    height: 30px;
+    background-color: #333642;
+  }
+  .middle {
+    flex-grow: 1;
+  }
+}

@@ -2,7 +2,7 @@
 
 .root {
   width: 100%;
-  height: calc(100vh - 65px);
+  height: 100%;
   .edit-header {
     height: 38px;
     background-color: $primary-theme;
@@ -36,6 +36,7 @@
     }
   }
   .monaco-editor {
-    height: calc(100% - 38px);
+    height: 100%;
+    width: 100%;
   }
 }
