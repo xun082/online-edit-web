@@ -22,9 +22,23 @@
   flex-direction: column;
   .top,
   .bottom {
+    display: flex;
+    align-items: center;
     width: 100%;
     height: 30px;
     background-color: #333642;
+    padding-left: 10px;
+    .input {
+      margin-left: 10px;
+      border: none;
+      flex-grow: 1;
+      background-color: transparent;
+      color: #fff;
+      &:focus {
+        outline: none;
+        caret-color: white;
+      }
+    }
   }
   .middle {
     flex-grow: 1;

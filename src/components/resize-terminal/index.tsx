@@ -2,6 +2,7 @@ import React from "react";
 import { Panel, PanelGroup } from "react-resizable-panels";
 import ResizeHandle from "../resize";
 import styles from "./index.module.scss";
+import { DeleteOutlined, RightOutlined } from "@ant-design/icons";
 
 const ResizeTerminal = () => {
   return (
@@ -15,10 +16,13 @@ const ResizeTerminal = () => {
           <ResizeHandle title="控制台" />
           <Panel className={styles.console} collapsible={true} defaultSize={0}>
             <div className={styles["top"]}>
-              <span></span>
+              <DeleteOutlined rev={undefined} />
             </div>
             <div className={styles["middle"]}></div>
-            <div className={styles["bottom"]}>-</div>
+            <div className={styles["bottom"]}>
+              <RightOutlined rev={undefined} />
+              <input type="text" className={styles["input"]} />
+            </div>
           </Panel>
         </PanelGroup>
       </Panel>
