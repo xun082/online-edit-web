@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: 1px solid hsla(0, 0%, 100%, 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  height: 72px;
+  transition: all 0.15s linear;
+  width: 201px;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-bottom: 23.5px;
+  &:hover {
+    border: 1px solid #4495ff;
+  }
+  &:not(:nth-child(4n)) {
+    margin-right: 23.5px;
+  }
+  &:nth-last-child(-n + 4) {
+    margin-bottom: 0;
+  }
+
+  &:not(:first-child) {
+    .image {
+      display: block;
+      width: 64px;
+      height: 64px;
+    }
+  }
+}

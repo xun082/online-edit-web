@@ -1,0 +1,124 @@
+@import "../../assets/styles/var.scss";
+$borderColor: #4a515a;
+
+.root {
+  display: flex;
+  height: calc(100vh - 65px);
+  width: 100%;
+  .sidebar {
+    width: 246px;
+    height: 100%;
+    background-color: $primary-theme;
+    border-right: 1px solid hsla(0, 0%, 100%, 0.1);
+    .new-code-snippet {
+      margin: 0 auto;
+      width: calc(100% - 40px);
+      text-align: center;
+      position: relative;
+      border-radius: 6px;
+      box-sizing: border-box;
+      color: hsl(0deg 0% 100%);
+      display: block;
+      overflow: hidden;
+      padding: 3px;
+      height: 58px;
+      span {
+        position: relative;
+        z-index: 2;
+        font-size: 18px;
+        align-items: center;
+        background: #000;
+        border-radius: 3px;
+        display: block;
+        justify-content: center;
+        box-sizing: border-box;
+        height: 100%;
+        line-height: 52px;
+        border-radius: 3px;
+      }
+      &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(
+          115deg,
+          #4fcf70,
+          #fad648,
+          #a767e5,
+          #12bcfe,
+          #44ce7b
+        );
+        background-size: 50% 100%;
+      }
+      &:hover:before {
+        animation: test 0.75s linear infinite;
+      }
+    }
+  }
+  .content {
+    width: calc(100% - 247px);
+
+    background-color: $primary-theme;
+  }
+}
+
+@keyframes test {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.dialog {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  .module {
+    width: 75%;
+    height: 100%;
+    background-color: #1d2531;
+    margin: 0 auto;
+    .module-header {
+      height: 64px;
+      width: 100%;
+      border-bottom: 1px solid $borderColor;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-sizing: border-box;
+      align-items: center;
+      .module-close {
+        cursor: pointer;
+      }
+    }
+    .module-content {
+      display: flex;
+      height: 100%;
+      width: 100%;
+
+      .create-new-snippet-step {
+        width: 200px;
+        height: 100%;
+        border-right: 1px solid rgba(74, 61, 90, 1);
+      }
+      .create-new-snippet-content {
+        width: calc(100% - 201px);
+
+        .create-new-snippet-type {
+          padding: 28px 40px 0px 36px;
+          box-sizing: border-box;
+          display: flex;
+          flex-wrap: wrap;
+          flex-direction: row;
+          gap: 10;
+        }
+      }
+    }
+  }
+}

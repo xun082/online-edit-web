@@ -17,7 +17,6 @@ declare module "*.png";
 declare module "*.jpg";
 declare module "*.jpeg";
 declare module "*.svg";
-declare module "react-monaco-editor";
 
 declare module "prettier/standalone" {
   const prettier: any;
