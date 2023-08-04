@@ -13,8 +13,13 @@
     "release:minor": "pnpm run release -- --release-as minor",
     "release:patch": "pnpm run release -- --release-as patch"
   },
-  "keywords": [],
-  "author": "xun",
+  "keywords": [
+    "react",
+    "typescript",
+    "vscode",
+    "webRtc"
+  ],
+  "author": "moment",
   "license": "MIT",
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
