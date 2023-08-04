@@ -13,7 +13,7 @@ const homeSlice = createSlice({
   name: "edit",
   initialState,
   reducers: {
-    switchLayoutMode(state, action): void {
+    switchLayoutMode(state, action) {
       const { payload } = action;
       state.layoutMode = payload;
     },

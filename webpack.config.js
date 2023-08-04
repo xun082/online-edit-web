@@ -1,6 +1,7 @@
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+const isDevelopment = process.env.NODE_ENV === "development";
 
-module.exports = {
+const webpack = {
   plugins: [
     new MonacoWebpackPlugin([
       "apex",
@@ -56,3 +57,28 @@ module.exports = {
     ]),
   ],
 };
+
+if (isDevelopment) {
+  webpack.optimization = {
+    splitChunks: {
+      cacheGroups: {
+        reactMonacoEditor: {
+          test: /[\\/]node_modules[\\/]react-monaco-editor[\\/]/,
+          name: "react-monaco-editor",
+          chunks: "all",
+          minSize: 0,
+          minChunks: 1,
+        },
+        prettier: {
+          test: /[\\/]node_modules[\\/]prettier[\\/]/,
+          name: "prettier",
+          chunks: "all",
+          minSize: 0,
+          minChunks: 1,
+        },
+      },
+    },
+  };
+}
+
+module.exports = webpack;

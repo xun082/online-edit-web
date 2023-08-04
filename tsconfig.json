@@ -28,5 +28,5 @@
     }
   },
   "include": ["src", "src/react.d.ts"],
-  "exclude": ["node_module", "dist"]
+  "exclude": ["node_module", "dist", "./src/utils/console.js"]
 }

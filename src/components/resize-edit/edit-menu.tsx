@@ -1,5 +1,6 @@
 import React from "react";
 import type { MenuProps } from "antd";
+import { languageType } from "@/types";
 
 const Html: MenuProps["items"] = [
   {
@@ -35,7 +36,7 @@ const JavaScript: MenuProps["items"] = [
 ];
 
 interface editorLanguageType {
-  languages: string;
+  languages: languageType;
   menu: MenuProps["items"];
   index: number;
 }

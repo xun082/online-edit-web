@@ -2,28 +2,33 @@ import React, { useState, useEffect, FC } from "react";
 import MonacoEditor from "react-monaco-editor";
 import prettier from "prettier/standalone";
 import parserBabel from "prettier/parser-babel";
-import { editor } from "monaco-editor";
+import parserCss from "prettier/parser-postcss";
+import parserHtml from "prettier/parser-html";
 import styles from "./index.module.scss";
 import { CaretDownOutlined } from "@ant-design/icons";
 import { EditorTitleObjects } from "@/common/constant";
 import { EditorTitleType } from "@/common/edit-title";
 import type { MenuProps } from "antd";
 import { Dropdown } from "antd";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { changeCode } from "@/store/modules/code";
+import { languageType } from "@/types";
+import { removeSemicolonAfterClosingTag } from "@/utils";
 
 interface EditorProps {
-  language: string;
+  language: languageType;
   items: MenuProps["items"];
 }
 
 const Editor: FC<EditorProps> = (props: EditorProps) => {
   const { language, items } = props;
-  console.log("🚀 ~ file: index.tsx:20 ~ language:", language);
+  const { code } = useAppSelector(state => state.code);
+
   const [editTitle] = useState<EditorTitleType>(() => {
     const res = EditorTitleObjects.find(value => value.tag === language);
     return res as EditorTitleType;
   });
-
-  const [code, setCode] = useState<string>(``);
+  const dispatch = useAppDispatch();
 
   // 代码实现自动格式化
   useEffect(() => {
@@ -31,12 +36,24 @@ const Editor: FC<EditorProps> = (props: EditorProps) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "s") {
         event.preventDefault();
         try {
-          const formattedCode = await prettier.format(code, {
-            parser: "babel",
-            plugins: [parserBabel],
-            printWidth: 300,
+          const newCode = await prettier.format(code[language], {
+            parser: language === "css" ? "css" : "babel",
+            plugins:
+              language === "css"
+                ? [parserCss, parserHtml]
+                : [parserBabel, parserHtml],
+            printWidth: 80,
+            tabWidth: 2,
           });
-          setCode(formattedCode);
+          dispatch(
+            changeCode({
+              newCode:
+                language === "html"
+                  ? removeSemicolonAfterClosingTag(newCode)
+                  : newCode,
+              language,
+            }),
+          );
         } catch (error) {
           alert(`代码格式化失败:${error}`);
         }
@@ -50,12 +67,8 @@ const Editor: FC<EditorProps> = (props: EditorProps) => {
     };
   }, [code]);
 
-  const onChange = (newValue: string) => {
-    setCode(newValue);
-  };
-
-  const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
-    if (language === "javascript") editor.focus();
+  const onChange = (newCode: string) => {
+    dispatch(changeCode({ newCode, language }));
   };
 
   return (
@@ -77,10 +90,15 @@ const Editor: FC<EditorProps> = (props: EditorProps) => {
           height="100vh"
           width="100vw"
           theme="vs-dark"
-          value={code}
-          options={{ selectOnLineNumbers: true, folding: true }}
+          value={code[language]}
+          options={{
+            selectOnLineNumbers: true,
+            folding: true,
+          }}
           onChange={onChange}
-          editorDidMount={editorDidMount}
+          editorDidMount={editor => {
+            if (language === "javascript") editor.focus();
+          }}
         />
       </div>
     </div>
