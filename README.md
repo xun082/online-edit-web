@@ -4,6 +4,46 @@
 
 # 安装
 
+- Cline:
+
+```bash
+# GitHub
+git clone https://github.com/xun082/online-cooperative-edit.git
+```
+
+-Install:
+
+```bash
+pnpm install
+```
+
+- Run:
+
+```bash
+pnpm start
+```
+
+- Build
+
+```bash
+pnpm build:dev
+```
+
+- Commit:
+
+```bash
+// 选择你要提交的代码
+git add .
+
+pnpm run commit
+```
+
 # License
 
 MIT © [xun082](https://github.com/xun082)
+
+# 捐赠 🍵
+
+> 如果你正在使用这个项目或者喜欢这个项目的，可以通过以下方式支持我
+
+Star、Fork、Watch 一键三连 🚀🚀
