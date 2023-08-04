@@ -1,5 +1,6 @@
 import React from "react";
 import { PanelResizeHandle } from "react-resizable-panels";
+
 import styles from "./index.module.scss";
 
 interface resizeHandleProps {

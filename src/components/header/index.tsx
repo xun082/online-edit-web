@@ -1,5 +1,7 @@
 import React, { FC, useState, useRef, useEffect, Fragment } from "react";
+
 import styles from "./index.module.scss";
+
 import { LayoutSwitchObjects, layoutModeTypes } from "@/common/constant";
 import { useAppSelector, useAppDispatch } from "@/store";
 import { switchLayoutMode } from "@/store/modules/edit";

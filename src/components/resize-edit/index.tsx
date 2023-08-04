@@ -1,9 +1,11 @@
 import React, { Fragment } from "react";
 import { Panel, PanelGroup } from "react-resizable-panels";
-import styles from "./index.module.scss";
+
 import ResizeHandle from "../resize";
-import editorLanguage from "./edit-menu";
 import Editor from "../editor";
+
+import styles from "./index.module.scss";
+import editorLanguage from "./edit-menu";
 
 const ResizeEdit = () => {
   return (

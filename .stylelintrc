@@ -2,6 +2,8 @@
   "rules": {
     "comment-empty-line-before": null,
     "comment-no-empty": null,
-    "no-invalid-double-slash-comments": null
+    "no-invalid-double-slash-comments": null,
+    "color-no-invalid-hex": true,
+    "no-duplicate-selectors": true
   }
 }

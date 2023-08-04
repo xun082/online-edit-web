@@ -1,5 +1,5 @@
 module.exports = {
-  plugins: ["react"],
+  plugins: ["react", "import"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 8,
@@ -26,6 +26,18 @@ module.exports = {
     "no-multi-spaces": 1, // 禁止使用多个空格
     "default-case": 1, // 要求 switch 语句中有 default 分支
     "no-dupe-args": 2, // 禁止 function 定义中出现重名参数
+    "import/order": [
+      2,
+      {
+        groups: [
+          ["builtin", "external", "internal"],
+          "parent",
+          "sibling",
+          "index",
+        ],
+        "newlines-between": "always",
+      },
+    ],
   },
   settings: {
     react: {

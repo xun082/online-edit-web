@@ -1,8 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { Panel, PanelGroup } from "react-resizable-panels";
-import ResizeHandle from "../resize";
-import styles from "./index.module.scss";
 import { DeleteOutlined, RightOutlined } from "@ant-design/icons";
+
+import ResizeHandle from "../resize";
+
+import styles from "./index.module.scss";
+
 import { useAppSelector } from "@/store";
 import { getPreviewUrl } from "@/utils";
 

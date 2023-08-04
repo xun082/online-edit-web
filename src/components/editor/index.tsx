@@ -4,16 +4,18 @@ import prettier from "prettier/standalone";
 import parserBabel from "prettier/parser-babel";
 import parserCss from "prettier/parser-postcss";
 import parserHtml from "prettier/parser-html";
-import styles from "./index.module.scss";
 import { CaretDownOutlined } from "@ant-design/icons";
-import { EditorTitleObjects } from "@/common/constant";
-import { EditorTitleType } from "@/common/edit-title";
 import type { MenuProps } from "antd";
 import { Dropdown } from "antd";
+
+import styles from "./index.module.scss";
+
 import { useAppDispatch, useAppSelector } from "@/store";
 import { changeCode } from "@/store/modules/code";
 import { languageType } from "@/types";
 import { removeSemicolonAfterClosingTag } from "@/utils";
+import { EditorTitleObjects } from "@/common/constant";
+import { EditorTitleType } from "@/common/edit-title";
 
 interface EditorProps {
   language: languageType;

@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { useNavigate } from "react-router-dom";
+
 import styles from "./index.module.scss";
 
 interface TemplateCardProps {

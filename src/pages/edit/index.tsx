@@ -1,6 +1,8 @@
 import React from "react";
-import styles from "./index.module.scss";
 import { PanelGroup } from "react-resizable-panels";
+
+import styles from "./index.module.scss";
+
 import ResizeEdit from "@/components/resize-edit";
 import ResizeTerminal from "@/components/resize-terminal";
 

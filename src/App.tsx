@@ -1,9 +1,10 @@
 import React, { Suspense } from "react";
-import RouterConfig from "./router";
 import { BrowserRouter } from "react-router-dom";
-import Header from "./components/header";
 import { Provider } from "react-redux";
+
+import Header from "./components/header";
 import { store } from "./store";
+import RouterConfig from "./router";
 
 import "@/assets/styles/index.css";
 

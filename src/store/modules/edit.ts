@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 import { layoutModeTypes } from "@/common/layout-switch";
 
 interface editStateType {
