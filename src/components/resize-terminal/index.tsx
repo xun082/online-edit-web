@@ -20,8 +20,13 @@ const ResizeTerminal = () => {
       <ResizeHandle title="预览" />
       <Panel collapsible={true} className={styles["root"]}>
         <PanelGroup autoSaveId="example" direction="vertical">
-          <Panel className={styles.Panel} collapsible={true} defaultSize={100}>
-            <iframe src={getPreviewUrl(code)} ref={iframeRef} width="100%" height="100%"></iframe>
+          <Panel className={styles.Panel} collapsible={true}>
+            <iframe
+              src={getPreviewUrl(code)}
+              ref={iframeRef}
+              width="100%"
+              height="100%"
+            ></iframe>
           </Panel>
           <ResizeHandle title="控制台" />
           <Panel className={styles.console} collapsible={true} defaultSize={0}>

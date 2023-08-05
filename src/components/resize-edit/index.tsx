@@ -18,7 +18,6 @@ const ResizeEdit = () => {
                 <Panel
                   className={styles.Panel}
                   collapsible={true}
-                  defaultSize={60}
                   order={item.index}
                 >
                   <div className={styles.PanelContent}>
