@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import Header from "./components/header";
@@ -12,11 +12,11 @@ const App = () => {
   return (
     <Provider store={store}>
       <Header />
-      <BrowserRouter>
+      <HashRouter>
         <Suspense fallback={<div>加载中</div>}>
           <RouterConfig />
         </Suspense>
-      </BrowserRouter>
+      </HashRouter>
     </Provider>
   );
 };

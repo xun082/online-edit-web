@@ -23,7 +23,6 @@
   "license": "MIT",
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
-    "@laconic/react-script": "^1.0.2",
     "@monaco-editor/react": "^4.5.1",
     "@reduxjs/toolkit": "^1.9.5",
     "antd": "^5.6.4",
@@ -38,6 +37,7 @@
     "react-router-dom": "^6.14.1"
   },
   "devDependencies": {
+    "@laconic/react-script": "^1.0.2",
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-conventional": "^17.6.5",
     "@types/node": "^20.2.3",

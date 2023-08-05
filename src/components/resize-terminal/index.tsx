@@ -13,12 +13,7 @@ const ResizeTerminal = () => {
   const { code } = useAppSelector(state => state.code);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  useEffect(() => {
-    window.postMessage({
-      type: "dynamic_js_command",
-      command: "1+2",
-    });
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -26,12 +21,7 @@ const ResizeTerminal = () => {
       <Panel collapsible={true} className={styles["root"]}>
         <PanelGroup autoSaveId="example" direction="vertical">
           <Panel className={styles.Panel} collapsible={true} defaultSize={100}>
-            <iframe
-              src={getPreviewUrl(code)}
-              ref={iframeRef}
-              width="100%"
-              height="100%"
-            ></iframe>
+            <iframe src={getPreviewUrl(code)} ref={iframeRef} width="100%" height="100%"></iframe>
           </Panel>
           <ResizeHandle title="控制台" />
           <Panel className={styles.console} collapsible={true} defaultSize={0}>
