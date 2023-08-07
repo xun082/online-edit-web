@@ -6,6 +6,8 @@
     "start": "candy-script start",
     "build": "candy-script build",
     "commit": "git-cz && git push",
+    "predeploy": "pnpm run build",
+    "deploy": "gh-pages -d dist",
     "release": "standard-version",
     "release:alpha": "standard-version --prerelease alpha",
     "release:rc": "standard-version --prerelease rc",
@@ -36,9 +38,9 @@
     "react-router-dom": "^6.14.1"
   },
   "devDependencies": {
-    "@laconic/react-script": "^1.0.2",
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-conventional": "^17.6.5",
+    "@laconic/react-script": "^1.0.2",
     "@types/node": "^20.2.3",
     "@types/prettier": "^2.7.3",
     "@types/react": "^18.0.28",
@@ -47,12 +49,14 @@
     "commitizen": "^4.3.0",
     "cz-git": "^1.6.1",
     "eslint-plugin-import": "^2.28.0",
+    "gh-pages": "^5.0.0",
     "husky": "^8.0.3",
     "prettier": "^2.8.5",
     "sass": "^1.63.6",
     "standard-version": "^9.5.0",
     "typescript": "^4.9.5"
   },
+  "homepage": "http://xun082.github.io/online-cooperative-edit",
   "browserslist": [
     "last 2 version",
     "> 1%",
