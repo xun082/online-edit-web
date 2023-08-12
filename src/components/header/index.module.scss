@@ -1,10 +1,12 @@
+@import "../../assets/styles/var.scss";
+
 .root {
   width: 100vw;
-  height: 64px;
-  background-color: #18212d;
+  height: $header-hight;
+  background-color: $primary-theme;
   display: flex;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 10px;
   box-sizing: border-box;
   border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
   .header-left {
@@ -16,43 +18,14 @@
     width: auto;
     display: flex;
     align-items: center;
-    .layout-switch {
-      width: 36px;
-      height: 36px;
-      line-height: 36px;
-      margin-right: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      .svg {
-        width: 30px;
-        height: 30px;
-        cursor: pointer;
-      }
-      .switch-control {
-        width: 120px;
-        height: 36px;
-        background-color: #2f2f2f;
-        position: absolute;
-        top: 50px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        svg {
-          width: 30px;
-          height: 30px;
-          cursor: pointer;
-        }
-      }
-    }
-    .operation-control {
-      width: 98px;
-      height: 36px;
+
+    .login {
+      width: 80px;
+      height: 28px;
       background-color: #3b82f6;
       color: #ffffffe6;
       text-align: center;
-      line-height: 36px;
+      line-height: 28px;
       cursor: pointer;
     }
   }

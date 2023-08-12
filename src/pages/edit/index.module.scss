@@ -1,14 +1,39 @@
-@import "../../assets/styles/var.scss";
-
 .root {
-  height: calc(100vh - 65px);
+  height: calc(100vh - 52px);
   width: 100vw;
-  background-color: $primary-theme;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.BottomRow {
-  flex: 1 1 auto;
+  .edit-nav {
+    width: 48px;
+    height: 100%;
+    background-color: hsl(220 10% 20%);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    align-items: center;
+    .aside-button {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .img {
+        width: 24px;
+        height: 24px;
+        background-color: #77787d;
+      }
+    }
+  }
+  .edit-content {
+    width: calc(100vw - 48px);
+    color: #000;
+    .edit-header {
+      height: 38px;
+      background-color: hsl(220 10% 14%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 15px;
+      box-sizing: border-box;
+    }
+  }
 }

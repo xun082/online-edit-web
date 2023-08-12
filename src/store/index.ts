@@ -1,11 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 
-import edit from "./modules/edit";
 import code from "./modules/code";
 
 export const store = configureStore({
-  reducer: { edit, code },
+  reducer: { code },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({ serializableCheck: false }),
   devTools: process.env.NODE_ENV !== "production",

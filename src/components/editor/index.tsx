@@ -1,35 +1,23 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useEffect, FC } from "react";
 import MonacoEditor from "react-monaco-editor";
 import prettier from "prettier/standalone";
 import parserBabel from "prettier/parser-babel";
 import parserCss from "prettier/parser-postcss";
 import parserHtml from "prettier/parser-html";
-import { CaretDownOutlined } from "@ant-design/icons";
-import type { MenuProps } from "antd";
-import { Dropdown } from "antd";
-
-import styles from "./index.module.scss";
 
 import { useAppDispatch, useAppSelector } from "@/store";
 import { changeCode } from "@/store/modules/code";
 import { languageType } from "@/types";
 import { removeSemicolonAfterClosingTag } from "@/utils";
-import { EditorTitleObjects } from "@/common/constant";
-import { EditorTitleType } from "@/common/edit-title";
 
 interface EditorProps {
   language: languageType;
-  items: MenuProps["items"];
 }
 
 const Editor: FC<EditorProps> = (props: EditorProps) => {
-  const { language, items } = props;
+  const { language } = props;
   const { code } = useAppSelector(state => state.code);
 
-  const [editTitle] = useState<EditorTitleType>(() => {
-    const res = EditorTitleObjects.find(value => value.tag === language);
-    return res as EditorTitleType;
-  });
   const dispatch = useAppDispatch();
 
   // 代码实现自动格式化
@@ -74,36 +62,27 @@ const Editor: FC<EditorProps> = (props: EditorProps) => {
   };
 
   return (
-    <div className={styles["root"]}>
-      <header className={styles["edit-header"]}>
-        <h2 className={styles["language"]}>
-          {editTitle.svg}
-          <span>{editTitle.title}</span>
-        </h2>
-        <div className={styles["control"]}>
-          <Dropdown menu={{ items }}>
-            <CaretDownOutlined rev={undefined} style={{ fontSize: "20px" }} />
-          </Dropdown>
-        </div>
-      </header>
-      <div className={styles["monaco-editor"]}>
-        <MonacoEditor
-          language={language}
-          height="100vh"
-          width="100vw"
-          theme="vs-dark"
-          value={code[language]}
-          options={{
-            selectOnLineNumbers: true,
-            folding: true,
-          }}
-          onChange={onChange}
-          editorDidMount={editor => {
-            if (language === "javascript") editor.focus();
-          }}
-        />
-      </div>
-    </div>
+    <MonacoEditor
+      language={language}
+      theme="vs-dark"
+      width="100vw"
+      height="100vh"
+      value={code[language]}
+      options={{
+        lineNumbers: "on",
+        lineDecorationsWidth: 1,
+        selectOnLineNumbers: true,
+        folding: true,
+        // 设置代码折叠策略
+        foldingStrategy: "indentation", // 或 'auto'
+        // 设置默认折叠级别
+        foldingHighlight: true, // 或 'background'
+      }}
+      onChange={onChange}
+      editorDidMount={editor => {
+        if (language === "javascript") editor.focus();
+      }}
+    />
   );
 };
 

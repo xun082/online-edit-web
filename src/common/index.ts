@@ -1,7 +1,6 @@
-import type { layoutModeTypes } from "./layout-switch";
 import EditorTitleObjects from "./edit-title";
-import LayoutSwitchObjects from "./layout-switch";
 
+// 模板
 import VueLogo from "@/assets/images/vue.png";
 import ReactLogo from "@/assets/images/react.png";
 import NodeLogo from "@/assets/images/node.png";
@@ -42,4 +41,4 @@ export const Template: Array<TemplateType> = [
   },
 ];
 
-export { EditorTitleObjects, LayoutSwitchObjects, layoutModeTypes };
+export { EditorTitleObjects };
