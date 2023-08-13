@@ -26,6 +26,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
     "@reduxjs/toolkit": "^1.9.5",
+    "@webcontainer/api": "^1.1.5",
     "antd": "^5.6.4",
     "monaco-editor": "^0.39.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
@@ -37,7 +38,13 @@
     "react-router": "^6.14.1",
     "react-router-dom": "^6.14.1",
     "react-spring": "^9.7.2",
-    "react-use-measure": "^2.1.1"
+    "react-use-measure": "^2.1.1",
+    "uuid": "^9.0.0",
+    "xterm": "^5.2.1",
+    "xterm-addon-fit": "^0.7.0",
+    "xterm-addon-web-links": "^0.8.0",
+    "xterm-addon-webgl": "^0.15.0",
+    "xterm-for-react": "^1.0.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.5",
@@ -48,6 +55,7 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.10",
     "@types/react-resizable": "^3.0.4",
+    "@types/uuid": "^9.0.2",
     "commitizen": "^4.3.0",
     "cz-git": "^1.6.1",
     "eslint-plugin-import": "^2.28.0",

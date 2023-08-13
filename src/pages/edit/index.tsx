@@ -6,6 +6,7 @@ import { components, editorAside, ResizeHandle } from "./component";
 
 import { labelType } from "@/types";
 import Editor from "@/components/editor";
+import { TerminalPanel } from "@/components/terminal";
 
 const Edit: FC = () => {
   const [activeIcon, setActiveIcon] = useState<labelType>("file");
@@ -53,7 +54,9 @@ const Edit: FC = () => {
                 defaultSize={30}
                 minSize={2}
                 style={{ background: "#15181E" }}
-              ></Panel>
+              >
+                <TerminalPanel />
+              </Panel>
             </PanelGroup>
           </Panel>
 

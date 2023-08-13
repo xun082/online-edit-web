@@ -34,3 +34,8 @@ export function removeSemicolonAfterClosingTag(str: string) {
   const regex = /<\/\w+>\s*;/g;
   return str.replace(regex, match => match.replace(";", ""));
 }
+
+export function uint8Array2string(u: Uint8Array) {
+  const utf8decoder = new TextDecoder();
+  return utf8decoder.decode(u);
+}

@@ -7,6 +7,9 @@ dependencies:
   '@reduxjs/toolkit':
     specifier: ^1.9.5
     version: 1.9.5(react-redux@8.1.1)(react@18.2.0)
+  '@webcontainer/api':
+    specifier: ^1.1.5
+    version: 1.1.5
   antd:
     specifier: ^5.6.4
     version: 5.6.4(react-dom@18.2.0)(react@18.2.0)
@@ -43,6 +46,24 @@ dependencies:
   react-use-measure:
     specifier: ^2.1.1
     version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
+  uuid:
+    specifier: ^9.0.0
+    version: 9.0.0
+  xterm:
+    specifier: ^5.2.1
+    version: 5.2.1
+  xterm-addon-fit:
+    specifier: ^0.7.0
+    version: 0.7.0(xterm@5.2.1)
+  xterm-addon-web-links:
+    specifier: ^0.8.0
+    version: 0.8.0(xterm@5.2.1)
+  xterm-addon-webgl:
+    specifier: ^0.15.0
+    version: 0.15.0(xterm@5.2.1)
+  xterm-for-react:
+    specifier: ^1.0.4
+    version: 1.0.4(react-dom@18.2.0)(react@18.2.0)
 
 devDependencies:
   '@commitlint/cli':
@@ -69,6 +90,9 @@ devDependencies:
   '@types/react-resizable':
     specifier: ^3.0.4
     version: 3.0.4
+  '@types/uuid':
+    specifier: ^9.0.2
+    version: 9.0.2
   commitizen:
     specifier: ^4.3.0
     version: 4.3.0
@@ -2853,6 +2877,10 @@ packages:
     resolution: {integrity: sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==}
     dev: false
 
+  /@types/uuid@9.0.2:
+    resolution: {integrity: sha512-kNnC1GFBLuhImSnV7w4njQkUiJi0ZXUycu1rUaouPqiKlXkh77JKgdRnTAp1x5eBwcIwbtI+3otwzuIDEuDoxQ==}
+    dev: true
+
   /@types/ws@8.5.5:
     resolution: {integrity: sha512-lwhs8hktwxSjf9UaZ9tG5M03PGogvFaH8gUgLNbN9HKIg0dvv6q+gkSuJ8HN4/VbyxkuLzCjlN7GquQ0gUJfIg==}
     dependencies:
@@ -3030,6 +3058,10 @@ packages:
     dependencies:
       '@webassemblyjs/ast': 1.11.6
       '@xtuc/long': 4.2.2
+
+  /@webcontainer/api@1.1.5:
+    resolution: {integrity: sha512-qMJyqO+A8+B8JKW/IW9KVQblAiEQwesq7ka6w8pgm6DXKWCQaPVOco4Zo7FxZ09OmBIX+lnXyfKbQzXiORLGJg==}
+    dev: false
 
   /@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.88.1):
     resolution: {integrity: sha512-wy0mglZpDSiSS0XHrVR+BAdId2+yxPSoJW8fsna3ZpYSlufjvxnP4YbKTCBZnNIcGN4r6ZPXV55X4mYExOfLmw==}
@@ -10652,6 +10684,11 @@ packages:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
 
+  /uuid@9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
+    dev: false
+
   /v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
     dev: true
@@ -11041,6 +11078,50 @@ packages:
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
+
+  /xterm-addon-fit@0.7.0(xterm@5.2.1):
+    resolution: {integrity: sha512-tQgHGoHqRTgeROPnvmtEJywLKoC/V9eNs4bLLz7iyJr1aW/QFzRwfd3MGiJ6odJd9xEfxcW36/xRU47JkD5NKQ==}
+    peerDependencies:
+      xterm: ^5.0.0
+    dependencies:
+      xterm: 5.2.1
+    dev: false
+
+  /xterm-addon-web-links@0.8.0(xterm@5.2.1):
+    resolution: {integrity: sha512-J4tKngmIu20ytX9SEJjAP3UGksah7iALqBtfTwT9ZnmFHVplCumYQsUJfKuS+JwMhjsjH61YXfndenLNvjRrEw==}
+    peerDependencies:
+      xterm: ^5.0.0
+    dependencies:
+      xterm: 5.2.1
+    dev: false
+
+  /xterm-addon-webgl@0.15.0(xterm@5.2.1):
+    resolution: {integrity: sha512-ZLcqogMFHr4g/YRhcCh3xE8tTklnyut/M+O/XhVsFBRB/YCvYhPdLQ5/AQk54V0wjWAQpa8CF3W8DVR9OqyMCg==}
+    peerDependencies:
+      xterm: ^5.0.0
+    dependencies:
+      xterm: 5.2.1
+    dev: false
+
+  /xterm-for-react@1.0.4(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-DCkLR9ZXeW907YyyaCTk/3Ol34VRHfCnf3MAPOkj3dUNA85sDqHvTXN8efw4g7bx7gWdJQRsEpGt2tJOXKG3EQ==}
+    peerDependencies:
+      react: ^16.0.0
+      react-dom: ^16.0.0
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      xterm: 4.19.0
+    dev: false
+
+  /xterm@4.19.0:
+    resolution: {integrity: sha512-c3Cp4eOVsYY5Q839dR5IejghRPpxciGmLWWaP9g+ppfMeBChMeLa1DCA+pmX/jyDZ+zxFOmlJL/82qVdayVoGQ==}
+    dev: false
+
+  /xterm@5.2.1:
+    resolution: {integrity: sha512-cs5Y1fFevgcdoh2hJROMVIWwoBHD80P1fIP79gopLHJIE4kTzzblanoivxTiQ4+92YM9IxS36H1q0MxIJXQBcA==}
+    dev: false
 
   /y18n@4.0.3:
     resolution: {integrity: sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==}
