@@ -1,0 +1,88 @@
+.root {
+  width: 100%;
+  height: 22px;
+  &:hover .heading .header-control {
+    opacity: 1;
+  }
+  .heading {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px 0 5px;
+    box-sizing: border-box;
+    background-color: #2d3139;
+    align-items: center;
+    .header-info {
+      color: #ccc;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      .svg {
+        fill: hsl(0 0% 80%);
+        margin-right: 5px;
+      }
+    }
+    .header-control {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+  }
+  .content {
+    border-top: none;
+    color: #000000;
+    overflow: hidden;
+    .antd-tree {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      background: #202327;
+      color: #ccc;
+      z-index: 999;
+    }
+  }
+}
+
+.tree-title {
+  height: 100%;
+  position: relative;
+  justify-content: space-between;
+  &:hover .tree-title-edit {
+    opacity: 1;
+  }
+  .tree-title-edit {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 88px;
+    height: 100%;
+    background: #202327;
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+  }
+}
+
+.file-edit-icon {
+  margin-right: 8px;
+  &:nth-last-child(1) {
+    margin: 0;
+  }
+}
+
+:global {
+  .ant-tree-title {
+    flex-grow: 1;
+  }
+
+  .ant-tree-node-content-wrapper {
+    display: flex;
+    padding: 0 !important;
+  }
+}

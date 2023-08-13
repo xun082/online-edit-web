@@ -37,12 +37,7 @@ const Edit: FC = () => {
       <section className={styles["edit-content"]}>
         <PanelGroup direction="horizontal">
           {/* 文件栏 */}
-          <Panel
-            style={{ background: "#202327" }}
-            minSize={1}
-            maxSize={15}
-            defaultSize={10}
-          >
+          <Panel style={{ background: "#202327" }} minSize={1} defaultSize={15}>
             <Component />
           </Panel>
           <ResizeHandle />
@@ -64,7 +59,7 @@ const Edit: FC = () => {
 
           <ResizeHandle />
           {/* 效果展示 */}
-          <Panel minSize={1} defaultSize={40}>
+          <Panel minSize={1} defaultSize={35}>
             <iframe width="100%" height="100%"></iframe>
           </Panel>
         </PanelGroup>

@@ -3,6 +3,8 @@ import { CloudDownloadOutlined } from "@ant-design/icons";
 
 import styles from "./index.module.scss";
 
+import Collapse from "@/components/collapse";
+
 const File = () => {
   return (
     <div className={styles["root"]}>
@@ -11,6 +13,7 @@ const File = () => {
 
         <CloudDownloadOutlined rev={undefined} style={{ color: "#F0F0F0" }} />
       </div>
+      <Collapse />
     </div>
   );
 };
