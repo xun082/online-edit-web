@@ -21,7 +21,9 @@
       cursor: pointer;
       .svg {
         fill: hsl(0 0% 80%);
-        margin-right: 5px;
+      }
+      .header-text {
+        padding-left: 5px;
       }
     }
     .header-control {

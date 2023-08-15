@@ -112,7 +112,7 @@ const Collapse = () => {
     height: isCollapsed ? 0 : bounds.height,
   });
   const toggleWrapperAnimatedStyle = useSpring({
-    transform: isCollapsed ? "rotate(0deg)" : "rotate(180deg)",
+    transform: isCollapsed ? "rotate(-90deg)" : "rotate(0deg)"
   });
 
   // 添加文件
@@ -154,7 +154,7 @@ const Collapse = () => {
               ></path>
             </svg>
           </animated.div>
-          <span>FILES</span>
+          <span className={styles["header-text"]}>FILES</span>
         </div>
         <div className={styles["header-control"]}>
           <img
