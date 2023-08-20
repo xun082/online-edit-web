@@ -1,45 +1,95 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import type { DataNode } from "antd/es/tree";
 
-import { languageType } from "@/types";
+import { ActionTypeEnum } from "@/types";
+import { routerFormat, findNodeByKey } from "@/utils/file";
 
-interface codeStateType {
-  code: {
-    html: string;
-    css: string;
-    javascript: string;
-  };
+interface codeTypes {
+  path: string;
+  fileModalIsOpen: boolean;
+  fileControlType: ActionTypeEnum | undefined;
+  treeData: DataNode[];
+  formatPath: string;
+  selectedKey: string;
 }
 
-interface actionTypes {
-  type: string;
-  payload: {
-    newCode: string;
-    language: languageType;
-  };
+interface changeFileModalStatusTypes {
+  open: boolean;
+  type?: ActionTypeEnum;
+}
+
+interface changeTreeDataTypes {
+  treeData: DataNode[];
+  key?: string;
+  path?: string;
 }
 
 const initialState = {
-  code: {
-    html: "",
-    css: "",
-    javascript: "",
-  },
-} as codeStateType;
+  path: "",
+  formatPath: "",
+  fileModalIsOpen: false,
+  fileControlType: undefined,
+  treeData: [],
+  selectedKey: "",
+} as codeTypes;
 
 const codeSlice = createSlice({
   name: "code",
   initialState,
   reducers: {
-    changeCode(state, action: actionTypes): void {
+    changePath(state, action): void {
       const { payload } = action;
 
-      const { newCode, language } = payload;
-      state.code[language] = newCode;
+      state.path = payload;
+      state.formatPath = routerFormat(payload);
+    },
+    changeFormatPathValue(state, action): void {
+      const { payload } = action;
+
+      state.formatPath = payload;
+    },
+    changeFileModalStatus(
+      state,
+      action: PayloadAction<changeFileModalStatusTypes>,
+    ): void {
+      const {
+        payload: { open, type },
+      } = action;
+
+      state.fileModalIsOpen = open;
+      state.fileControlType = type;
+    },
+    changeTreeData(state, action: PayloadAction<changeTreeDataTypes>) {
+      const {
+        payload: { treeData, key, path },
+      } = action;
+      console.log(treeData);
+
+      const newData = [...treeData];
+      console.log(newData === treeData);
+
+      if (key) {
+        const selectedNode = findNodeByKey(key, newData);
+
+        selectedNode!.title = path;
+      }
+
+      state.treeData = newData;
+    },
+    changeSelectedKey(state, action: PayloadAction<string>) {
+      const { payload } = action;
+      state.selectedKey = payload;
     },
   },
   extraReducers: () => {},
 });
 
-export const { changeCode } = codeSlice.actions;
+export const {
+  changePath,
+  changeFileModalStatus,
+  changeTreeData,
+  changeFormatPathValue,
+  changeSelectedKey,
+} = codeSlice.actions;
 
 export default codeSlice.reducer;

@@ -7,9 +7,11 @@ import { components, editorAside, ResizeHandle } from "./component";
 import { labelType } from "@/types";
 import Editor from "@/components/editor";
 import { TerminalPanel } from "@/components/terminal";
+import { useAppSelector } from "@/store";
 
 const Edit: FC = () => {
   const [activeIcon, setActiveIcon] = useState<labelType>("file");
+  const { path } = useAppSelector(state => state.code);
 
   const handleIconClick = (label: labelType) => {
     setActiveIcon(label);
@@ -47,7 +49,7 @@ const Edit: FC = () => {
             <PanelGroup direction="vertical">
               <Panel collapsible={true}>
                 <div className={styles["edit-header"]}>1</div>
-                <Editor language="javascript" />
+                <Editor filePath={path} />
               </Panel>
               <ResizeHandle direction="vertical" />
               <Panel

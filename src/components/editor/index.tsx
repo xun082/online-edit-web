@@ -1,89 +1,71 @@
-import React, { useEffect, FC } from "react";
-import MonacoEditor from "react-monaco-editor";
-import prettier from "prettier/standalone";
-import parserBabel from "prettier/parser-babel";
-import parserCss from "prettier/parser-postcss";
-import parserHtml from "prettier/parser-html";
+import React, { useEffect, useMemo, useState } from "react";
+import Editor, { loader } from "@monaco-editor/react";
+import * as monaco from "monaco-editor";
 
-import { useAppDispatch, useAppSelector } from "@/store";
-import { changeCode } from "@/store/modules/code";
-import { languageType } from "@/types";
-import { removeSemicolonAfterClosingTag } from "@/utils";
+import { readFile, writeFile } from "@/webContainer";
 
-interface EditorProps {
-  language: languageType;
+monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+  jsx: monaco.languages.typescript.JsxEmit.React,
+});
+
+loader.config({ monaco });
+
+loader.init().then(/* ... */);
+
+interface ICodeEditorProps {
+  filePath: string;
 }
 
-const Editor: FC<EditorProps> = (props: EditorProps) => {
-  const { language } = props;
-  const { code } = useAppSelector(state => state.code);
+export default function CodeEditor({ filePath }: ICodeEditorProps) {
+  const [content, setContent] = useState("");
 
-  const dispatch = useAppDispatch();
-
-  // 代码实现自动格式化
   useEffect(() => {
-    const handleKeyDown = async (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
-        event.preventDefault();
-        try {
-          const newCode = await prettier.format(code[language], {
-            parser: language === "css" ? "css" : "babel",
-            plugins:
-              language === "css"
-                ? [parserCss, parserHtml]
-                : [parserBabel, parserHtml],
-            printWidth: 80,
-            tabWidth: 2,
-          });
-          dispatch(
-            changeCode({
-              newCode:
-                language === "html"
-                  ? removeSemicolonAfterClosingTag(newCode)
-                  : newCode,
-              language,
-            }),
-          );
-        } catch (error) {
-          alert(`代码格式化失败:${error}`);
-        }
-      }
+    async function readFile2content() {
+      const fileContent = await readFile(filePath);
+
+      setContent(fileContent);
+    }
+
+    if (filePath) {
+      readFile2content();
+    } else {
+      setContent("");
+    }
+  }, [filePath]);
+
+  const language = useMemo(() => {
+    const stuff = filePath.split(".").pop() || "default";
+
+    const languageMap: Record<string, string> = {
+      js: "javascript",
+      mjs: "javascript",
+      css: "css",
+      ts: "typescript",
+      tsx: "typescript",
+      html: "html",
+      json: "json",
+      default: "javascript",
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [code]);
-
-  const onChange = (newCode: string) => {
-    dispatch(changeCode({ newCode, language }));
-  };
+    return languageMap[stuff];
+  }, [filePath]);
 
   return (
-    <MonacoEditor
-      language={language}
+    <Editor
       theme="vs-dark"
-      width="100vw"
-      height="100vh"
-      value={code[language]}
+      language={language}
+      value={content}
       options={{
-        lineNumbers: "on",
-        lineDecorationsWidth: 1,
-        selectOnLineNumbers: true,
-        folding: true,
-        // 设置代码折叠策略
-        foldingStrategy: "indentation", // 或 'auto'
-        // 设置默认折叠级别
-        foldingHighlight: true, // 或 'background'
+        minimap: { enabled: true },
+        fontSize: 16,
+        readOnly: !filePath,
       }}
-      onChange={onChange}
-      editorDidMount={editor => {
-        if (language === "javascript") editor.focus();
+      onChange={value => {
+        if (filePath) {
+          writeFile(filePath, value || "");
+          setContent(value || "");
+        }
       }}
     />
   );
-};
-
-export default Editor;
+}

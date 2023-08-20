@@ -20,7 +20,6 @@
       align-items: center;
       cursor: pointer;
       .svg {
-        fill: hsl(0 0% 80%);
         margin-right: 5px;
       }
     }
@@ -54,18 +53,19 @@
   &:hover .tree-title-edit {
     opacity: 1;
   }
+
   .tree-title-edit {
     opacity: 0;
     transition: opacity 0.3s ease;
     position: absolute;
     right: 0;
     top: 0;
-    width: 88px;
+    width: auto;
     height: 100%;
-    background: #202327;
     display: flex;
     box-sizing: border-box;
     align-items: center;
+    background-color: inherit;
   }
 }
 
@@ -84,5 +84,9 @@
   .ant-tree-node-content-wrapper {
     display: flex;
     padding: 0 !important;
+  }
+
+  .ant-tree-treenode-selected::before {
+    background: #0068b3 !important;
   }
 }
