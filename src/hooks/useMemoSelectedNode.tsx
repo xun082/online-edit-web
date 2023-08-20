@@ -5,7 +5,7 @@ import { findNodeByKey } from "@/utils/file";
 
 export default function useMemoSelectedNode(
   selectedKey: string,
-  treeData: any,
+  treeData: DataNode[],
 ) {
   const selectedNode = useMemo(
     () => findNodeByKey(selectedKey, treeData),

@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useContext } from "react";
 import { Modal, Input } from "antd";
+import { WebContainer } from "@webcontainer/api";
 
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
@@ -8,9 +9,10 @@ import {
 } from "@/store/modules/code";
 import { ActionTypeEnumMap, ActionTypeEnum } from "@/types";
 import { getNodePath } from "@/utils/file";
-import { renameFile } from "@/webContainer";
+import { renameFile } from "@/utils/webContainer";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
 import TreeDataContext, { treeDataContextType } from "@/context/tree-data";
+import WebContainerContext from "@/context/webContainer";
 
 const FileEditorModal: React.FC = () => {
   const { fileModalIsOpen, fileControlType, formatPath, selectedKey } =
@@ -19,6 +21,7 @@ const FileEditorModal: React.FC = () => {
   const { treeData, setTreeData } = useContext(
     TreeDataContext,
   ) as treeDataContextType;
+  const webcontainerInstance = useContext(WebContainerContext) as WebContainer;
 
   const dispatch = useAppDispatch();
 
@@ -26,7 +29,7 @@ const FileEditorModal: React.FC = () => {
 
   const handleOk = async () => {
     const path = getNodePath(selectedKey, treeData);
-    renameFile(path, formatPath);
+    renameFile(path, formatPath, webcontainerInstance);
 
     selectedNode!.title = formatPath;
 

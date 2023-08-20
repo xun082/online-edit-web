@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useContext } from "react";
 import { useSpring, animated } from "react-spring";
 import useMeasure from "react-use-measure";
 import { Tree } from "antd";
@@ -8,6 +8,7 @@ import {
   FileOutlined,
   FolderOutlined,
 } from "@ant-design/icons";
+import { WebContainer } from "@webcontainer/api";
 
 import FileEditorModal from "../file-modal";
 
@@ -18,7 +19,7 @@ import addFolder from "@/assets/images/addFolder.svg";
 import editFile from "@/assets/images/editFile.svg";
 import deleteFile from "@/assets/images/deleteFile.svg";
 import { ActionTypeEnum } from "@/types";
-import { readFileSystem, webcontainerInstancePromise } from "@/webContainer";
+import { readFileSystem } from "@/utils/webContainer";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   changePath,
@@ -28,11 +29,13 @@ import {
 import { getNodePath } from "@/utils/file";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
 import TreeDataContext from "@/context/tree-data";
+import WebContainerContext from "@/context/webContainer";
 
 const Collapse: FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const { selectedKey } = useAppSelector(state => state.code);
+  const webcontainerInstance = useContext(WebContainerContext) as WebContainer;
 
   const dispatch = useAppDispatch();
 
@@ -40,7 +43,6 @@ const Collapse: FC = () => {
 
   const togglePanel = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(e.target);
 
     setIsCollapsed(prevState => !prevState);
   };
@@ -54,20 +56,18 @@ const Collapse: FC = () => {
   });
 
   const syncFileSystemToUI = async () => {
-    const result = await readFileSystem();
+    const result = await readFileSystem(webcontainerInstance);
 
     setTreeData(result);
   };
 
   useEffect(() => {
     async function sync() {
-      await webcontainerInstancePromise;
-
-      syncFileSystemToUI();
+      if (webcontainerInstance) syncFileSystemToUI();
     }
 
     sync();
-  }, []);
+  }, [webcontainerInstance]);
 
   // 添加文件
   const addFileHandle = (e: React.MouseEvent<HTMLDivElement>) => {
