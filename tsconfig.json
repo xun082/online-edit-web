@@ -20,7 +20,7 @@
     "noImplicitAny": true, // 在表达式和声明上有隐含的 any 类型时报错
     "strictNullChecks": true, // 启用严格的 null 检查
     "noImplicitThis": false, // 当 this 表达式值为 any 类型的时候，生成一个错误
-
+    "types": ["node", "@types/wicg-file-system-access"], // https://stackoverflow.com/questions/71309058/property-showsavefilepicker-does-not-exist-on-type-window-typeof-globalthis
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"],

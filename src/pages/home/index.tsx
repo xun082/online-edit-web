@@ -45,6 +45,7 @@ const Home: FC = () => {
                         src={value.src}
                         alt={value.alt}
                         key={value.index}
+                        onClick={value.onClick}
                       />
                     ))}
                 </div>
