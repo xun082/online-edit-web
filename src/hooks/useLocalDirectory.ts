@@ -52,28 +52,35 @@ export const getFileContent = (file: File): Promise<string> => {
   })
 }
 
+export const directoryDataFormatter = async <T extends FileSystemDirectoryHandle | FileSystemFileHandle>(directoryHandler: T, path: string = '', children: (FilerInterface | DirectoryInterface)[] = []): Promise<T extends FileSystemDirectoryHandle ? FilerInterface : DirectoryInterface> => {
+  const obj: any = {
+    handler: directoryHandler,
+    name: directoryHandler.name,
+    kind: directoryHandler.kind,
+    path,
+  }
+
+  if (directoryHandler.kind === 'directory' && directoryHandler.name !== 'node_modules') {
+    obj.children = children
+  } else if (directoryHandler.kind === 'file') {
+    obj.content = (await getFileContent(await directoryHandler.getFile())) || ''
+  } else if (directoryHandler.name === 'node_modules') {
+    obj.children = []
+  }
+  return obj
+}
+
 export const getDirectoryHandlerDeep = async (directoryHandler: FileSystemDirectoryHandle | FileSystemFileHandle, path: string = ''): Promise<DirectoryInterface | FilerInterface> => {
   path = `${path}/${directoryHandler.name}`
   if (directoryHandler.kind === 'file') {
-    return {
-      handler: directoryHandler,
-      name: directoryHandler.name,
-      kind: directoryHandler.kind,
-      path,
-      content: 
-        (await getFileContent(await directoryHandler.getFile())) ||
-        '',
-    }
+    return await directoryDataFormatter(directoryHandler, path)
+  }
+  if (directoryHandler.name === 'node_modules') {
+    return await directoryDataFormatter(directoryHandler, path, [])
   }
   const children = []
   for await (const handler of directoryHandler.values()) {
     children.push(await getDirectoryHandlerDeep(handler, path))
   }
-  return {
-    handler: directoryHandler,
-    name: directoryHandler.name,
-    kind: directoryHandler.kind,
-    path,
-    children
-  }
+  return await directoryDataFormatter(directoryHandler, path, children)
 }
