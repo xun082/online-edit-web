@@ -2,8 +2,6 @@ import { FileSystemTree, WebContainer } from "@webcontainer/api";
 import { DataNode } from "antd/es/tree";
 import { v4 as uuid } from "uuid";
 
-import { uint8Array2string } from "@/utils";
-
 export const WebContainerFileSystemTreeSavePoint =
   "Web_Container_File_System_Tree_Save_Point";
 
@@ -18,11 +16,25 @@ export function writeFile(
   content: string | Uint8Array,
   webcontainerInstance: WebContainer,
 ) {
-  return webcontainerInstance?.fs.writeFile(path, content);
+  return webcontainerInstance?.fs.writeFile(path, content, { encoding: 'utf-8' });
 }
 
 export function createFile(path: string, webcontainerInstance: WebContainer) {
   return writeFile(path, "", webcontainerInstance);
+}
+
+export async function writeDirByLocal(
+  dir: any,
+  webcontainerInstance: WebContainer
+) {
+  if (dir.kind === 'file') {
+    await writeFile(dir.path, dir.content ?? "", webcontainerInstance)
+    return
+  }
+  await createDir(dir.path, webcontainerInstance);
+  for (const file of dir.children) {
+    await writeDirByLocal(file, webcontainerInstance);
+  }
 }
 
 export function rm(path: string, webcontainerInstance: WebContainer) {
@@ -33,8 +45,8 @@ export async function readFile(
   path: string,
   webcontainerInstance: WebContainer,
 ) {
-  const u8 = await webcontainerInstance?.fs.readFile(path);
-  return uint8Array2string(u8);
+  const u8 = await webcontainerInstance?.fs.readFile(path, 'utf-8');
+  return u8;
 }
 
 export async function renameFile(

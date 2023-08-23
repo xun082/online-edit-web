@@ -112,11 +112,9 @@ $borderColor: #4a515a;
 
         .create-new-snippet-type {
           padding: 28px 40px 0px 36px;
-          box-sizing: border-box;
-          display: flex;
-          flex-wrap: wrap;
-          flex-direction: row;
-          gap: 10;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          grid-row-gap: 23.5px;
         }
       }
     }

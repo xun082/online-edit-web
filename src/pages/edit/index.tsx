@@ -13,7 +13,9 @@ import WebContainerContext from "@/context/webContainer";
 import {
   WebContainerFileSystemTreeSavePoint,
   saveFileSystemTree,
+  writeDirByLocal,
 } from "@/utils/webContainer";
+import { curDirectory } from "@/hooks/useLocalDirectory";
 
 const Edit: FC = () => {
   const [activeIcon, setActiveIcon] = useState<labelType>("file");
@@ -26,19 +28,23 @@ const Edit: FC = () => {
     const bootWebContainer = async () => {
       const instance = await WebContainer.boot();
 
-      setWebContainerInstance(instance);
-
       const treeData = localStorage.getItem(
         WebContainerFileSystemTreeSavePoint,
       );
 
-      if (!treeData) return;
+      if (treeData) {
+        const fileSystemTree = JSON.parse(treeData);
+        await instance.mount(fileSystemTree);
+      }
 
-      const fileSystemTree = JSON.parse(treeData);
+      if (curDirectory) {
+        await writeDirByLocal(curDirectory, instance)
+      }
 
-      await instance.mount(fileSystemTree);
+      setWebContainerInstance(instance);
     };
 
+    if (webContainerInstance) return;
     bootWebContainer();
   }, []);
 
