@@ -7,7 +7,19 @@ import { readFile, writeFile } from "@/utils/webContainer";
 import WebContainerContext from "@/context/webContainer";
 
 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+  ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
+  module: monaco.languages.typescript.ModuleKind.ESNext,
+  target: monaco.languages.typescript.ScriptTarget.ESNext,
+  moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+  isolatedModules: true,
+  allowJs: true,
+  strict: true,
+  skipLibCheck: true,
   jsx: monaco.languages.typescript.JsxEmit.React,
+});
+
+monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+  noSuggestionDiagnostics: true,
 });
 
 loader.config({ monaco });
@@ -52,6 +64,14 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
 
     return languageMap[stuff];
   }, [filePath]);
+  console.log(language);
+
+  const handleEditorChange = (value: string | undefined): void => {
+    if (filePath) {
+      writeFile(filePath, value || "", webcontainerInstance);
+      setContent(value || "");
+    }
+  };
 
   return (
     <Editor
@@ -61,14 +81,8 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
       options={{
         minimap: { enabled: true },
         fontSize: 16,
-        readOnly: !filePath,
       }}
-      onChange={value => {
-        if (filePath) {
-          writeFile(filePath, value || "", webcontainerInstance);
-          setContent(value || "");
-        }
-      }}
+      onChange={handleEditorChange}
     />
   );
 }
