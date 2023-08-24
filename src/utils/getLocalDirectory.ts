@@ -93,9 +93,11 @@ export const getDirectoryHandlerDeep = async (
 
   const children = [];
   for await (const handler of directoryHandler.values()) {
-    if (handler.kind !== "directory" && handler.name !== "node_modules") {
-      children.push(await getDirectoryHandlerDeep(handler, path));
+    if (handler.kind === "directory" && handler.name === "node_modules") {
+      continue;
     }
+
+    children.push(await getDirectoryHandlerDeep(handler, path));
   }
   return await directoryDataFormatter(directoryHandler, path, children);
 };
