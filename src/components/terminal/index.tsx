@@ -73,5 +73,9 @@ export function TerminalPanel() {
     init();
   }, [webcontainerInstance]);
 
+  webcontainerInstance?.on("server-ready", (port, host) => {
+    console.log(port, host);
+  });
+
   return <div className={styles["root"]} ref={terminalRef} />;
 }

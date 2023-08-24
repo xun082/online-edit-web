@@ -1,6 +1,7 @@
 import React, { FC, useState, useLayoutEffect, useEffect } from "react";
 import { PanelGroup, Panel } from "react-resizable-panels";
 import { WebContainer } from "@webcontainer/api";
+import { v4 as uuid } from "uuid";
 
 import styles from "./index.module.scss";
 import { components, editorAside, ResizeHandle } from "./component";
@@ -15,10 +16,16 @@ import {
   saveFileSystemTree,
   writeDirByLocal,
 } from "@/utils/webContainer";
-import { curDirectory } from "@/hooks/useLocalDirectory";
+import { curDirectory } from "@/utils/getLocalDirectory";
+import { LinkData } from "@/types";
+import { Preview } from "@/components/preview";
 
 const Edit: FC = () => {
   const [activeIcon, setActiveIcon] = useState<labelType>("file");
+  const [linkData, setLinkData] = useState<LinkData>(() => ({
+    src: "",
+    uuid: "",
+  }));
   const { path } = useAppSelector(state => state.code);
 
   const [webContainerInstance, setWebContainerInstance] =
@@ -38,7 +45,7 @@ const Edit: FC = () => {
       }
 
       if (curDirectory) {
-        await writeDirByLocal(curDirectory, instance)
+        await writeDirByLocal(curDirectory, instance);
       }
 
       setWebContainerInstance(instance);
@@ -60,6 +67,17 @@ const Edit: FC = () => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
+  }, [webContainerInstance]);
+
+  useEffect(() => {
+    if (webContainerInstance) {
+      webContainerInstance.on("server-ready", (port, host) => {
+        setLinkData({
+          src: host,
+          uuid: uuid(),
+        });
+      });
+    }
   }, [webContainerInstance]);
 
   const handleIconClick = (label: labelType) => {
@@ -121,7 +139,7 @@ const Edit: FC = () => {
             <ResizeHandle />
             {/* 效果展示 */}
             <Panel minSize={1} defaultSize={35}>
-              <iframe width="100%" height="100%"></iframe>
+              <Preview data={linkData} />
             </Panel>
           </PanelGroup>
         </section>

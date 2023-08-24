@@ -6,7 +6,7 @@ import ReactLogo from "@/assets/images/react.png";
 import NodeLogo from "@/assets/images/node.png";
 import GoLogo from "@/assets/images/go.png";
 import AddLogo from "@/assets/images/add.svg";
-import { getDirectory } from "@/hooks/useLocalDirectory";
+import { getDirectory } from "@/utils/getLocalDirectory";
 
 interface TemplateType {
   src: string;
@@ -46,12 +46,12 @@ export const Template: Array<TemplateType> = [
     alt: "打开文件夹",
     index: 6,
     onClick: async () => {
-      const dir = await getDirectory()
+      const dir = await getDirectory();
       if (dir === null) {
         return false;
       }
-      return true
-    }
+      return true;
+    },
   },
 ];
 

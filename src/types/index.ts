@@ -2,6 +2,11 @@
 export type languageType = "html" | "css" | "javascript";
 export type labelType = "search" | "setting" | "file" | "port";
 
+export interface LinkData {
+  uuid: string;
+  src: string;
+}
+
 // export namespace WebContainerNP {
 //   export enum ActionTypeEnum {
 //     Create_File = "Create_File",

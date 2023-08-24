@@ -59,12 +59,12 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
       tsx: "typescript",
       html: "html",
       json: "json",
+      md: "md",
       default: "javascript",
     };
 
     return languageMap[stuff];
   }, [filePath]);
-  console.log(language);
 
   const handleEditorChange = (value: string | undefined): void => {
     if (filePath) {
