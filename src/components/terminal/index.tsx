@@ -11,6 +11,7 @@ import WebContainerContext from "@/context/webContainer";
 
 let terminal: Terminal;
 const fitAddon = new FitAddon();
+
 const webLinksAddon = new WebLinksAddon();
 const webglAddon = new WebglAddon();
 
@@ -23,6 +24,7 @@ export function TerminalPanel() {
       if (webcontainerInstance !== null) {
         if (terminalRef.current && !terminal) {
           terminal = new Terminal({
+            fontFamily: '"Cascadia Code", Menlo, monospace',
             convertEol: true,
             cursorBlink: true,
             tabStopWidth: 2,
@@ -41,17 +43,13 @@ export function TerminalPanel() {
             },
           });
 
-          const handleResize = () => {
+          window.addEventListener("resize", () => {
             fitAddon.fit();
             shell?.resize({
               cols: terminal.cols,
               rows: terminal.rows,
             });
-          };
-
-          handleResize();
-
-          window.addEventListener("resize", handleResize);
+          });
 
           shell?.output.pipeTo(
             new WritableStream({
@@ -72,10 +70,6 @@ export function TerminalPanel() {
 
     init();
   }, [webcontainerInstance]);
-
-  webcontainerInstance?.on("server-ready", (port, host) => {
-    console.log(port, host);
-  });
 
   return <div className={styles["root"]} ref={terminalRef} />;
 }

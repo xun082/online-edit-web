@@ -7,12 +7,13 @@
   &::-webkit-scrollbar {
     display: none;
   }
+  background: "#15181E";
 }
 
 :global {
   .terminal {
-    padding: 10px;
-    height: 500px;
+    width: 100vw;
+    height: 100vh;
     box-sizing: border-box;
   }
 }
