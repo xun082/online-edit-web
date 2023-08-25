@@ -1,0 +1,31 @@
+@import "../../assets/styles/var.scss";
+
+.root {
+  height: 100%;
+  width: 100%;
+
+  .iframe-header {
+    height: 38px;
+    width: 100%;
+    background-color: $primary-theme;
+    display: flex;
+    align-items: center;
+    .iframe-refresh {
+      color: #959698;
+      margin-left: 10px;
+      margin-right: 20px;
+      font-size: 20px;
+    }
+    .iframe-router {
+      background-color: rgba(0, 0, 0, 0);
+      input {
+        background-color: inherit;
+        color: #959698;
+      }
+    }
+  }
+  .iframe-content {
+    height: calc(100% - 38px);
+    width: 100%;
+  }
+}
