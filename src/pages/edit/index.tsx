@@ -9,7 +9,7 @@ import { components, editorAside, ResizeHandle } from "./component";
 import { labelType } from "@/types";
 import Editor from "@/components/editor";
 import { TerminalPanel } from "@/components/terminal";
-import { useAppSelector } from "@/store";
+import { useAppSelector, useAppDispatch } from "@/store";
 import WebContainerContext from "@/context/webContainer";
 import {
   WebContainerFileSystemTreeSavePoint,
@@ -19,6 +19,7 @@ import {
 import { curDirectory } from "@/utils/getLocalDirectory";
 import { LinkData } from "@/types";
 import { Preview } from "@/components/preview";
+import { changePreviewUrl } from "@/store/modules/home";
 
 const Edit: FC = () => {
   const [activeIcon, setActiveIcon] = useState<labelType>("file");
@@ -27,6 +28,9 @@ const Edit: FC = () => {
     uuid: "",
   }));
   const { path } = useAppSelector(state => state.code);
+  const { previewSwitch } = useAppSelector(state => state.home);
+
+  const dispatch = useAppDispatch();
 
   const [webContainerInstance, setWebContainerInstance] =
     useState<WebContainer | null>(null);
@@ -76,6 +80,7 @@ const Edit: FC = () => {
           src: host,
           uuid: uuid(),
         });
+        dispatch(changePreviewUrl(host));
       });
     }
   }, [webContainerInstance]);
@@ -119,7 +124,7 @@ const Edit: FC = () => {
             </Panel>
             <ResizeHandle />
             {/* 代码编辑栏 */}
-            <Panel minSize={1} defaultSize={50}>
+            <Panel minSize={1} defaultSize={previewSwitch !== true ? 50 : 85}>
               <PanelGroup direction="vertical">
                 <Panel collapsible={true}>
                   <div className={styles["edit-header"]}>1</div>
@@ -135,12 +140,15 @@ const Edit: FC = () => {
                 </Panel>
               </PanelGroup>
             </Panel>
-
-            <ResizeHandle />
-            {/* 效果展示 */}
-            <Panel minSize={1} defaultSize={35}>
-              <Preview data={linkData} />
-            </Panel>
+            {previewSwitch !== true ? (
+              <>
+                <ResizeHandle />
+                {/* 效果展示 */}
+                <Panel minSize={1} defaultSize={35}>
+                  <Preview data={linkData} />
+                </Panel>
+              </>
+            ) : null}
           </PanelGroup>
         </section>
       </main>

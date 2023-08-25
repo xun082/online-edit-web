@@ -2,9 +2,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 
 import code from "./modules/code";
+import home from "./modules/home";
 
 export const store = configureStore({
-  reducer: { code },
+  reducer: { code, home },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({ serializableCheck: false }),
   devTools: process.env.NODE_ENV !== "production",

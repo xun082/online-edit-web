@@ -18,7 +18,30 @@
     width: auto;
     display: flex;
     align-items: center;
-
+    .preview-control {
+      cursor: pointer;
+      width: 76px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      box-sizing: border-box;
+      color: #ccc;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+    .open-new-tab {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #ccc;
+      font-size: 14px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      cursor: pointer;
+      width: 158px;
+    }
     .login {
       width: 80px;
       height: 28px;
