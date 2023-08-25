@@ -55,7 +55,9 @@ const FileEditorModal: React.FC = () => {
     }
 
     if (fileControlType === ActionTypeEnum.Del) {
-      rm(path, webcontainerInstance);
+      setTreeData(pre => pre.filter(item => item.key !== selectedKey));
+
+      await rm(path, webcontainerInstance);
 
       syncFileSystemToUI();
     }
@@ -80,8 +82,6 @@ const FileEditorModal: React.FC = () => {
       syncFileSystemToUI();
     }
 
-    // 清空输入框内容
-    dispatch(changeFormatPathValue(""));
     dispatch(changeFileModalStatus({ open: false }));
   };
 
