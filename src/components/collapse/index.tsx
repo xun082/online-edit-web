@@ -69,6 +69,17 @@ const Collapse: FC = () => {
     sync();
   }, [webcontainerInstance]);
 
+  const selectedNode = useMemoSelectedNode(treeData);
+
+  useEffect(() => {
+    if (selectedNode) {
+      const path = getNodePath(selectedNode.key as string, treeData);
+      dispatch(changePath(path));
+    } else {
+      dispatch(changePath(""));
+    }
+  }, [selectedNode]);
+
   // 添加文件
   const addFileHandle = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -80,17 +91,6 @@ const Collapse: FC = () => {
     e.stopPropagation();
     console.log(222);
   };
-
-  const selectedNode = useMemoSelectedNode(selectedKey, treeData);
-
-  useEffect(() => {
-    if (selectedNode?.isLeaf) {
-      const path = getNodePath(selectedNode.key as string, treeData);
-      dispatch(changePath(path));
-    } else {
-      dispatch(changePath(""));
-    }
-  }, [selectedNode]);
 
   const generateTreeNodes = (data: DataNode[]): DataNode[] => {
     return data.map(node => {
@@ -135,7 +135,19 @@ const Collapse: FC = () => {
               )
             }
           />
-          <img className={styles["file-edit-icon"]} src={deleteFile} alt="" />
+          <img
+            className={styles["file-edit-icon"]}
+            src={deleteFile}
+            alt=""
+            onClick={() =>
+              dispatch(
+                changeFileModalStatus({
+                  open: true,
+                  type: ActionTypeEnum.Del,
+                }),
+              )
+            }
+          />
         </div>
       </div>
     );

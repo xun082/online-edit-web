@@ -86,4 +86,7 @@ export enum ActionTypeEnum {
   Rename = "Rename",
 }
 
-export const ActionTypeEnumMap = new Map([[ActionTypeEnum.Rename, "重命名"]]);
+export const ActionTypeEnumMap = new Map([
+  [ActionTypeEnum.Rename, "重命名"],
+  [ActionTypeEnum.Del, "删除文件"],
+]);

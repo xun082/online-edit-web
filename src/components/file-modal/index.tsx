@@ -9,7 +9,7 @@ import {
 } from "@/store/modules/code";
 import { ActionTypeEnumMap, ActionTypeEnum } from "@/types";
 import { getNodePath } from "@/utils/file";
-import { renameFile } from "@/utils/webContainer";
+import { renameFile, rm, readFileSystem } from "@/utils/webContainer";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
 import TreeDataContext, { treeDataContextType } from "@/context/tree-data";
 import WebContainerContext from "@/context/webContainer";
@@ -25,15 +25,26 @@ const FileEditorModal: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const selectedNode = useMemoSelectedNode(selectedKey, treeData);
+  const selectedNode = useMemoSelectedNode(treeData);
 
   const handleOk = async () => {
     const path = getNodePath(selectedKey, treeData);
-    renameFile(path, formatPath, webcontainerInstance);
+    console.log("🚀 ~ file: index.tsx:32 ~ handleOk ~ path:", path);
 
-    selectedNode!.title = formatPath;
+    if (fileControlType === ActionTypeEnum.Rename) {
+      renameFile(path, formatPath, webcontainerInstance);
 
-    setTreeData(pre => [...pre]);
+      selectedNode!.title = formatPath;
+
+      setTreeData(pre => [...pre]);
+    }
+
+    if (fileControlType === ActionTypeEnum.Del) {
+      rm(path, webcontainerInstance);
+      const result = await readFileSystem(webcontainerInstance);
+
+      setTreeData(result);
+    }
 
     dispatch(changeFileModalStatus({ open: false }));
   };
@@ -54,11 +65,15 @@ const FileEditorModal: React.FC = () => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Input
-          placeholder="Basic usage"
-          value={formatPath}
-          onChange={handleInputChange}
-        />
+        {fileControlType === ActionTypeEnum.Del ? (
+          <div>{formatPath}</div>
+        ) : (
+          <Input
+            placeholder="Basic usage"
+            value={formatPath}
+            onChange={handleInputChange}
+          />
+        )}
       </Modal>
     </>
   );
