@@ -9,7 +9,14 @@ import {
 } from "@/store/modules/code";
 import { ActionTypeEnumMap, ActionTypeEnum } from "@/types";
 import { getNodePath } from "@/utils/file";
-import { renameFile, rm, readFileSystem } from "@/utils/webContainer";
+import {
+  renameFile,
+  rm,
+  readFileSystem,
+  createDir,
+  createFile,
+  saveFileSystemTree,
+} from "@/utils/webContainer";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
 import TreeDataContext, { treeDataContextType } from "@/context/tree-data";
 import WebContainerContext from "@/context/webContainer";
@@ -27,9 +34,17 @@ const FileEditorModal: React.FC = () => {
 
   const selectedNode = useMemoSelectedNode(treeData);
 
+  // 保存文件
+  const syncFileSystemToUI = async () => {
+    const result = await readFileSystem(webcontainerInstance);
+
+    setTreeData(result);
+
+    saveFileSystemTree(webcontainerInstance);
+  };
+
   const handleOk = async () => {
     const path = getNodePath(selectedKey, treeData);
-    console.log("🚀 ~ file: index.tsx:32 ~ handleOk ~ path:", path);
 
     if (fileControlType === ActionTypeEnum.Rename) {
       renameFile(path, formatPath, webcontainerInstance);
@@ -41,11 +56,32 @@ const FileEditorModal: React.FC = () => {
 
     if (fileControlType === ActionTypeEnum.Del) {
       rm(path, webcontainerInstance);
-      const result = await readFileSystem(webcontainerInstance);
 
-      setTreeData(result);
+      syncFileSystemToUI();
     }
 
+    if (fileControlType === ActionTypeEnum.Create_Root_Dir) {
+      createDir(formatPath, webcontainerInstance);
+      syncFileSystemToUI();
+    }
+
+    if (fileControlType === ActionTypeEnum.Create_Root_File) {
+      createFile(formatPath, webcontainerInstance);
+      syncFileSystemToUI();
+    }
+
+    if (fileControlType === ActionTypeEnum.Create_File) {
+      createFile(`${path}/${formatPath}`, webcontainerInstance);
+      syncFileSystemToUI();
+    }
+
+    if (fileControlType === ActionTypeEnum.Create_Dir) {
+      createDir(`${path}/${formatPath}`, webcontainerInstance);
+      syncFileSystemToUI();
+    }
+
+    // 清空输入框内容
+    dispatch(changeFormatPathValue(""));
     dispatch(changeFileModalStatus({ open: false }));
   };
 

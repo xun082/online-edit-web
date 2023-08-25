@@ -61,6 +61,8 @@ const Collapse: FC = () => {
     setTreeData(result);
   };
 
+  const selectedNode = useMemoSelectedNode(treeData);
+
   useEffect(() => {
     async function sync() {
       if (webcontainerInstance) syncFileSystemToUI();
@@ -68,8 +70,6 @@ const Collapse: FC = () => {
 
     sync();
   }, [webcontainerInstance]);
-
-  const selectedNode = useMemoSelectedNode(treeData);
 
   useEffect(() => {
     if (selectedNode) {
@@ -79,18 +79,6 @@ const Collapse: FC = () => {
       dispatch(changePath(""));
     }
   }, [selectedNode]);
-
-  // 添加文件
-  const addFileHandle = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    console.log(111);
-  };
-
-  // 添加文件夹
-  const addFolderHandle = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    console.log(222);
-  };
 
   const generateTreeNodes = (data: DataNode[]): DataNode[] => {
     return data.map(node => {
@@ -114,11 +102,31 @@ const Collapse: FC = () => {
         <div className={styles["tree-title-edit"]}>
           {isLeaf === false && (
             <>
-              <img className={styles["file-edit-icon"]} src={addFile} alt="" />
+              <img
+                className={styles["file-edit-icon"]}
+                src={addFile}
+                alt=""
+                onClick={() =>
+                  dispatch(
+                    changeFileModalStatus({
+                      open: true,
+                      type: ActionTypeEnum.Create_File,
+                    }),
+                  )
+                }
+              />
               <img
                 className={styles["file-edit-icon"]}
                 src={addFolder}
                 alt=""
+                onClick={() =>
+                  dispatch(
+                    changeFileModalStatus({
+                      open: true,
+                      type: ActionTypeEnum.Create_Dir,
+                    }),
+                  )
+                }
               />
             </>
           )}
@@ -168,13 +176,27 @@ const Collapse: FC = () => {
               className={styles["file-edit-icon"]}
               src={addFile}
               alt=""
-              onClick={addFileHandle}
+              onClick={() =>
+                dispatch(
+                  changeFileModalStatus({
+                    open: true,
+                    type: ActionTypeEnum.Create_Root_File,
+                  }),
+                )
+              }
             />
             <img
               className={styles["file-edit-icon"]}
               src={addFolder}
               alt=""
-              onClick={addFolderHandle}
+              onClick={() =>
+                dispatch(
+                  changeFileModalStatus({
+                    open: true,
+                    type: ActionTypeEnum.Create_Root_Dir,
+                  }),
+                )
+              }
             />
           </div>
         </div>
