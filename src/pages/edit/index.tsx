@@ -15,8 +15,8 @@ import {
   WebContainerFileSystemTreeSavePoint,
   saveFileSystemTree,
   writeDirByLocal,
-} from "@/utils/webContainer";
-import { curDirectory } from "@/utils/getLocalDirectory";
+  curDirectory,
+} from "@/utils";
 import { LinkData } from "@/types";
 import { Preview } from "@/components/preview";
 import { changePreviewUrl } from "@/store/modules/home";

@@ -19,14 +19,13 @@ import addFolder from "@/assets/images/addFolder.svg";
 import editFile from "@/assets/images/editFile.svg";
 import deleteFile from "@/assets/images/deleteFile.svg";
 import { ActionTypeEnum } from "@/types";
-import { readFileSystem } from "@/utils/webContainer";
+import { readFileSystem, getNodePath } from "@/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   changePath,
   changeFileModalStatus,
   changeSelectedKey,
 } from "@/store/modules/code";
-import { getNodePath } from "@/utils/file";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
 import TreeDataContext from "@/context/tree-data";
 import WebContainerContext from "@/context/webContainer";

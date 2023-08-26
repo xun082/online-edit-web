@@ -3,7 +3,7 @@ import Editor, { loader } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 import { WebContainer } from "@webcontainer/api";
 
-import { readFile, writeFile } from "@/utils/webContainer";
+import { readFile, writeFile } from "@/utils";
 import WebContainerContext from "@/context/webContainer";
 
 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({

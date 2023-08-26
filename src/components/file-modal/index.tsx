@@ -8,7 +8,6 @@ import {
   changeFormatPathValue,
 } from "@/store/modules/code";
 import { ActionTypeEnumMap, ActionTypeEnum } from "@/types";
-import { getNodePath } from "@/utils/file";
 import {
   renameFile,
   rm,
@@ -16,7 +15,8 @@ import {
   createDir,
   createFile,
   saveFileSystemTree,
-} from "@/utils/webContainer";
+  getNodePath,
+} from "@/utils";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
 import TreeDataContext, { treeDataContextType } from "@/context/tree-data";
 import WebContainerContext from "@/context/webContainer";
