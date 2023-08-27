@@ -2,7 +2,7 @@ import React, { FC, useState, useLayoutEffect, useEffect } from "react";
 import { PanelGroup, Panel } from "react-resizable-panels";
 import { WebContainer } from "@webcontainer/api";
 import { v4 as uuid } from "uuid";
-import { Alert, Spin } from "antd";
+import { Spin } from "antd";
 
 import styles from "./index.module.scss";
 import { components, editorAside, ResizeHandle } from "./component";

@@ -30,7 +30,6 @@
     "@szhsin/react-menu": "^4.0.3",
     "@webcontainer/api": "^1.1.5",
     "antd": "^5.6.4",
-    "monaco-editor": "^0.41.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.1",
