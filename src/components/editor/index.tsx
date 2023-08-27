@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useContext } from "react";
 import Editor, { loader, useMonaco } from "@monaco-editor/react";
 import { WebContainer } from "@webcontainer/api";
 
-import { readFile, writeFile } from "@/utils";
+import { readFile, writeFile, getFileSuffix } from "@/utils";
 import WebContainerContext from "@/context/webContainer";
 
 interface ICodeEditorProps {
@@ -55,7 +55,7 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
   }, [monaco]);
 
   const language = useMemo(() => {
-    const stuff = filePath.slice(filePath.lastIndexOf(".") + 1) || "default";
+    const stuff = getFileSuffix(filePath) || "default";
 
     const languageMap: Record<string, string> = {
       js: "javascript",
@@ -65,8 +65,9 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
       tsx: "typescript",
       html: "html",
       json: "json",
-      md: "md",
+      md: "markdown",
       yaml: "yaml",
+      prettierrc: "json",
       default: "json",
     };
 
@@ -89,7 +90,7 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
         minimap: { enabled: true },
         fontSize: 16,
         wordWrap: "on", // 是否换行
-        cursorWidth: 50, // 光标宽度
+
       }}
       onChange={handleEditorChange}
     />
