@@ -126,7 +126,7 @@ const Edit: FC = () => {
               </Panel>
               <ResizeHandle />
               {/* 代码编辑栏 */}
-              <Panel minSize={1} defaultSize={previewSwitch !== true ? 50 : 85}>
+              <Panel minSize={1} defaultSize={previewSwitch === true ? 50 : 85}>
                 <PanelGroup direction="vertical">
                   <Panel collapsible={true}>
                     <div className={styles["edit-header"]}>1</div>
@@ -142,7 +142,7 @@ const Edit: FC = () => {
                   </Panel>
                 </PanelGroup>
               </Panel>
-              {previewSwitch !== true ? (
+              {previewSwitch === true ? (
                 <>
                   <ResizeHandle />
                   {/* 效果展示 */}

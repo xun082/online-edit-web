@@ -55,7 +55,7 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
   }, [monaco]);
 
   const language = useMemo(() => {
-    const stuff = filePath.split(".").pop() || "default";
+    const stuff = filePath.slice(filePath.lastIndexOf(".") + 1) || "default";
 
     const languageMap: Record<string, string> = {
       js: "javascript",
@@ -66,7 +66,8 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
       html: "html",
       json: "json",
       md: "md",
-      default: "javascript",
+      yaml: "yaml",
+      default: "json",
     };
 
     return languageMap[stuff];
