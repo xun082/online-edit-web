@@ -11,6 +11,7 @@ interface codeTypes {
   treeData: DataNode[];
   formatPath: string;
   selectedKey: string;
+  height: number; // 文件列表滚动高度
 }
 
 interface changeFileModalStatusTypes {
@@ -31,6 +32,7 @@ const initialState = {
   fileControlType: undefined,
   treeData: [],
   selectedKey: "",
+  height: 500,
 } as codeTypes;
 
 const codeSlice = createSlice({
@@ -80,6 +82,10 @@ const codeSlice = createSlice({
       const { payload } = action;
       state.selectedKey = payload;
     },
+    changeHight(state, action: PayloadAction<number>) {
+      const { payload } = action;
+      state.height = payload;
+    },
   },
   extraReducers: () => {},
 });
@@ -90,6 +96,7 @@ export const {
   changeTreeData,
   changeFormatPathValue,
   changeSelectedKey,
+  changeHight,
 } = codeSlice.actions;
 
 export default codeSlice.reducer;

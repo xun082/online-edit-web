@@ -7,6 +7,7 @@ import {
   CaretDownOutlined,
   FileOutlined,
   FolderOutlined,
+  RedoOutlined,
 } from "@ant-design/icons";
 import { WebContainer } from "@webcontainer/api";
 
@@ -34,7 +35,7 @@ import { fileTypeIconMap } from "@/common";
 const Collapse: FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
-  const { selectedKey } = useAppSelector(state => state.code);
+  const { selectedKey, height } = useAppSelector(state => state.code);
   const webcontainerInstance = useContext(WebContainerContext) as WebContainer;
 
   const dispatch = useAppDispatch();
@@ -181,6 +182,13 @@ const Collapse: FC = () => {
             <span>FILES</span>
           </div>
           <div className={styles["header-control"]}>
+            {/* TODO */}
+            <RedoOutlined
+              rev={undefined}
+              className={styles["file-edit-icon"]}
+              onClick={syncFileSystemToUI}
+              style={{ color: "white" }}
+            />
             <img
               className={styles["file-edit-icon"]}
               src={addFile}
@@ -213,13 +221,9 @@ const Collapse: FC = () => {
           style={panelContentAnimatedStyle}
           className={styles.content}
         >
-          <div
-            onClick={e => e.stopPropagation()}
-            ref={ref}
-            className={styles.contentInner}
-          >
+          <div onClick={e => e.stopPropagation()} ref={ref}>
             <Tree.DirectoryTree
-              height={700}
+              height={height}
               showIcon
               icon={({ isLeaf }: AntTreeNodeProps) =>
                 isLeaf ? (

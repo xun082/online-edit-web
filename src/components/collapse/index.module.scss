@@ -34,7 +34,6 @@
   .content {
     border-top: none;
     color: #000000;
-    overflow: hidden;
     .antd-tree {
       width: 100%;
       height: 100%;
@@ -71,6 +70,7 @@
 
 .file-edit-icon {
   margin-right: 8px;
+  cursor: pointer;
   &:nth-last-child(1) {
     margin: 0;
   }
