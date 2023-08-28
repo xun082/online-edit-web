@@ -34,7 +34,7 @@ import { fileTypeIconMap } from "@/common";
 const Collapse: FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
-  const { selectedKey, formatPath } = useAppSelector(state => state.code);
+  const { selectedKey } = useAppSelector(state => state.code);
   const webcontainerInstance = useContext(WebContainerContext) as WebContainer;
 
   const dispatch = useAppDispatch();
@@ -93,7 +93,6 @@ const Collapse: FC = () => {
                 ? fileTypeIconMap.get(getFileSuffix(node.title))
                 : fileTypeIconMap.get(getFileSuffix("dir"))
             }
-            className={styles["file-type-icon"]}
           ></img>
         ),
       };
@@ -220,6 +219,7 @@ const Collapse: FC = () => {
             className={styles.contentInner}
           >
             <Tree.DirectoryTree
+              height={700}
               showIcon
               icon={({ isLeaf }: AntTreeNodeProps) =>
                 isLeaf ? (
