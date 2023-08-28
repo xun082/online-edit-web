@@ -14,7 +14,6 @@ const fitAddon = new FitAddon();
 
 const webLinksAddon = new WebLinksAddon();
 const webglAddon = new WebglAddon();
-
 export function TerminalPanel() {
   const terminalRef = useRef<HTMLDivElement>(null);
   const webcontainerInstance = useContext(WebContainerContext);
@@ -27,7 +26,9 @@ export function TerminalPanel() {
             fontFamily: '"Cascadia Code", Menlo, monospace',
             convertEol: true,
             cursorBlink: true,
-            tabStopWidth: 2,
+            scrollback: 20,
+            scrollOnUserInput: true,
+            drawBoldTextInBrightColors:true
           });
 
           terminal.loadAddon(fitAddon);
@@ -44,7 +45,7 @@ export function TerminalPanel() {
           });
 
           window.addEventListener("resize", () => {
-            fitAddon.fit();
+            fitAddon.proposeDimensions()
             shell?.resize({
               cols: terminal.cols,
               rows: terminal.rows,
@@ -67,7 +68,6 @@ export function TerminalPanel() {
         }
       }
     }
-
     init();
   }, [webcontainerInstance]);
 

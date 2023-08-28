@@ -7,14 +7,14 @@
   &::-webkit-scrollbar {
     display: none;
   }
-  background: "#15181E";
+  background: "#000";
 }
-
 :global {
   .terminal {
     width: 100vw;
-    height: 100vh;
+    height: inherit;
     box-sizing: border-box;
+    padding: 10px;
   }
   .ant-tree-list-holder {
     &::-webkit-scrollbar {
