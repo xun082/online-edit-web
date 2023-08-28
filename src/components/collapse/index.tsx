@@ -19,7 +19,7 @@ import addFolder from "@/assets/images/addFolder.svg";
 import editFile from "@/assets/images/editFile.svg";
 import deleteFile from "@/assets/images/deleteFile.svg";
 import { ActionTypeEnum } from "@/types";
-import { readFileSystem, getNodePath } from "@/utils";
+import { readFileSystem, getNodePath, getFileSuffix } from "@/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   changePath,
@@ -29,11 +29,12 @@ import {
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
 import TreeDataContext from "@/context/tree-data";
 import WebContainerContext from "@/context/webContainer";
+import { fileTypeIconMap } from "@/common";
 
 const Collapse: FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
-  const { selectedKey } = useAppSelector(state => state.code);
+  const { selectedKey, formatPath } = useAppSelector(state => state.code);
   const webcontainerInstance = useContext(WebContainerContext) as WebContainer;
 
   const dispatch = useAppDispatch();
@@ -85,6 +86,16 @@ const Collapse: FC = () => {
         title: renderTitle(node.title as string, node.isLeaf as boolean),
         key: node.key,
         isLeaf: node.isLeaf,
+        icon: (
+          <img
+            src={
+              node.isLeaf
+                ? fileTypeIconMap.get(getFileSuffix(node.title))
+                : fileTypeIconMap.get(getFileSuffix("dir"))
+            }
+            className={styles["file-type-icon"]}
+          ></img>
+        ),
       };
 
       if (node.children) {

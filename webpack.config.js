@@ -1,5 +1,4 @@
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
-const isDevelopment = process.env.NODE_ENV === "development";
 
 const webpack = {
   plugins: [
@@ -60,31 +59,9 @@ const webpack = {
     headers: {
       "Cross-Origin-Embedder-Policy": "require-corp",
       "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Resource-Policy": "cross-origin",
     },
   },
 };
-
-if (isDevelopment) {
-  webpack.optimization = {
-    splitChunks: {
-      cacheGroups: {
-        reactMonacoEditor: {
-          test: /[\\/]node_modules[\\/]react-monaco-editor[\\/]/,
-          name: "react-monaco-editor",
-          chunks: "all",
-          minSize: 0,
-          minChunks: 1,
-        },
-        prettier: {
-          test: /[\\/]node_modules[\\/]prettier[\\/]/,
-          name: "prettier",
-          chunks: "all",
-          minSize: 0,
-          minChunks: 1,
-        },
-      },
-    },
-  };
-}
 
 module.exports = webpack;

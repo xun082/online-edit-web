@@ -76,6 +76,9 @@
   }
 }
 
+.file-type-icon {
+}
+
 :global {
   .ant-tree-title {
     flex-grow: 1;
@@ -88,5 +91,9 @@
 
   .ant-tree-treenode-selected::before {
     background: #0068b3 !important;
+  }
+  .ant-tree-iconEle {
+    display: flex!important;
+    align-items: center;
   }
 }
