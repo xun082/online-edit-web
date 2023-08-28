@@ -23,7 +23,7 @@ import { ActionTypeEnum } from "@/types";
 import { readFileSystem, getNodePath, getFileSuffix } from "@/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  changePath,
+  changeFileInfo,
   changeFileModalStatus,
   changeSelectedKey,
 } from "@/store/modules/code";
@@ -74,10 +74,16 @@ const Collapse: FC = () => {
 
   useEffect(() => {
     if (selectedNode) {
+      console.log(
+        "🚀 ~ file: index.tsx:77 ~ useEffect ~ selectedNode:",
+        selectedNode,
+      );
       const path = getNodePath(selectedNode.key as string, treeData);
-      dispatch(changePath(path));
+      dispatch(
+        changeFileInfo({ path, isLeaf: selectedNode.isLeaf as boolean }),
+      );
     } else {
-      dispatch(changePath(""));
+      dispatch(changeFileInfo({ path: "", isLeaf: false }));
     }
   }, [selectedNode]);
 

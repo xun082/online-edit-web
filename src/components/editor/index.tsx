@@ -24,8 +24,6 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
 
     if (filePath) {
       readFile2content();
-    } else {
-      setContent("");
     }
   }, [filePath]);
 
@@ -90,7 +88,6 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
         minimap: { enabled: true },
         fontSize: 16,
         wordWrap: "on", // 是否换行
-
       }}
       onChange={handleEditorChange}
     />

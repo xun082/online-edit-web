@@ -1,0 +1,24 @@
+.root {
+  height: 38px;
+  background-color: hsl(220 10% 14%);
+  display: flex;
+  justify-content: space-between;
+  .edit-header-left {
+    height: 100%;
+    width: auto;
+    .editor-tab {
+      background-color: hsl(220 18% 10%);
+      height: 100%;
+      width: auto;
+      color: #f0f0f0;
+      padding: 0 4px 0 10px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .edit-file-name {
+        margin: 0 10px;
+      }
+    }
+  }
+}

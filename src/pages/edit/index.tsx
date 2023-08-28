@@ -5,7 +5,7 @@ import { v4 as uuid } from "uuid";
 import { Spin } from "antd";
 
 import styles from "./index.module.scss";
-import { components, editorAside, ResizeHandle } from "./component";
+import { components, editorAside, ResizeHandle, EditHeader } from "./component";
 
 import { labelType } from "@/types";
 import Editor from "@/components/editor";
@@ -28,7 +28,7 @@ const Edit: FC = () => {
     src: "",
     uuid: "",
   }));
-  const { path } = useAppSelector(state => state.code);
+  const { path, isLeaf } = useAppSelector(state => state.code);
   const { previewSwitch } = useAppSelector(state => state.home);
 
   const dispatch = useAppDispatch();
@@ -128,9 +128,16 @@ const Edit: FC = () => {
               {/* 代码编辑栏 */}
               <Panel minSize={1} defaultSize={previewSwitch === true ? 50 : 85}>
                 <PanelGroup direction="vertical">
-                  <Panel collapsible={true}>
-                    <div className={styles["edit-header"]}>1</div>
-                    <Editor filePath={path} />
+                  <Panel
+                    collapsible={true}
+                    style={{ backgroundColor: "hsl(220 10% 14%)" }}
+                  >
+                    {path && isLeaf && (
+                      <>
+                        <EditHeader />
+                        <Editor filePath={path} />
+                      </>
+                    )}
                   </Panel>
                   <ResizeHandle direction="vertical" />
                   <Panel

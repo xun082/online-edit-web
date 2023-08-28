@@ -11,12 +11,18 @@ interface codeTypes {
   treeData: DataNode[];
   formatPath: string;
   selectedKey: string;
+  isLeaf: boolean;
   height: number; // 文件列表滚动高度
 }
 
 interface changeFileModalStatusTypes {
   open: boolean;
   type?: ActionTypeEnum;
+}
+
+interface changeFileInfoTypes {
+  path: string;
+  isLeaf: boolean;
 }
 
 interface changeTreeDataTypes {
@@ -32,6 +38,7 @@ const initialState = {
   fileControlType: undefined,
   treeData: [],
   selectedKey: "",
+  isLeaf: false,
   height: 500,
 } as codeTypes;
 
@@ -39,11 +46,12 @@ const codeSlice = createSlice({
   name: "code",
   initialState,
   reducers: {
-    changePath(state, action): void {
+    changeFileInfo(state, action: PayloadAction<changeFileInfoTypes>): void {
       const { payload } = action;
 
-      state.path = payload;
-      state.formatPath = routerFormat(payload);
+      state.path = payload.path;
+      state.isLeaf = payload.isLeaf;
+      state.formatPath = routerFormat(payload.path);
     },
     changeFormatPathValue(state, action): void {
       const { payload } = action;
@@ -91,7 +99,7 @@ const codeSlice = createSlice({
 });
 
 export const {
-  changePath,
+  changeFileInfo,
   changeFileModalStatus,
   changeTreeData,
   changeFormatPathValue,
