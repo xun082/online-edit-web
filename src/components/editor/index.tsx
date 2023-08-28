@@ -1,6 +1,18 @@
-import React, { useEffect, useMemo, useState, useContext } from "react";
-import Editor, { loader, useMonaco } from "@monaco-editor/react";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useContext,
+  useCallback,
+} from "react";
+import Editor, { Monaco, loader } from "@monaco-editor/react";
 import { WebContainer } from "@webcontainer/api";
+import {
+  MonacoJsxSyntaxHighlight,
+  getWorker,
+} from "monaco-jsx-syntax-highlight";
+
+import "./index.scss";
 
 import { readFile, writeFile, getFileSuffix } from "@/utils";
 import WebContainerContext from "@/context/webContainer";
@@ -12,8 +24,6 @@ interface ICodeEditorProps {
 export default function CodeEditor({ filePath }: ICodeEditorProps) {
   const [content, setContent] = useState("");
   const webcontainerInstance = useContext(WebContainerContext) as WebContainer;
-
-  const monaco = useMonaco();
 
   useEffect(() => {
     async function readFile2content() {
@@ -27,30 +37,43 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
     }
   }, [filePath]);
 
-  useEffect(() => {
-    if (monaco) {
-      monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-        ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
-        module: monaco.languages.typescript.ModuleKind.ESNext,
-        target: monaco.languages.typescript.ScriptTarget.ESNext,
-        moduleResolution:
-          monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-        isolatedModules: true,
-        allowJs: true,
-        strict: true,
-        skipLibCheck: true,
-        jsx: monaco.languages.typescript.JsxEmit.React,
-      });
-      monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
-      monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-        noSuggestionDiagnostics: true,
-      });
+  const handleEditorDidMount = useCallback((editor: any, monaco: Monaco) => {
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
+      module: monaco.languages.typescript.ModuleKind.ESNext,
+      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      isolatedModules: true,
+      allowJs: true,
+      strict: true,
+      skipLibCheck: true,
+      jsx: monaco.languages.typescript.JsxEmit.Preserve,
+      target: monaco.languages.typescript.ScriptTarget.ES2020,
+      esModuleInterop: true,
+    });
 
-      loader.config({ monaco });
+    loader.config({ monaco });
 
-      loader.init().then(/* ... */);
-    }
-  }, [monaco]);
+    loader.init().then(/* ... */);
+
+    const monacoJsxSyntaxHighlight = new MonacoJsxSyntaxHighlight(
+      getWorker(),
+      monaco,
+    );
+
+    const { highlighter, dispose } =
+      monacoJsxSyntaxHighlight.highlighterBuilder({
+        editor: editor,
+      });
+    // init highlight
+    highlighter();
+
+    editor.onDidChangeModelContent(() => {
+      // content change, highlight
+      highlighter();
+    });
+
+    return dispose;
+  }, []);
 
   const language = useMemo(() => {
     const stuff = getFileSuffix(filePath) || "default";
@@ -81,6 +104,7 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
 
   return (
     <Editor
+      className={"editor"}
       theme="vs-dark"
       language={language}
       value={content}
@@ -88,8 +112,10 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
         minimap: { enabled: true },
         fontSize: 16,
         wordWrap: "on", // 是否换行
+        automaticLayout: true,
       }}
       onChange={handleEditorChange}
+      onMount={handleEditorDidMount}
     />
   );
 }
