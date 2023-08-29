@@ -118,27 +118,29 @@ const Collapse: FC = () => {
                 className={styles["file-edit-icon"]}
                 src={addFile}
                 alt=""
-                onClick={() =>
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.stopPropagation();
                   dispatch(
                     changeFileModalStatus({
                       open: true,
                       type: ActionTypeEnum.Create_File,
                     }),
-                  )
-                }
+                  );
+                }}
               />
               <img
                 className={styles["file-edit-icon"]}
                 src={addFolder}
                 alt=""
-                onClick={() =>
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.stopPropagation();
                   dispatch(
                     changeFileModalStatus({
                       open: true,
                       type: ActionTypeEnum.Create_Dir,
                     }),
-                  )
-                }
+                  );
+                }}
               />
             </>
           )}
@@ -146,27 +148,29 @@ const Collapse: FC = () => {
             className={styles["file-edit-icon"]}
             src={editFile}
             alt=""
-            onClick={() =>
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+              e.stopPropagation();
               dispatch(
                 changeFileModalStatus({
                   open: true,
                   type: ActionTypeEnum.Rename,
                 }),
-              )
-            }
+              );
+            }}
           />
           <img
             className={styles["file-edit-icon"]}
             src={deleteFile}
             alt=""
-            onClick={() =>
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+              e.stopPropagation();
               dispatch(
                 changeFileModalStatus({
                   open: true,
                   type: ActionTypeEnum.Del,
                 }),
-              )
-            }
+              );
+            }}
           />
         </div>
       </div>
