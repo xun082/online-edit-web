@@ -53,7 +53,7 @@ const Collapse: FC = () => {
   });
 
   const toggleWrapperAnimatedStyle = useSpring({
-    transform: isCollapsed ? "rotate(0deg)" : "rotate(180deg)",
+    transform: isCollapsed ? "rotate(-90deg)" : "rotate(0deg)",
   });
 
   const syncFileSystemToUI = async () => {
