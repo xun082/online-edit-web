@@ -37,6 +37,36 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
     }
   }, [filePath]);
 
+  useEffect(() => {
+    const handleKeyDown = async (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+        event.preventDefault();
+        if (!content) return;
+
+        const worker = new Worker(new URL("./worker.ts", import.meta.url), {
+          type: "module",
+        });
+
+        worker.onmessage = event => {
+          if (event.data.error) {
+            console.error(event.data.error);
+          } else {
+            setContent(event.data);
+          }
+          worker.terminate();
+        };
+
+        worker.postMessage({ content: content, type: getFileSuffix(filePath) });
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [content]);
+
   const handleEditorDidMount = useCallback((editor: any, monaco: Monaco) => {
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
       ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),

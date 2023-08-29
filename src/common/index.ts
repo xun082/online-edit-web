@@ -19,6 +19,9 @@ import prettier from "@/assets/images/file/prettier.svg";
 import yaml from "@/assets/images/file/yaml.svg";
 import eslint from "@/assets/images/file/eslint.svg";
 import image from "@/assets/images/file/image.svg";
+import scss from "@/assets/images/file/scss.svg";
+import less from "@/assets/images/file/less.svg";
+import vue from "@/assets/images/file/vue.svg";
 
 interface TemplateType {
   src: string;
@@ -77,6 +80,9 @@ export const fileTypeIconMap: Map<string, string> = new Map([
   ["html", html],
   ["gitignore", git],
   ["css", css],
+  ["scss", scss],
+  ["less", less],
+  ["vue", vue],
   ["dir", fileDir],
   ["prettierignore", prettier],
   ["prettierrc", prettier],
