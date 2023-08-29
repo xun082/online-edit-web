@@ -81,6 +81,7 @@ $borderColor: #4a515a;
   left: 0;
   .module {
     width: 75%;
+    min-width: 440px;
     height: 100%;
     background-color: #1d2531;
     margin: 0 auto;
@@ -112,8 +113,10 @@ $borderColor: #4a515a;
 
         .create-new-snippet-type {
           padding: 28px 40px 0px 36px;
+          width: 100%;
+          box-sizing: border-box;
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(auto-fill, minmax(201px, 1fr));
           grid-row-gap: 23.5px;
         }
       }
