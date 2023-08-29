@@ -7,7 +7,11 @@ import {
   changeFileModalStatus,
   changeFormatPathValue,
 } from "@/store/modules/code";
-import { ActionTypeEnumMap, ActionTypeEnum } from "@/types";
+import {
+  ActionTypeEnumMap,
+  ActionTypeEnum,
+  treeDataContextType,
+} from "@/types";
 import {
   renameFile,
   rm,
@@ -18,8 +22,8 @@ import {
   getNodePath,
 } from "@/utils";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
-import TreeDataContext, { treeDataContextType } from "@/context/tree-data";
-import WebContainerContext from "@/context/webContainer";
+import TreeDataContext from "@/context/treeData";
+import { WebContainerContext } from "@/context";
 
 const FileEditorModal: React.FC = () => {
   const { fileModalIsOpen, fileControlType, formatPath, selectedKey } =

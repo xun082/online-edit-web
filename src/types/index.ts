@@ -1,3 +1,6 @@
+import React from "react";
+import type { DataNode } from "antd/es/tree";
+
 /* eslint-disable no-unused-vars */
 export type languageType = "html" | "css" | "javascript";
 export type labelType = "search" | "setting" | "file" | "port";
@@ -27,3 +30,13 @@ export const ActionTypeEnumMap = new Map([
   [ActionTypeEnum.Create_Root_Dir, "创建根文件夹"],
   [ActionTypeEnum.Create_Root_File, "创建根文件"],
 ]);
+
+export interface actionIconContextType {
+  activeIconType: labelType;
+  setActiveIconType: React.Dispatch<React.SetStateAction<labelType>>;
+}
+
+export interface treeDataContextType {
+  treeData: DataNode[];
+  setTreeData: React.Dispatch<React.SetStateAction<DataNode[]>>;
+}

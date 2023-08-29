@@ -5,10 +5,8 @@ import { editorAsideTop } from "../edit-aside";
 
 import styles from "./index.module.scss";
 
-import { labelType } from "@/types";
-import ActionIconTypeContext, {
-  actionIconContextType,
-} from "@/context/setActionIcon";
+import { labelType, actionIconContextType } from "@/types";
+import ActionIconTypeContext from "@/context/setActionIcon";
 
 const EditorNav: FC = () => {
   const { activeIconType, setActiveIconType } = useContext(

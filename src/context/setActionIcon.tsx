@@ -1,11 +1,6 @@
-import React, { createContext } from "react";
+import { createContext } from "react";
 
-import { labelType } from "@/types";
-
-export interface actionIconContextType {
-  activeIconType: labelType;
-  setActiveIconType: React.Dispatch<React.SetStateAction<labelType>>;
-}
+import { actionIconContextType } from "@/types";
 
 const ActionIconTypeContext = createContext<actionIconContextType | undefined>(
   undefined,
