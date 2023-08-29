@@ -13,7 +13,7 @@ interface editorAsideType {
   label: labelType;
 }
 
-export const editorAside: Array<editorAsideType> = [
+export const editorAsideTop: Array<editorAsideType> = [
   {
     icon: <SnippetsOutlined rev={undefined} />,
     label: "file",

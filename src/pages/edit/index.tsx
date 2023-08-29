@@ -5,29 +5,30 @@ import { v4 as uuid } from "uuid";
 import { Spin } from "antd";
 
 import styles from "./index.module.scss";
-import { components, editorAside, ResizeHandle, EditHeader } from "./component";
+import { components, EditorNav, ResizeHandle, EditHeader } from "./component";
 
-import { labelType } from "@/types";
 import Editor from "@/components/editor";
 import { TerminalPanel } from "@/components/terminal";
 import { useAppSelector, useAppDispatch } from "@/store";
 import WebContainerContext from "@/context/webContainer";
+import ActionIconTypeContext from "@/context/setActionIcon";
 import {
   WebContainerFileSystemTreeSavePoint,
   saveFileSystemTree,
   writeDirByLocal,
   curDirectory,
 } from "@/utils";
-import { LinkData } from "@/types";
+import { LinkData, labelType } from "@/types";
 import { Preview } from "@/components/preview";
 import { changePreviewUrl } from "@/store/modules/home";
 
 const Edit: FC = () => {
-  const [activeIcon, setActiveIcon] = useState<labelType>("file");
   const [linkData, setLinkData] = useState<LinkData>(() => ({
     src: "",
     uuid: "",
   }));
+  const [activeIcon, setActiveIcon] = useState<labelType>("file");
+
   const { path, isLeaf } = useAppSelector(state => state.code);
   const { previewSwitch } = useAppSelector(state => state.home);
 
@@ -86,10 +87,6 @@ const Edit: FC = () => {
     }
   }, [webContainerInstance]);
 
-  const handleIconClick = (label: labelType) => {
-    setActiveIcon(label);
-  };
-
   const Component = components[activeIcon];
 
   return (
@@ -98,22 +95,15 @@ const Edit: FC = () => {
         value={webContainerInstance && webContainerInstance}
       >
         <main className={styles["root"]}>
-          <nav className={styles["edit-nav"]}>
-            {editorAside.map(({ icon, label }) => (
-              <div
-                className={styles["aside-button"]}
-                key={label}
-                onClick={() => handleIconClick(label)}
-              >
-                {React.cloneElement(icon, {
-                  style: {
-                    fontSize: "24px",
-                    color: activeIcon === label ? "#f0f0f0" : "#828388",
-                  },
-                })}
-              </div>
-            ))}
-          </nav>
+          <ActionIconTypeContext.Provider
+            value={{
+              activeIconType: activeIcon,
+              setActiveIconType: setActiveIcon,
+            }}
+          >
+            <EditorNav />
+          </ActionIconTypeContext.Provider>
+
           <section className={styles["edit-content"]}>
             <PanelGroup direction="horizontal">
               {/* 文件栏 */}

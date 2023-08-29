@@ -1,0 +1,36 @@
+.root {
+  width: 48px;
+  height: 100%;
+  background-color: hsl(220 10% 20%);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  .edit-nav-top {
+    .aside-button {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .img {
+        width: 24px;
+        height: 24px;
+        background-color: #77787d;
+      }
+    }
+  }
+  .edit-nav-button {
+    padding-bottom: 20px;
+    box-sizing: border-box;
+    .github-icon {
+      font-size: 24px;
+      cursor: pointer;
+      color: #828388;
+      &:hover {
+        color: #f0f0f0;
+      }
+    }
+  }
+}

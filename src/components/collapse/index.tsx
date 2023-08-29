@@ -34,6 +34,7 @@ import { fileTypeIconMap } from "@/common";
 
 const Collapse: FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  console.log("🚀 ~ file: index.tsx:37 ~ isCollapsed:", isCollapsed);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const { selectedKey, height } = useAppSelector(state => state.code);
   const webcontainerInstance = useContext(WebContainerContext) as WebContainer;
