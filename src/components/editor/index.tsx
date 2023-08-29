@@ -14,15 +14,22 @@ import {
 
 import "./index.scss";
 
-import { readFile, writeFile, getFileSuffix } from "@/utils";
-import WebContainerContext from "@/context/webContainer";
+import {
+  readFile,
+  writeFile,
+  getFileSuffix,
+  PRETTIER_FORMAT_PATH,
+  saveFileSystemTree,
+} from "@/utils";
+import { WebContainerContext } from "@/context";
 
 interface ICodeEditorProps {
   filePath: string;
 }
 
 export default function CodeEditor({ filePath }: ICodeEditorProps) {
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState<string>("");
+
   const webcontainerInstance = useContext(WebContainerContext) as WebContainer;
 
   useEffect(() => {
@@ -41,7 +48,12 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
     const handleKeyDown = async (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "s") {
         event.preventDefault();
+
         if (!content) return;
+
+        const path = localStorage.getItem(PRETTIER_FORMAT_PATH) as string;
+        const result = await readFile(path, webcontainerInstance);
+        const prettierFileContent = JSON.parse(result);
 
         const worker = new Worker(new URL("./worker.ts", import.meta.url), {
           type: "module",
@@ -52,11 +64,17 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
             console.error(event.data.error);
           } else {
             setContent(event.data);
+            writeFile(filePath, event.data, webcontainerInstance);
+            saveFileSystemTree(webcontainerInstance);
           }
           worker.terminate();
         };
 
-        worker.postMessage({ content: content, type: getFileSuffix(filePath) });
+        worker.postMessage({
+          content: content,
+          type: getFileSuffix(filePath),
+          prettierConfig: prettierFileContent ? prettierFileContent : {},
+        });
       }
     };
 

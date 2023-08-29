@@ -6,7 +6,7 @@ import parserYaml from "prettier/parser-yaml";
 import parserCss from "prettier/parser-postcss";
 
 self.onmessage = event => {
-  const { content, type } = event.data;
+  const { content, type, prettierConfig } = event.data;
 
   async function codeFormatting() {
     let parserPlugin;
@@ -53,6 +53,7 @@ self.onmessage = event => {
       plugins: [parserPlugin],
       vueIndentScriptAndStyle: true,
       printWidth: 100,
+      ...prettierConfig,
     });
 
     self.postMessage(formattedCode);

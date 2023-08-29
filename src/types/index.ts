@@ -40,3 +40,10 @@ export interface treeDataContextType {
   treeData: DataNode[];
   setTreeData: React.Dispatch<React.SetStateAction<DataNode[]>>;
 }
+
+export type prettierFileNameType =
+  | ".prettierrc"
+  | ".prettierrc.js"
+  | "prettier.config.js"
+  | ".prettierrc.json"
+  | ".prettierrc.yml";
