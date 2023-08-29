@@ -1,6 +1,7 @@
 import React, { FC, memo, useState, ChangeEvent, useEffect } from "react";
 import { UndoOutlined, LockOutlined } from "@ant-design/icons";
 import { Input } from "antd";
+import { v4 as uniqueKey } from "uuid";
 
 import styles from "./index.module.scss";
 
@@ -15,6 +16,7 @@ export const Preview: FC<PreviewProps> = memo(function Preview({ data }) {
   const { uuid, src } = data;
 
   const [iframeUrl, setIframeUrl] = useState<string>("");
+  const [id, setId] = useState<string>(uuid);
 
   useEffect(() => {
     setIframeUrl(src);
@@ -27,7 +29,11 @@ export const Preview: FC<PreviewProps> = memo(function Preview({ data }) {
   return (
     <main className={styles["root"]}>
       <header className={styles["iframe-header"]}>
-        <UndoOutlined rev={undefined} className={styles["iframe-refresh"]} />
+        <UndoOutlined
+          rev={undefined}
+          className={styles["iframe-refresh"]}
+          onClick={() => setId(uniqueKey())}
+        />
         <Input
           prefix={<LockOutlined className="site-form-item-icon" />}
           type="type"
@@ -41,7 +47,7 @@ export const Preview: FC<PreviewProps> = memo(function Preview({ data }) {
         width="100%"
         height="100%"
         src={iframeUrl}
-        key={uuid}
+        key={id}
       ></iframe>
       ;
     </main>
