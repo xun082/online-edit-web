@@ -1,14 +1,9 @@
-import React, { FC, useEffect, useState, useContext } from "react";
+import React, { FC, useEffect, useState, useContext, MouseEvent } from "react";
 import { useSpring, animated } from "react-spring";
 import useMeasure from "react-use-measure";
 import { Tree } from "antd";
 import type { DataNode, AntTreeNodeProps } from "antd/es/tree";
-import {
-  CaretDownOutlined,
-  FileOutlined,
-  FolderOutlined,
-  RedoOutlined,
-} from "@ant-design/icons";
+import { CaretDownOutlined, FileOutlined, FolderOutlined, RedoOutlined } from "@ant-design/icons";
 import { WebContainer } from "@webcontainer/api";
 
 import FileEditorModal from "../file-modal";
@@ -22,11 +17,7 @@ import deleteFile from "@/assets/images/deleteFile.svg";
 import { ActionTypeEnum } from "@/types";
 import { readFileSystem, getNodePath, getFileSuffix } from "@/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  changeFileInfo,
-  changeFileModalStatus,
-  changeSelectedKey,
-} from "@/store/modules/code";
+import { changeFileInfo, changeFileModalStatus, changeSelectedKey } from "@/store/modules/code";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
 import TreeDataContext from "@/context/tree-data";
 import WebContainerContext from "@/context/webContainer";
@@ -42,7 +33,7 @@ const Collapse: FC = () => {
 
   const [ref, bounds] = useMeasure();
 
-  const togglePanel = (e: React.MouseEvent<HTMLDivElement>) => {
+  const togglePanel = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
     setIsCollapsed(prevState => !prevState);
@@ -75,13 +66,21 @@ const Collapse: FC = () => {
   useEffect(() => {
     if (selectedNode) {
       const path = getNodePath(selectedNode.key as string, treeData);
-      dispatch(
-        changeFileInfo({ path, isLeaf: selectedNode.isLeaf as boolean }),
-      );
+      dispatch(changeFileInfo({ path, isLeaf: selectedNode.isLeaf as boolean }));
     } else {
       dispatch(changeFileInfo({ path: "", isLeaf: false }));
     }
   }, [selectedNode]);
+
+  const fileControlHandle = (e: MouseEvent<HTMLDivElement>, type: ActionTypeEnum) => {
+    e.stopPropagation();
+    dispatch(
+      changeFileModalStatus({
+        open: true,
+        type,
+      }),
+    );
+  };
 
   const generateTreeNodes = (data: DataNode[]): DataNode[] => {
     return data.map(node => {
@@ -92,9 +91,7 @@ const Collapse: FC = () => {
         icon: (
           <img
             src={
-              node.isLeaf
-                ? fileTypeIconMap.get(getFileSuffix(node.title))
-                : fileTypeIconMap.get(getFileSuffix("dir"))
+              node.isLeaf ? fileTypeIconMap.get(getFileSuffix(node.title)) : fileTypeIconMap.get(getFileSuffix("dir"))
             }
           ></img>
         ),
@@ -117,60 +114,24 @@ const Collapse: FC = () => {
               <img
                 className={styles["file-edit-icon"]}
                 src={addFile}
-                alt=""
-                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                  e.stopPropagation();
-                  dispatch(
-                    changeFileModalStatus({
-                      open: true,
-                      type: ActionTypeEnum.Create_File,
-                    }),
-                  );
-                }}
+                onClick={(e: MouseEvent<HTMLDivElement>) => fileControlHandle(e, ActionTypeEnum.Create_File)}
               />
               <img
                 className={styles["file-edit-icon"]}
                 src={addFolder}
-                alt=""
-                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                  e.stopPropagation();
-                  dispatch(
-                    changeFileModalStatus({
-                      open: true,
-                      type: ActionTypeEnum.Create_Dir,
-                    }),
-                  );
-                }}
+                onClick={(e: MouseEvent<HTMLDivElement>) => fileControlHandle(e, ActionTypeEnum.Create_Dir)}
               />
             </>
           )}
           <img
             className={styles["file-edit-icon"]}
             src={editFile}
-            alt=""
-            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-              e.stopPropagation();
-              dispatch(
-                changeFileModalStatus({
-                  open: true,
-                  type: ActionTypeEnum.Rename,
-                }),
-              );
-            }}
+            onClick={(e: MouseEvent<HTMLDivElement>) => fileControlHandle(e, ActionTypeEnum.Rename)}
           />
           <img
             className={styles["file-edit-icon"]}
             src={deleteFile}
-            alt=""
-            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-              e.stopPropagation();
-              dispatch(
-                changeFileModalStatus({
-                  open: true,
-                  type: ActionTypeEnum.Del,
-                }),
-              );
-            }}
+            onClick={(e: MouseEvent<HTMLDivElement>) => fileControlHandle(e, ActionTypeEnum.Del)}
           />
         </div>
       </div>
@@ -198,45 +159,22 @@ const Collapse: FC = () => {
             <img
               className={styles["file-edit-icon"]}
               src={addFile}
-              alt=""
-              onClick={() =>
-                dispatch(
-                  changeFileModalStatus({
-                    open: true,
-                    type: ActionTypeEnum.Create_Root_File,
-                  }),
-                )
-              }
+              onClick={(e: MouseEvent<HTMLDivElement>) => fileControlHandle(e, ActionTypeEnum.Create_Root_File)}
             />
             <img
               className={styles["file-edit-icon"]}
               src={addFolder}
-              alt=""
-              onClick={() =>
-                dispatch(
-                  changeFileModalStatus({
-                    open: true,
-                    type: ActionTypeEnum.Create_Root_Dir,
-                  }),
-                )
-              }
+              onClick={(e: MouseEvent<HTMLDivElement>) => fileControlHandle(e, ActionTypeEnum.Create_Root_Dir)}
             />
           </div>
         </div>
-        <animated.div
-          style={panelContentAnimatedStyle}
-          className={styles.content}
-        >
+        <animated.div style={panelContentAnimatedStyle} className={styles.content}>
           <div onClick={e => e.stopPropagation()} ref={ref}>
             <Tree.DirectoryTree
               height={height}
               showIcon
               icon={({ isLeaf }: AntTreeNodeProps) =>
-                isLeaf ? (
-                  <FileOutlined rev={undefined} />
-                ) : (
-                  <FolderOutlined rev={undefined} />
-                )
+                isLeaf ? <FileOutlined rev={undefined} /> : <FolderOutlined rev={undefined} />
               }
               treeData={generateTreeNodes(treeData)}
               selectedKeys={[selectedKey]}
