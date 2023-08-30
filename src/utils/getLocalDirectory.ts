@@ -71,8 +71,10 @@ export const directoryDataFormatter = async <
   };
 
   if (
-    directoryHandler.kind === "directory" &&
-    directoryHandler.name !== "node_modules"
+    (directoryHandler.kind === "directory" &&
+      directoryHandler.name !== "node_modules") ||
+    (directoryHandler.kind === "directory" &&
+      directoryHandler.name !== "node_modules")
   ) {
     obj.children = children;
   } else if (directoryHandler.kind === "file") {
@@ -93,7 +95,10 @@ export const getDirectoryHandlerDeep = async (
 
   const children = [];
   for await (const handler of directoryHandler.values()) {
-    if (handler.kind === "directory" && handler.name === "node_modules") {
+    if (
+      (handler.kind === "directory" && handler.name === "node_modules") ||
+      (handler.kind === "directory" && handler.name === ".git")
+    ) {
       continue;
     }
 

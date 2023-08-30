@@ -1,0 +1,58 @@
+@import "../../../../assets/styles/var.scss";
+
+.title {
+  height: 30px;
+  width: 100%;
+  background-color: $editor-nav-background;
+  color: $editor-nav-color;
+  line-height: 30px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.root {
+  width: 100%;
+  height: 100%;
+  .switch-prettier-format {
+    height: auto;
+    width: 100%;
+    .format-title {
+      @extend .title;
+    }
+    .content {
+      background-color: $editor-nav-background;
+      overflow: hidden;
+      .file-path-control {
+        display: flex;
+        justify-content: space-between;
+        .path-input {
+          background-color: $editor-nav-background;
+          color: $editor-nav-color;
+          border-radius: 0;
+          &::placeholder {
+            color: $editor-nav-color;
+          }
+        }
+        .path-confirm {
+          display: flex;
+          align-items: center;
+          padding-right: 8px;
+          box-sizing: border-box;
+          .path-control {
+            cursor: pointer;
+            color: #a7a8ab;
+            &:nth-child(1) {
+              margin-right: 8px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .global-format-title {
+    @extend .title;
+    margin-top: 10px;
+  }
+}

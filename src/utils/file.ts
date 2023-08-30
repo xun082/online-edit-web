@@ -36,3 +36,7 @@ export const routerFormat = (path: string): string => {
   const newPath = pathArray[pathArray.length - 1];
   return newPath;
 };
+
+export const getFileSuffix = (fileName: any) => {
+  return fileName.slice(fileName.lastIndexOf(".") + 1) || fileName;
+};

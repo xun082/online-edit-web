@@ -16,4 +16,9 @@
     box-sizing: border-box;
     padding: 10px;
   }
+  .ant-tree-list-holder {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useContext } from "react";
+import React, { FC, useEffect, useState, useContext, MouseEvent } from "react";
 import { useSpring, animated } from "react-spring";
 import useMeasure from "react-use-measure";
 import { Tree } from "antd";
@@ -7,6 +7,7 @@ import {
   CaretDownOutlined,
   FileOutlined,
   FolderOutlined,
+  RedoOutlined,
 } from "@ant-design/icons";
 import { WebContainer } from "@webcontainer/api";
 
@@ -19,29 +20,28 @@ import addFolder from "@/assets/images/addFolder.svg";
 import editFile from "@/assets/images/editFile.svg";
 import deleteFile from "@/assets/images/deleteFile.svg";
 import { ActionTypeEnum } from "@/types";
-import { readFileSystem } from "@/utils/webContainer";
+import { readFileSystem, getNodePath, getFileSuffix } from "@/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  changePath,
+  changeFileInfo,
   changeFileModalStatus,
   changeSelectedKey,
 } from "@/store/modules/code";
-import { getNodePath } from "@/utils/file";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
-import TreeDataContext from "@/context/tree-data";
-import WebContainerContext from "@/context/webContainer";
+import { TreeDataContext, WebContainerContext } from "@/context";
+import { fileTypeIconMap } from "@/common";
 
 const Collapse: FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
-  const { selectedKey } = useAppSelector(state => state.code);
+  const { selectedKey, height } = useAppSelector(state => state.code);
   const webcontainerInstance = useContext(WebContainerContext) as WebContainer;
 
   const dispatch = useAppDispatch();
 
   const [ref, bounds] = useMeasure();
 
-  const togglePanel = (e: React.MouseEvent<HTMLDivElement>) => {
+  const togglePanel = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
     setIsCollapsed(prevState => !prevState);
@@ -52,7 +52,7 @@ const Collapse: FC = () => {
   });
 
   const toggleWrapperAnimatedStyle = useSpring({
-    transform: isCollapsed ? "rotate(0deg)" : "rotate(180deg)",
+    transform: isCollapsed ? "rotate(-90deg)" : "rotate(0deg)",
   });
 
   const syncFileSystemToUI = async () => {
@@ -74,11 +74,26 @@ const Collapse: FC = () => {
   useEffect(() => {
     if (selectedNode) {
       const path = getNodePath(selectedNode.key as string, treeData);
-      dispatch(changePath(path));
+      dispatch(
+        changeFileInfo({ path, isLeaf: selectedNode.isLeaf as boolean }),
+      );
     } else {
-      dispatch(changePath(""));
+      dispatch(changeFileInfo({ path: "", isLeaf: false }));
     }
   }, [selectedNode]);
+
+  const fileControlHandle = (
+    e: MouseEvent<HTMLDivElement>,
+    type: ActionTypeEnum,
+  ) => {
+    e.stopPropagation();
+    dispatch(
+      changeFileModalStatus({
+        open: true,
+        type,
+      }),
+    );
+  };
 
   const generateTreeNodes = (data: DataNode[]): DataNode[] => {
     return data.map(node => {
@@ -86,6 +101,15 @@ const Collapse: FC = () => {
         title: renderTitle(node.title as string, node.isLeaf as boolean),
         key: node.key,
         isLeaf: node.isLeaf,
+        icon: (
+          <img
+            src={
+              node.isLeaf
+                ? fileTypeIconMap.get(getFileSuffix(node.title))
+                : fileTypeIconMap.get(getFileSuffix("dir"))
+            }
+          ></img>
+        ),
       };
 
       if (node.children) {
@@ -105,27 +129,15 @@ const Collapse: FC = () => {
               <img
                 className={styles["file-edit-icon"]}
                 src={addFile}
-                alt=""
-                onClick={() =>
-                  dispatch(
-                    changeFileModalStatus({
-                      open: true,
-                      type: ActionTypeEnum.Create_File,
-                    }),
-                  )
+                onClick={(e: MouseEvent<HTMLDivElement>) =>
+                  fileControlHandle(e, ActionTypeEnum.Create_File)
                 }
               />
               <img
                 className={styles["file-edit-icon"]}
                 src={addFolder}
-                alt=""
-                onClick={() =>
-                  dispatch(
-                    changeFileModalStatus({
-                      open: true,
-                      type: ActionTypeEnum.Create_Dir,
-                    }),
-                  )
+                onClick={(e: MouseEvent<HTMLDivElement>) =>
+                  fileControlHandle(e, ActionTypeEnum.Create_Dir)
                 }
               />
             </>
@@ -133,27 +145,15 @@ const Collapse: FC = () => {
           <img
             className={styles["file-edit-icon"]}
             src={editFile}
-            alt=""
-            onClick={() =>
-              dispatch(
-                changeFileModalStatus({
-                  open: true,
-                  type: ActionTypeEnum.Rename,
-                }),
-              )
+            onClick={(e: MouseEvent<HTMLDivElement>) =>
+              fileControlHandle(e, ActionTypeEnum.Rename)
             }
           />
           <img
             className={styles["file-edit-icon"]}
             src={deleteFile}
-            alt=""
-            onClick={() =>
-              dispatch(
-                changeFileModalStatus({
-                  open: true,
-                  type: ActionTypeEnum.Del,
-                }),
-              )
+            onClick={(e: MouseEvent<HTMLDivElement>) =>
+              fileControlHandle(e, ActionTypeEnum.Del)
             }
           />
         </div>
@@ -172,30 +172,25 @@ const Collapse: FC = () => {
             <span>FILES</span>
           </div>
           <div className={styles["header-control"]}>
+            {/* TODO */}
+            <RedoOutlined
+              rev={undefined}
+              className={styles["file-edit-icon"]}
+              onClick={syncFileSystemToUI}
+              style={{ color: "white" }}
+            />
             <img
               className={styles["file-edit-icon"]}
               src={addFile}
-              alt=""
-              onClick={() =>
-                dispatch(
-                  changeFileModalStatus({
-                    open: true,
-                    type: ActionTypeEnum.Create_Root_File,
-                  }),
-                )
+              onClick={(e: MouseEvent<HTMLDivElement>) =>
+                fileControlHandle(e, ActionTypeEnum.Create_Root_File)
               }
             />
             <img
               className={styles["file-edit-icon"]}
               src={addFolder}
-              alt=""
-              onClick={() =>
-                dispatch(
-                  changeFileModalStatus({
-                    open: true,
-                    type: ActionTypeEnum.Create_Root_Dir,
-                  }),
-                )
+              onClick={(e: MouseEvent<HTMLDivElement>) =>
+                fileControlHandle(e, ActionTypeEnum.Create_Root_Dir)
               }
             />
           </div>
@@ -204,12 +199,9 @@ const Collapse: FC = () => {
           style={panelContentAnimatedStyle}
           className={styles.content}
         >
-          <div
-            onClick={e => e.stopPropagation()}
-            ref={ref}
-            className={styles.contentInner}
-          >
+          <div onClick={e => e.stopPropagation()} ref={ref}>
             <Tree.DirectoryTree
+              height={height}
               showIcon
               icon={({ isLeaf }: AntTreeNodeProps) =>
                 isLeaf ? (

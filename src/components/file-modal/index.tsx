@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useContext } from "react";
-import { Modal, Input } from "antd";
+import React, { ChangeEvent, useContext, useEffect, useRef } from "react";
+import { Modal, Input, type InputRef } from "antd";
 import { WebContainer } from "@webcontainer/api";
 
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -7,8 +7,11 @@ import {
   changeFileModalStatus,
   changeFormatPathValue,
 } from "@/store/modules/code";
-import { ActionTypeEnumMap, ActionTypeEnum } from "@/types";
-import { getNodePath } from "@/utils/file";
+import {
+  ActionTypeEnumMap,
+  ActionTypeEnum,
+  treeDataContextType,
+} from "@/types";
 import {
   renameFile,
   rm,
@@ -16,10 +19,11 @@ import {
   createDir,
   createFile,
   saveFileSystemTree,
-} from "@/utils/webContainer";
+  getNodePath,
+} from "@/utils";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
-import TreeDataContext, { treeDataContextType } from "@/context/tree-data";
-import WebContainerContext from "@/context/webContainer";
+import TreeDataContext from "@/context/treeData";
+import { WebContainerContext } from "@/context";
 
 const FileEditorModal: React.FC = () => {
   const { fileModalIsOpen, fileControlType, formatPath, selectedKey } =
@@ -93,6 +97,17 @@ const FileEditorModal: React.FC = () => {
     dispatch(changeFormatPathValue(event.target.value));
   };
 
+  const useInputAutoFocus = () => {
+    const inputRef = useRef<InputRef>(null)
+    useEffect(() => {
+      (fileModalIsOpen && fileControlType !== ActionTypeEnum.Del)
+        // 这里我们用setTimeout来解决inputRef.current.focus()无效的问题,类似于模拟出vue中的nextTick
+        && setTimeout(() => inputRef.current?.focus({ cursor: 'end' }), 0)
+    }, [fileModalIsOpen, fileControlType])
+    return inputRef
+  }
+  const inputRef = useInputAutoFocus()
+
   return (
     <>
       <Modal
@@ -105,6 +120,7 @@ const FileEditorModal: React.FC = () => {
           <div>{formatPath}</div>
         ) : (
           <Input
+            ref={inputRef}
             placeholder="Basic usage"
             value={formatPath}
             onChange={handleInputChange}

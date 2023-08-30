@@ -1,0 +1,72 @@
+$string-color: #55bb8a;
+$language-keyword-color: #619ac3;
+$global-variable-color: #ba2f7b;
+$unused-opacity: 0.4;
+$normal-text-color: #356d46;
+$grammar-color: #57c3c2;
+$jsx-tag-symbol-color: $language-keyword-color;
+$jsx-tag-color: $global-variable-color;
+$jsx-attribute-color: #ffa60f;
+$jsx-text-color: #a0a0a0;
+
+.editor {
+  p {
+    color: $string-color !important;
+  }
+
+  .mtk9 {
+    color: $grammar-color;
+  }
+
+  .mtk1 {
+    color: $normal-text-color;
+  }
+
+  .mtk22 {
+    color: $global-variable-color;
+  }
+
+  .mtk8 {
+    color: $language-keyword-color;
+  }
+
+  .mtk5 {
+    color: $string-color;
+  }
+
+  .monaco-editor.showUnused .squiggly-inline-unnecessary {
+    opacity: $unused-opacity;
+  }
+
+  .jsx-expression-braces {
+    color: #f1908c;
+  }
+
+  .jsx-tag-angle-bracket {
+    &.jsx-tag-order-1 {
+      color: #12a182;
+    }
+
+    &.jsx-tag-order-2 {
+      color: #4e7ca1;
+    }
+
+    &.jsx-tag-order-3 {
+      color: #fb8b05;
+    }
+
+    color: $jsx-tag-symbol-color;
+  }
+
+  .jsx-tag-name {
+    color: $jsx-tag-color;
+  }
+
+  .jsx-tag-attribute-key {
+    color: $jsx-attribute-color;
+  }
+
+  .jsx-text {
+    color: $jsx-text-color;
+  }
+}

@@ -11,6 +11,10 @@ interface codeTypes {
   treeData: DataNode[];
   formatPath: string;
   selectedKey: string;
+  isLeaf: boolean;
+  height: number; // 文件列表滚动高度
+  isWebContainerFile: boolean; // s是否是webcontainer的文件,用于区分是从文件中获取内容还是从本地
+  globalFileConfigPath: string;
 }
 
 interface changeFileModalStatusTypes {
@@ -18,10 +22,20 @@ interface changeFileModalStatusTypes {
   type?: ActionTypeEnum;
 }
 
+interface changeFileInfoTypes {
+  path: string;
+  isLeaf: boolean;
+}
+
 interface changeTreeDataTypes {
   treeData: DataNode[];
   key?: string;
   path?: string;
+}
+
+interface GlobalFileConfigPathType {
+  path: string;
+  isWebContainerFile: boolean;
 }
 
 const initialState = {
@@ -31,17 +45,23 @@ const initialState = {
   fileControlType: undefined,
   treeData: [],
   selectedKey: "",
+  isLeaf: false,
+  height: 500,
+  isWebContainerFile: true,
+  globalFileConfigPath: "",
 } as codeTypes;
 
 const codeSlice = createSlice({
   name: "code",
   initialState,
   reducers: {
-    changePath(state, action): void {
+    changeFileInfo(state, action: PayloadAction<changeFileInfoTypes>): void {
       const { payload } = action;
 
-      state.path = payload;
-      state.formatPath = routerFormat(payload);
+      state.path = payload.path;
+      state.isLeaf = payload.isLeaf;
+      state.formatPath = routerFormat(payload.path);
+      state.isWebContainerFile = true;
     },
     changeFormatPathValue(state, action): void {
       const { payload } = action;
@@ -80,16 +100,33 @@ const codeSlice = createSlice({
       const { payload } = action;
       state.selectedKey = payload;
     },
+    changeHight(state, action: PayloadAction<number>) {
+      const { payload } = action;
+      state.height = payload;
+    },
+    changeGlobalFileConfigPath(
+      state,
+      action: PayloadAction<GlobalFileConfigPathType>,
+    ) {
+      const { payload } = action;
+
+      state.globalFileConfigPath = payload.path;
+      state.isWebContainerFile = payload.isWebContainerFile;
+      state.path = "";
+      state.formatPath = "";
+    },
   },
   extraReducers: () => {},
 });
 
 export const {
-  changePath,
+  changeFileInfo,
   changeFileModalStatus,
   changeTreeData,
   changeFormatPathValue,
   changeSelectedKey,
+  changeHight,
+  changeGlobalFileConfigPath,
 } = codeSlice.actions;
 
 export default codeSlice.reducer;

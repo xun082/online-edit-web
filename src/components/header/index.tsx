@@ -24,9 +24,13 @@ const Header: FC = () => {
     window.open(previewUrl, "_blank");
   };
 
+  const login = () => {
+    alert("登录成功");
+  };
+
   return (
     <header className={styles.root}>
-      <div className={styles["header-left"]}>Moment</div>
+      <div className={styles["header-left"]}>在线代码编辑器</div>
       <div className={styles["header-right"]}>
         <div className={styles["open-new-tab"]} onClick={openNewTab}>
           <SwitcherOutlined />
@@ -48,7 +52,9 @@ const Header: FC = () => {
             </>
           )}
         </div>
-        <div className={styles["login"]}>登录</div>
+        <div className={styles["login"]} onClick={login}>
+          登录
+        </div>
       </div>
     </header>
   );
