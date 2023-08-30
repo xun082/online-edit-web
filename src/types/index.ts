@@ -47,3 +47,7 @@ export type prettierFileNameType =
   | "prettier.config.js"
   | ".prettierrc.json"
   | ".prettierrc.yml";
+
+export enum UserCustomConfig {
+  GLOBAL_PRETTIER_CONFIG = "global-prettier-config.json",
+}

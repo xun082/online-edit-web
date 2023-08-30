@@ -8,13 +8,22 @@ import { fileTypeIconMap } from "@/common";
 import { getFileSuffix } from "@/utils";
 
 const EditHeader = () => {
-  const { formatPath } = useAppSelector(state => state.code);
+  const { formatPath, globalFileConfigPath } = useAppSelector(
+    state => state.code,
+  );
   return (
     <div className={styles["root"]}>
       <div className={styles["edit-header-left"]}>
         <div className={styles["editor-tab"]}>
-          <img src={fileTypeIconMap.get(getFileSuffix(formatPath))} alt="" />
-          <span className={styles["edit-file-name"]}>{formatPath}</span>
+          <img
+            src={fileTypeIconMap.get(
+              getFileSuffix(formatPath || globalFileConfigPath),
+            )}
+            alt=""
+          />
+          <span className={styles["edit-file-name"]}>
+            {formatPath || globalFileConfigPath}
+          </span>
           <CloseOutlined rev={undefined} style={{ cursor: "pointer" }} />
         </div>
       </div>

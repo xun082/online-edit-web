@@ -2,6 +2,9 @@ import { FileSystemTree, WebContainer } from "@webcontainer/api";
 import { DataNode } from "antd/es/tree";
 import { v4 as uuid } from "uuid";
 
+import { routerFormat } from "./file";
+import { PRETTIER_FORMAT_PATH } from "./content";
+
 export const WebContainerFileSystemTreeSavePoint =
   "Web_Container_File_System_Tree_Save_Point";
 
@@ -16,7 +19,9 @@ export function writeFile(
   content: string | Uint8Array,
   webcontainerInstance: WebContainer,
 ) {
-  return webcontainerInstance?.fs.writeFile(path, content, { encoding: 'utf-8' });
+  return webcontainerInstance?.fs.writeFile(path, content, {
+    encoding: "utf-8",
+  });
 }
 
 export function createFile(path: string, webcontainerInstance: WebContainer) {
@@ -25,11 +30,11 @@ export function createFile(path: string, webcontainerInstance: WebContainer) {
 
 export async function writeDirByLocal(
   dir: any,
-  webcontainerInstance: WebContainer
+  webcontainerInstance: WebContainer,
 ) {
-  if (dir.kind === 'file') {
-    await writeFile(dir.path, dir.content ?? "", webcontainerInstance)
-    return
+  if (dir.kind === "file") {
+    await writeFile(dir.path, dir.content ?? "", webcontainerInstance);
+    return;
   }
   await createDir(dir.path, webcontainerInstance);
   for (const file of dir.children) {
@@ -38,6 +43,17 @@ export async function writeDirByLocal(
 }
 
 export function rm(path: string, webcontainerInstance: WebContainer) {
+  const userProjectPrettierConfig = localStorage.getItem(
+    PRETTIER_FORMAT_PATH,
+  ) as string;
+
+  if (
+    userProjectPrettierConfig !== null &&
+    userProjectPrettierConfig.split("/")[0] === routerFormat(path)
+  ) {
+    localStorage.removeItem(PRETTIER_FORMAT_PATH);
+  }
+
   return webcontainerInstance?.fs.rm(path, { force: true, recursive: true });
 }
 
@@ -45,7 +61,7 @@ export async function readFile(
   path: string,
   webcontainerInstance: WebContainer,
 ) {
-  const u8 = await webcontainerInstance?.fs.readFile(path, 'utf-8');
+  const u8 = await webcontainerInstance?.fs.readFile(path, "utf-8");
   return u8;
 }
 

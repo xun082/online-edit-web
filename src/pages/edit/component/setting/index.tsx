@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState, ChangeEvent, useEffect } from "react";
+import React, { MouseEvent, useState, ChangeEvent } from "react";
 import { useSpring, animated } from "react-spring";
 import useMeasure from "react-use-measure";
 import { Input } from "antd";
@@ -7,18 +7,16 @@ import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import styles from "./index.module.scss";
 
 import { routerFormat, PRETTIER_FORMAT_PATH } from "@/utils";
-import { prettierFileNameType } from "@/types";
+import { prettierFileNameType, UserCustomConfig } from "@/types";
+import { useAppDispatch } from "@/store";
+import { changeGlobalFileConfigPath } from "@/store/modules/code";
 
 const Setting = () => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
   const [prettierPath, setPrettierPath] = useState<string>("");
+  const dispatch = useAppDispatch();
 
   const [ref, bounds] = useMeasure();
-
-  useEffect(() => {
-    const path = localStorage.getItem(PRETTIER_FORMAT_PATH) as string;
-    setPrettierPath(path);
-  }, [prettierPath]);
 
   const togglePanel = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -52,6 +50,15 @@ const Setting = () => {
     }
   };
 
+  const settingGlobalPrettierConfig = () => {
+    dispatch(
+      changeGlobalFileConfigPath({
+        path: UserCustomConfig.GLOBAL_PRETTIER_CONFIG,
+        isWebContainerFile: false,
+      }),
+    );
+  };
+
   return (
     <div className={styles["root"]}>
       <div className={styles["switch-prettier-format"]} onClick={togglePanel}>
@@ -68,7 +75,11 @@ const Setting = () => {
             className={styles["file-path-control"]}
           >
             <Input
-              placeholder="示例: moment/.prettierrc"
+              placeholder={
+                localStorage.getItem(PRETTIER_FORMAT_PATH)
+                  ? (localStorage.getItem(PRETTIER_FORMAT_PATH) as string)
+                  : "示例: moment/.prettierrc"
+              }
               bordered={false}
               className={styles["path-input"]}
               value={prettierPath}
@@ -88,6 +99,12 @@ const Setting = () => {
             </div>
           </div>
         </animated.div>
+      </div>
+      <div
+        className={styles["global-format-title"]}
+        onClick={settingGlobalPrettierConfig}
+      >
+        全局的prettier文件格式化代码
       </div>
     </div>
   );

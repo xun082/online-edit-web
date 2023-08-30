@@ -32,7 +32,7 @@ import { TreeDataContext, WebContainerContext } from "@/context";
 import { fileTypeIconMap } from "@/common";
 
 const Collapse: FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const { selectedKey, height } = useAppSelector(state => state.code);
   const webcontainerInstance = useContext(WebContainerContext) as WebContainer;

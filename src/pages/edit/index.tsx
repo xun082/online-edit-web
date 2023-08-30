@@ -27,9 +27,11 @@ const Edit: FC = () => {
     src: "",
     uuid: "",
   }));
-  const [activeIcon, setActiveIcon] = useState<labelType>("file");
+  const [activeIcon, setActiveIcon] = useState<labelType>("setting");
 
-  const { path, isLeaf } = useAppSelector(state => state.code);
+  const { path, isLeaf, globalFileConfigPath } = useAppSelector(
+    state => state.code,
+  );
   const { previewSwitch } = useAppSelector(state => state.home);
 
   const dispatch = useAppDispatch();
@@ -122,7 +124,7 @@ const Edit: FC = () => {
                     collapsible={true}
                     style={{ backgroundColor: "hsl(220 10% 14%)" }}
                   >
-                    {path && isLeaf && (
+                    {(globalFileConfigPath || (path && isLeaf)) && (
                       <>
                         <EditHeader />
                         <Editor filePath={path} />

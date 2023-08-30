@@ -20,8 +20,11 @@ import {
   getFileSuffix,
   PRETTIER_FORMAT_PATH,
   saveFileSystemTree,
+  DEFAULT_PRETTIER_CONFIG,
 } from "@/utils";
 import { WebContainerContext } from "@/context";
+import { useAppSelector } from "@/store";
+import { UserCustomConfig } from "@/types";
 
 interface ICodeEditorProps {
   filePath: string;
@@ -29,6 +32,9 @@ interface ICodeEditorProps {
 
 export default function CodeEditor({ filePath }: ICodeEditorProps) {
   const [content, setContent] = useState<string>("");
+  const { isWebContainerFile, globalFileConfigPath } = useAppSelector(
+    state => state.code,
+  );
 
   const webcontainerInstance = useContext(WebContainerContext) as WebContainer;
 
@@ -39,10 +45,22 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
       setContent(fileContent);
     }
 
-    if (filePath) {
+    // 如果文件 path 存在且是 webcontainer 的文件
+    if (filePath && isWebContainerFile) {
       readFile2content();
     }
-  }, [filePath]);
+
+    if (globalFileConfigPath && !isWebContainerFile) {
+      const storage = localStorage.getItem(globalFileConfigPath) as string;
+
+      if (!storage) {
+        localStorage.setItem(globalFileConfigPath, DEFAULT_PRETTIER_CONFIG);
+        setContent(DEFAULT_PRETTIER_CONFIG);
+      } else {
+        setContent(storage);
+      }
+    }
+  }, [filePath, globalFileConfigPath]);
 
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent) => {
@@ -51,8 +69,16 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
 
         if (!content) return;
 
+        let result: string = "";
         const path = localStorage.getItem(PRETTIER_FORMAT_PATH) as string;
-        const result = await readFile(path, webcontainerInstance);
+        if (path) {
+          result = await readFile(path, webcontainerInstance);
+        } else {
+          result = localStorage.getItem(
+            UserCustomConfig.GLOBAL_PRETTIER_CONFIG,
+          ) as string;
+        }
+
         const prettierFileContent = JSON.parse(result);
 
         const worker = new Worker(new URL("./worker.ts", import.meta.url), {
@@ -64,15 +90,21 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
             console.error(event.data.error);
           } else {
             setContent(event.data);
-            writeFile(filePath, event.data, webcontainerInstance);
-            saveFileSystemTree(webcontainerInstance);
+            localStorage.setItem(globalFileConfigPath, event.data);
+
+            if (isWebContainerFile === true) {
+              writeFile(filePath, event.data, webcontainerInstance);
+              saveFileSystemTree(webcontainerInstance);
+            }
           }
           worker.terminate();
         };
 
         worker.postMessage({
           content: content,
-          type: getFileSuffix(filePath),
+          type: getFileSuffix(
+            isWebContainerFile ? filePath : globalFileConfigPath,
+          ),
           prettierConfig: prettierFileContent ? prettierFileContent : {},
         });
       }
@@ -143,11 +175,12 @@ export default function CodeEditor({ filePath }: ICodeEditorProps) {
     return languageMap[stuff];
   }, [filePath]);
 
-  const handleEditorChange = (value: string | undefined): void => {
+  const handleEditorChange = (value: string = ""): void => {
     if (filePath) {
-      writeFile(filePath, value || "", webcontainerInstance);
-      setContent(value || "");
+      writeFile(filePath, value, webcontainerInstance);
     }
+
+    setContent(value);
   };
 
   return (

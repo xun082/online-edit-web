@@ -13,6 +13,8 @@ interface codeTypes {
   selectedKey: string;
   isLeaf: boolean;
   height: number; // 文件列表滚动高度
+  isWebContainerFile: boolean; // s是否是webcontainer的文件,用于区分是从文件中获取内容还是从本地
+  globalFileConfigPath: string;
 }
 
 interface changeFileModalStatusTypes {
@@ -31,6 +33,11 @@ interface changeTreeDataTypes {
   path?: string;
 }
 
+interface GlobalFileConfigPathType {
+  path: string;
+  isWebContainerFile: boolean;
+}
+
 const initialState = {
   path: "",
   formatPath: "",
@@ -40,6 +47,8 @@ const initialState = {
   selectedKey: "",
   isLeaf: false,
   height: 500,
+  isWebContainerFile: true,
+  globalFileConfigPath: "",
 } as codeTypes;
 
 const codeSlice = createSlice({
@@ -52,6 +61,8 @@ const codeSlice = createSlice({
       state.path = payload.path;
       state.isLeaf = payload.isLeaf;
       state.formatPath = routerFormat(payload.path);
+      state.isWebContainerFile = true;
+      state.globalFileConfigPath = "";
     },
     changeFormatPathValue(state, action): void {
       const { payload } = action;
@@ -94,6 +105,17 @@ const codeSlice = createSlice({
       const { payload } = action;
       state.height = payload;
     },
+    changeGlobalFileConfigPath(
+      state,
+      action: PayloadAction<GlobalFileConfigPathType>,
+    ) {
+      const { payload } = action;
+
+      state.globalFileConfigPath = payload.path;
+      state.isWebContainerFile = payload.isWebContainerFile;
+      state.path = "";
+      state.formatPath = "";
+    },
   },
   extraReducers: () => {},
 });
@@ -105,6 +127,7 @@ export const {
   changeFormatPathValue,
   changeSelectedKey,
   changeHight,
+  changeGlobalFileConfigPath,
 } = codeSlice.actions;
 
 export default codeSlice.reducer;
