@@ -62,7 +62,6 @@ const codeSlice = createSlice({
       state.isLeaf = payload.isLeaf;
       state.formatPath = routerFormat(payload.path);
       state.isWebContainerFile = true;
-      state.globalFileConfigPath = "";
     },
     changeFormatPathValue(state, action): void {
       const { payload } = action;

@@ -27,7 +27,7 @@ const Edit: FC = () => {
     src: "",
     uuid: "",
   }));
-  const [activeIcon, setActiveIcon] = useState<labelType>("setting");
+  const [activeIcon, setActiveIcon] = useState<labelType>("file");
 
   const { path, isLeaf, globalFileConfigPath } = useAppSelector(
     state => state.code,
