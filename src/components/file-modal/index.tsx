@@ -124,6 +124,7 @@ const FileEditorModal: React.FC = () => {
             placeholder="Basic usage"
             value={formatPath}
             onChange={handleInputChange}
+            onPressEnter={handleOk}
             bordered={false}
           />
         )}
