@@ -52,7 +52,6 @@ self.onmessage = event => {
       parser: parseType,
       plugins: [parserPlugin],
       vueIndentScriptAndStyle: true,
-      printWidth: 100,
       ...prettierConfig,
     });
 
