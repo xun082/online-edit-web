@@ -5,6 +5,7 @@
   "scripts": {
     "start": "candy-script start",
     "build": "candy-script build",
+    "analyzer": "candy-script analyzer",
     "commit": "git-cz && git push",
     "predeploy": "pnpm run build",
     "deploy": "gh-pages -d dist",
@@ -49,7 +50,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-conventional": "^17.6.5",
-    "@laconic/react-script": "^1.0.2",
+    "@laconic/react-script": "^1.2.0",
     "@types/node": "^20.5.1",
     "@types/prettier": "^2.7.3",
     "@types/react": "^18.0.28",
