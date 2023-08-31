@@ -1,9 +1,10 @@
-import React, { useRef, useContext, useEffect } from "react";
+import React, { useRef, useContext, useEffect, useImperativeHandle, forwardRef } from "react";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { WebLinksAddon } from "xterm-addon-web-links";
 import { WebglAddon } from "xterm-addon-webgl";
 import "xterm/css/xterm.css";
+import { WebContainerProcess } from "@webcontainer/api";
 
 import styles from "./index.module.scss";
 
@@ -14,10 +15,24 @@ const fitAddon = new FitAddon();
 
 const webLinksAddon = new WebLinksAddon();
 const webglAddon = new WebglAddon();
-export function TerminalPanel() {
+export interface TerminalPanelRefInterface {
+  terminalResize: () => void
+}
+
+export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(function TerminalPanel (props, ref) {
   const terminalRef = useRef<HTMLDivElement>(null);
   const webcontainerInstance = useContext(WebContainerContext);
-
+  let shell: WebContainerProcess | null;
+  useImperativeHandle(ref, () => ({
+    // Expose terminal change size method
+    terminalResize: () => {
+      fitAddon.fit();
+      shell?.resize({
+        cols: terminal.cols,
+        rows: terminal.rows,
+      });
+    }
+  }))
   useEffect(() => {
     async function init() {
       if (webcontainerInstance !== null) {
@@ -36,8 +51,8 @@ export function TerminalPanel() {
           terminal.loadAddon(webglAddon);
 
           terminal.open(terminalRef.current);
-
-          const shell = await webcontainerInstance?.spawn("jsh", {
+          fitAddon.fit();
+          shell = await webcontainerInstance?.spawn("jsh", {
             terminal: {
               cols: terminal.cols,
               rows: terminal.rows,
@@ -45,7 +60,7 @@ export function TerminalPanel() {
           });
 
           window.addEventListener("resize", () => {
-            fitAddon.proposeDimensions()
+            fitAddon.fit();
             shell?.resize({
               cols: terminal.cols,
               rows: terminal.rows,
@@ -72,4 +87,4 @@ export function TerminalPanel() {
   }, [webcontainerInstance]);
 
   return <div className={styles["root"]} ref={terminalRef} />;
-}
+})

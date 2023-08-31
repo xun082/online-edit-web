@@ -1,4 +1,4 @@
-import React, { FC, useState, useLayoutEffect, useEffect } from "react";
+import React, { FC, useState, useLayoutEffect, useEffect, useRef } from "react";
 import { PanelGroup, Panel } from "react-resizable-panels";
 import { WebContainer } from "@webcontainer/api";
 import { v4 as uuid } from "uuid";
@@ -8,7 +8,7 @@ import styles from "./index.module.scss";
 import { components, EditorNav, ResizeHandle, EditHeader } from "./component";
 
 import Editor from "@/components/editor";
-import { TerminalPanel } from "@/components/terminal";
+import { TerminalPanel, TerminalPanelRefInterface } from "@/components/terminal";
 import { useAppSelector, useAppDispatch } from "@/store";
 import WebContainerContext from "@/context/webContainer";
 import ActionIconTypeContext from "@/context/setActionIcon";
@@ -23,6 +23,8 @@ import { Preview } from "@/components/preview";
 import { changePreviewUrl } from "@/store/modules/home";
 
 const Edit: FC = () => {
+  const terminalRef = useRef<TerminalPanelRefInterface>(null);
+
   const [linkData, setLinkData] = useState<LinkData>(() => ({
     src: "",
     uuid: "",
@@ -38,6 +40,12 @@ const Edit: FC = () => {
 
   const [webContainerInstance, setWebContainerInstance] =
     useState<WebContainer | null>(null);
+  /**
+   * Editing area layout changes
+   */
+  const editPanelGroupResize = () => {
+    terminalRef.current?.terminalResize()
+  }
 
   useLayoutEffect(() => {
     const bootWebContainer = async () => {
@@ -119,7 +127,7 @@ const Edit: FC = () => {
               <ResizeHandle />
               {/* 代码编辑栏 */}
               <Panel minSize={1} defaultSize={previewSwitch === true ? 50 : 85}>
-                <PanelGroup direction="vertical">
+                <PanelGroup direction="vertical" onLayout={editPanelGroupResize}>
                   <Panel
                     collapsible={true}
                     style={{ backgroundColor: "hsl(220 10% 14%)" }}
@@ -137,7 +145,7 @@ const Edit: FC = () => {
                     minSize={2}
                     style={{ background: "#15181E" }}
                   >
-                    <TerminalPanel />
+                    <TerminalPanel ref={terminalRef} />
                   </Panel>
                 </PanelGroup>
               </Panel>
