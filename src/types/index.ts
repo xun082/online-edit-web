@@ -1,5 +1,6 @@
 import React from "react";
 import type { DataNode } from "antd/es/tree";
+export * from './file.d'
 
 /* eslint-disable no-unused-vars */
 export type languageType = "html" | "css" | "javascript";

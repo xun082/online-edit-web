@@ -5,6 +5,8 @@ import { v4 as uuid } from "uuid";
 import { routerFormat } from "./file";
 import { PRETTIER_FORMAT_PATH } from "./content";
 
+import { DirectoryInterface, FileInterface } from "@/types";
+
 export const WebContainerFileSystemTreeSavePoint =
   "Web_Container_File_System_Tree_Save_Point";
 
@@ -63,6 +65,18 @@ export async function readFile(
 ) {
   const u8 = await webcontainerInstance?.fs.readFile(path, "utf-8");
   return u8;
+}
+
+export async function readLocalTypeFile (
+  webcontainerInstance: WebContainer,
+  path: string,
+): Promise<FileInterface> {
+  return {
+    name: path.split('/').splice(-1, 1)?.[0] || '',
+    path,
+    content: await webcontainerInstance?.fs.readFile(path, "utf-8"),
+    kind: 'file'
+  }
 }
 
 export async function renameFile(
@@ -136,6 +150,29 @@ async function readAsFileSystemTree(
     }),
     {},
   );
+}
+
+export async function readLocalTypeFileTree(webcontainerInstance: WebContainer, path: string = "/"): Promise<DirectoryInterface> {
+  const dirs = await webcontainerInstance?.fs.readdir(path, {
+    withFileTypes: true,
+  });
+
+  const children: (FileInterface | DirectoryInterface)[] = []
+
+  for (const item of dirs) {
+    if (item.isFile()) {
+      children.push(await readLocalTypeFile(webcontainerInstance, `${path === '/' ? '/' : `${path}/`}${item.name}`))
+    } else if (item.isDirectory()) {
+      children.push(await readLocalTypeFileTree(webcontainerInstance, `${path === '/' ? '/' : `${path}/`}${item.name}`))
+    }
+  }
+
+  return {
+    name: path.split('/').splice(-1, 1)?.[0] || 'project',
+    path: `${path}`,
+    kind: 'directory',
+    children
+  }
 }
 
 export async function saveFileSystemTree(webcontainerInstance: WebContainer) {
