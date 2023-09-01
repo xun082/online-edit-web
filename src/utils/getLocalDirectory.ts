@@ -1,29 +1,12 @@
-export interface FilerInterface {
-  handler: FileSystemFileHandle;
-  name: string;
-  kind: string;
-  path: string;
-  content: string;
-}
-
-export interface DirectoryInterface {
-  handler: FileSystemDirectoryHandle;
-  name: string;
-  kind: string;
-  path: string;
-  children: Array<FilerInterface | DirectoryInterface>;
-}
+import { DirectorySuperInterface, FilerInterface } from "@/types";
 
 export const DirectoryKeySet = new Set(); // 预留对象，多文件夹加载可用
 export const DirectoryMap = new Map(); // 预留对象，多文件夹加载可用
-export let curDirectory: null | FilerInterface | DirectoryInterface = null; // 当前目录
+export let curDirectory: null | FilerInterface | DirectorySuperInterface = null; // 当前目录
 
 export const getDirectory = async (
   id?: string | symbol,
-): Promise<DirectoryInterface | FilerInterface | null> => {
-  if (DirectoryKeySet.has(id)) {
-    return DirectoryMap.get(id);
-  }
+): Promise<DirectorySuperInterface | FilerInterface | null> => {
   let DirectoryHandler: FileSystemFileHandle | FileSystemDirectoryHandle | null;
   try {
     DirectoryHandler = await window.showDirectoryPicker({
@@ -34,9 +17,7 @@ export const getDirectory = async (
     DirectoryHandler = null;
   }
   if (DirectoryHandler !== null) {
-    DirectoryKeySet.add(id);
     const directory = await getDirectoryHandlerDeep(DirectoryHandler);
-    DirectoryMap.set(id, directory);
     curDirectory = directory;
     return directory;
   }
@@ -59,9 +40,9 @@ export const directoryDataFormatter = async <
 >(
   directoryHandler: T,
   path: string = "",
-  children: (FilerInterface | DirectoryInterface)[] = [],
+  children: (FilerInterface | DirectorySuperInterface)[] = [],
 ): Promise<
-  T extends FileSystemDirectoryHandle ? FilerInterface : DirectoryInterface
+  T extends FileSystemDirectoryHandle ? FilerInterface : DirectorySuperInterface
 > => {
   const obj: any = {
     handler: directoryHandler,
@@ -87,7 +68,7 @@ export const directoryDataFormatter = async <
 export const getDirectoryHandlerDeep = async (
   directoryHandler: FileSystemDirectoryHandle | FileSystemFileHandle,
   path: string = "",
-): Promise<DirectoryInterface | FilerInterface> => {
+): Promise<DirectorySuperInterface | FilerInterface> => {
   path = `${path}/${directoryHandler.name}`;
   if (directoryHandler.kind === "file") {
     return await directoryDataFormatter(directoryHandler, path);
@@ -106,3 +87,7 @@ export const getDirectoryHandlerDeep = async (
   }
   return await directoryDataFormatter(directoryHandler, path, children);
 };
+
+export const clearCurDirectory = () => {
+  curDirectory = null
+}

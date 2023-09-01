@@ -17,6 +17,7 @@ import {
   saveFileSystemTree,
   writeDirByLocal,
   curDirectory,
+  clearCurDirectory,
 } from "@/utils";
 import { LinkData, labelType } from "@/types";
 import { Preview } from "@/components/preview";
@@ -62,6 +63,7 @@ const Edit: FC = () => {
 
       if (curDirectory) {
         await writeDirByLocal(curDirectory, instance);
+        clearCurDirectory();
       }
 
       setWebContainerInstance(instance);
