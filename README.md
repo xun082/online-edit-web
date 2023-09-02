@@ -40,7 +40,7 @@ git add .
 pnpm run commit
 ```
 
-#贡献指南
+# 贡献指南
 
 > 加入我们， 一起做有趣的事
 
@@ -51,9 +51,9 @@ pnpm run commit
 这是发表在掘金社区关于项目的技术笔记，会有项目的大概介绍以及更多的细节：
 [我开源了一个能在浏览器上执行 npm 命令的在线代码编辑器🚩🚩🚩](https://juejin.cn/post/7272869799960281151)
 
-###第一次贡献
+### 第一次贡献
 
-####Fork 项目
+#### Fork 项目
 
 如果你还不清楚怎么在 GitHub 上提 Pull Request ，可以阅读下面内容来学习：
 
@@ -65,7 +65,7 @@ pnpm run commit
 git clone git@github.com:xun082/online-cooperative-edit.git
 ```
 
-####获取原项目代码
+#### 获取原项目代码
 
 - 进入fork的项目文件夹，添加远程地址
 ```bash
@@ -79,7 +79,7 @@ git pull upstream master
 
 现在我们在 fork 来的 master 分支上, 这个 master 留作跟踪 upstream 的远程代码...
 
-####创建分支
+#### 创建分支
 - 好了, 现在可以开始贡献我们的代码了
 按照国际惯例, 我们一般不在 master 上提交新代码, 而需要为新增的功能或者fixbug建立新分支, 再合并到 master 上, 使用以下代码创建分支
 
@@ -92,7 +92,7 @@ git checkout -b branch1
 git commit -a -m "new commit"
 ```
 
-####合并修改
+#### 合并修改
 - 一个常见的问题是远程的项目 upstream 有了新的更新, 从而会导致我们提交的 Pull Request 时会导致冲突, 因此我们可以在提交前先把远程其他开发者的commit和我们的commit合并
 
 - 先切换到master分支
@@ -120,7 +120,7 @@ git rebase master
 git push origin branch1
 ```
 
-####Pull Request
+#### Pull Request
 提交 Pull Request
 你可以在你的 github 代码仓库页面切换到 branches 页面点击 branch1 分支后点击 New pull request 按钮, 添加相关注释后提交. OR 切换到 branch1 分支的代码仓库点击 Compare & pull request 按钮, 添加相关注释后提交.
 
@@ -128,7 +128,7 @@ git push origin branch1
 
 我们会 review 以及合并你的代码，也有可能要求你做一些修改或者告诉你为什么不能接受这样的修改。
 
-####commit 规范
+#### commit 规范
 提交 commit 的类型，包括以下几种
 
 - feat 🚀: 新功能
