@@ -1,9 +1,10 @@
-$string-color: #55bb8a;
-$language-keyword-color: #619ac3;
-$global-variable-color: #ba2f7b;
+$string-color: #ce9178;
+// 关键字
+$language-keyword-color: #c586c0;
+$global-variable-color: #9cdcfe;
 $unused-opacity: 0.4;
-$normal-text-color: #356d46;
-$grammar-color: #57c3c2;
+$normal-text-color: #dcdcaa;
+$grammar-color: #569cd6;
 $jsx-tag-symbol-color: $language-keyword-color;
 $jsx-tag-color: $global-variable-color;
 $jsx-attribute-color: #ffa60f;
