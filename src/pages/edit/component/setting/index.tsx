@@ -23,9 +23,8 @@ const useTogglePanel = () => {
   });
   const togglePanel = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(isCollapsed)
     if (isCollapsed) {
-      inputRef.current?.focus({ cursor: 'start', })
+      inputRef.current?.focus({ cursor: 'end', })
     }
     setIsCollapsed(prevState => !prevState);
   }
