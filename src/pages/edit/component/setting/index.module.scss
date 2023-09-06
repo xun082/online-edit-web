@@ -2,20 +2,24 @@
 
 .title {
   height: 30px;
-  width: 100%;
   background-color: $editor-nav-background;
   color: $editor-nav-color;
   line-height: 30px;
   padding: 0 10px;
   box-sizing: border-box;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   cursor: pointer;
 }
 
 .root {
   width: 100%;
   height: 100%;
+  padding: 0 12px 0 8px;
+  box-sizing: border-box;
   .switch-prettier-format {
+    padding-top: 10px;
     height: auto;
     width: 100%;
     .format-title {
@@ -54,5 +58,22 @@
   .global-format-title {
     @extend .title;
     margin-top: 10px;
+  }
+}
+
+.prettier {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: #CCCCCC;
+  .prettier-title {
+    display: flex;
+    .icon {
+      margin-right: 5px;
+      width: 16px;
+      height: 16px;
+      background-image: url('https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@master/icons/prettier.svg')
+    }
+    
   }
 }
