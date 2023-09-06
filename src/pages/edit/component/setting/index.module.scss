@@ -36,7 +36,7 @@
           color: $editor-nav-color;
           border-radius: 0;
           &::placeholder {
-            color: $editor-nav-color;
+            color:$editor-placeholder;
           }
         }
         .path-confirm {
