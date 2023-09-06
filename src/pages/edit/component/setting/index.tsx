@@ -14,22 +14,28 @@ import { prettierFileNameType, UserCustomConfig } from "@/types";
 import { useAppDispatch } from "@/store";
 import { changeGlobalFileConfigPath } from "@/store/modules/code";
 
-const Setting = () => {
+const useTogglePanel = () => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-  const [prettierPath, setPrettierPath] = useState<string>("");
-  const inputRef = useRef<InputRef | null>(null);
-  const dispatch = useAppDispatch();
-
   const [ref, bounds] = useMeasure();
-
-  const togglePanel = (e: MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsCollapsed(prevState => !prevState);
-  };
-
+  const inputRef = useRef<InputRef | null>(null);
   const panelContentAnimatedStyle = useSpring({
     height: isCollapsed ? 0 : bounds.height,
   });
+  const togglePanel = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log(isCollapsed)
+    if (isCollapsed) {
+      inputRef.current?.focus({ cursor: 'start', })
+    }
+    setIsCollapsed(prevState => !prevState);
+  }
+  return { setIsCollapsed, ref, panelContentAnimatedStyle, togglePanel, inputRef }
+}
+
+const Setting = () => {
+  const { setIsCollapsed, ref, panelContentAnimatedStyle, togglePanel, inputRef } = useTogglePanel()
+  const [prettierPath, setPrettierPath] = useState<string>("");
+  const dispatch = useAppDispatch();
 
   const prettierFormatHandle = (event: ChangeEvent<HTMLInputElement>) => {
     setPrettierPath(event.target.value);
@@ -75,7 +81,7 @@ const Setting = () => {
         </div>
       </div>
       <div className={styles["switch-prettier-format"]} onClick={togglePanel}>
-        <Tooltip title="根据项目中的prettier文件格式化代码">
+        <Tooltip placement="right" title="根据项目中的prettier文件格式化代码">
           <div className={styles["format-title"]}>
             根据项目中的prettier文件格式化代码
           </div>
@@ -116,7 +122,7 @@ const Setting = () => {
           </div>
         </animated.div>
       </div>
-      <Tooltip title="全局的prettier文件格式化代码">
+      <Tooltip placement="right" title="全局的prettier文件格式化代码">
         <div
           className={styles["global-format-title"]}
           onClick={settingGlobalPrettierConfig}
