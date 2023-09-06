@@ -4,6 +4,8 @@ import useMeasure from "react-use-measure";
 import { Input } from "antd";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 
+import fileStyles from "../file/index.module.scss";
+
 import styles from "./index.module.scss";
 
 import { routerFormat, PRETTIER_FORMAT_PATH } from "@/utils";
@@ -61,6 +63,9 @@ const Setting = () => {
 
   return (
     <div className={styles["root"]}>
+      <div className={fileStyles['project-download']}>
+        <h2 className={fileStyles['title']}>SETTINGS</h2>
+      </div>
       <div className={styles["switch-prettier-format"]} onClick={togglePanel}>
         <div className={styles["format-title"]}>
           根据项目中的prettier文件格式化代码
