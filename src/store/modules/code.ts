@@ -79,6 +79,15 @@ const codeSlice = createSlice({
       state.fileModalIsOpen = open;
       state.fileControlType = type;
     },
+    changeFileModalStatusAndKey(
+      state,
+      action: PayloadAction<changeFileModalStatusTypes & { key?: string }>,
+    ) {
+      const { payload: { open, type, key } } = action;
+      state.fileModalIsOpen = open;
+      state.fileControlType = type;
+      key && (state.selectedKey = key);
+    },
     changeTreeData(state, action: PayloadAction<changeTreeDataTypes>) {
       const {
         payload: { treeData, key, path },
@@ -116,12 +125,13 @@ const codeSlice = createSlice({
       state.formatPath = "";
     },
   },
-  extraReducers: () => {},
+  extraReducers: () => { },
 });
 
 export const {
   changeFileInfo,
   changeFileModalStatus,
+  changeFileModalStatusAndKey,
   changeTreeData,
   changeFormatPathValue,
   changeSelectedKey,
