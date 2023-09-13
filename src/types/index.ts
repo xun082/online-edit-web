@@ -25,7 +25,7 @@ export enum ActionTypeEnum {
 
 export const ActionTypeEnumMap = new Map([
   [ActionTypeEnum.Rename, "重命名"],
-  [ActionTypeEnum.Del, "删除文件"],
+  [ActionTypeEnum.Del, "删除"],
   [ActionTypeEnum.Create_Dir, "创建文件夹"],
   [ActionTypeEnum.Create_File, "创建文件"],
   [ActionTypeEnum.Create_Root_Dir, "创建根文件夹"],

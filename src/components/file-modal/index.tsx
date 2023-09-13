@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useContext, useEffect, useRef } from "react";
+import React, { ChangeEvent, useContext, useEffect, useMemo, useRef } from "react";
 import { Modal, Input, type InputRef } from "antd";
 import { WebContainer } from "@webcontainer/api";
 
@@ -24,6 +24,7 @@ import {
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
 import TreeDataContext from "@/context/treeData";
 import { WebContainerContext } from "@/context";
+import { findNodeByKey } from "@/utils/file";
 
 const FileEditorModal: React.FC = () => {
   const { fileModalIsOpen, fileControlType, formatPath, selectedKey } =
@@ -37,6 +38,17 @@ const FileEditorModal: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const selectedNode = useMemoSelectedNode(treeData);
+
+  const title = useMemo(() => {
+    if (fileControlType === ActionTypeEnum.Del) {
+      const rep = findNodeByKey(selectedKey, treeData);
+      return (ActionTypeEnumMap.get(fileControlType as ActionTypeEnum)!)
+        + ((rep && !rep.isLeaf) ? '文件夹' : '文件')
+    }
+    else {
+      return ActionTypeEnumMap.get(fileControlType as ActionTypeEnum)
+    }
+  }, [fileControlType])
 
   // 保存文件
   const syncFileSystemToUI = async () => {
@@ -111,7 +123,7 @@ const FileEditorModal: React.FC = () => {
   return (
     <>
       <Modal
-        title={ActionTypeEnumMap.get(fileControlType as ActionTypeEnum)}
+        title={title}
         open={fileModalIsOpen}
         onOk={handleOk}
         onCancel={handleCancel}
