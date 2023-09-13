@@ -24,7 +24,7 @@ import { readFileSystem, getNodePath, getFileSuffix } from "@/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   changeFileInfo,
-  changeFileModalStatus,
+  changeFileModalStatusAndKey,
   changeSelectedKey,
 } from "@/store/modules/code";
 import useMemoSelectedNode from "@/hooks/useMemoSelectedNode";
@@ -85,12 +85,14 @@ const Collapse: FC = () => {
   const fileControlHandle = (
     e: MouseEvent<HTMLDivElement>,
     type: ActionTypeEnum,
+    key?: string
   ) => {
     e.stopPropagation();
     dispatch(
-      changeFileModalStatus({
+      changeFileModalStatusAndKey({
         open: true,
         type,
+        key
       }),
     );
   };
@@ -98,7 +100,7 @@ const Collapse: FC = () => {
   const generateTreeNodes = (data: DataNode[]): DataNode[] => {
     return data.map(node => {
       const newNode: DataNode = {
-        title: renderTitle(node.title as string, node.isLeaf as boolean),
+        title: renderTitle(node.title as string, node.isLeaf as boolean, node.key as string),
         key: node.key,
         isLeaf: node.isLeaf,
         icon: (
@@ -119,7 +121,7 @@ const Collapse: FC = () => {
     });
   };
 
-  const renderTitle = (title: string, isLeaf: boolean): React.ReactNode => {
+  const renderTitle = (title: string, isLeaf: boolean, key: string): React.ReactNode => {
     return (
       <div className={styles["tree-title"]}>
         <div>{title} </div>
@@ -130,14 +132,14 @@ const Collapse: FC = () => {
                 className={styles["file-edit-icon"]}
                 src={addFile}
                 onClick={(e: MouseEvent<HTMLDivElement>) =>
-                  fileControlHandle(e, ActionTypeEnum.Create_File)
+                  fileControlHandle(e, ActionTypeEnum.Create_File, key)
                 }
               />
               <img
                 className={styles["file-edit-icon"]}
                 src={addFolder}
                 onClick={(e: MouseEvent<HTMLDivElement>) =>
-                  fileControlHandle(e, ActionTypeEnum.Create_Dir)
+                  fileControlHandle(e, ActionTypeEnum.Create_Dir, key)
                 }
               />
             </>
@@ -146,14 +148,14 @@ const Collapse: FC = () => {
             className={styles["file-edit-icon"]}
             src={editFile}
             onClick={(e: MouseEvent<HTMLDivElement>) =>
-              fileControlHandle(e, ActionTypeEnum.Rename)
+              fileControlHandle(e, ActionTypeEnum.Rename, key)
             }
           />
           <img
             className={styles["file-edit-icon"]}
             src={deleteFile}
             onClick={(e: MouseEvent<HTMLDivElement>) =>
-              fileControlHandle(e, ActionTypeEnum.Del)
+              fileControlHandle(e, ActionTypeEnum.Del, key)
             }
           />
         </div>
