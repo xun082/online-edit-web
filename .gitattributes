@@ -1,0 +1,13 @@
+# 强制使用 LF 作为行尾符
+* text=auto eol=lf
+
+# 针对特定文件类型的设置
+*.md text eol=lf
+*.sh text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+
+# Makefile 使用 tab 缩进，不需要特定的 eol 设置
+Makefile -text
