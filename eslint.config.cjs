@@ -28,7 +28,6 @@ module.exports = [
       'jsx-a11y': jsxA11y,
       import: importPlugin,
       prettier,
-      tailwindcss: tailwindcssPlugin,
     },
     rules: {
       ...typescriptEslintPlugin.configs.recommended.rules,
