@@ -25,6 +25,13 @@
     ],
     "types": ["vitest/globals"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "eslint.config.cjs"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "eslint.config.cjs",
+    ".storybook/**/*"
+  ],
   "exclude": ["node_modules"]
 }
