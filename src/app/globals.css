@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.nextra-nav-container {
+  @apply z-[9999];
+}
+.nextra-nav-container-blur {
+  @apply !shadow-none;
+}

@@ -16,27 +16,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Cache pnpm store
-        uses: actions/cache@v3
-        with:
-          path: ~/.pnpm-store
-          key: pnpm-store-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-store-${{ matrix.node-version }}-
-
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            node-modules-${{ matrix.node-version }}-
-
       - name: Install PNPM
         uses: pnpm/action-setup@v2
         with:
