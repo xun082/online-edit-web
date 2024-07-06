@@ -1,4 +1,5 @@
 'use client';
+
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -20,6 +21,7 @@ export function Card({ className, children }: { className?: string; children: Re
     </div>
   );
 }
+
 export function CardTitle({
   className,
   children,
@@ -31,6 +33,7 @@ export function CardTitle({
     <h4 className={cn('text-zinc-100 font-bold tracking-wide mt-4', className)}>{children}</h4>
   );
 }
+
 export function CardDescription({
   className,
   children,
