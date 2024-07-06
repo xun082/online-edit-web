@@ -1,8 +1,5 @@
 import type { Config } from 'tailwindcss';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { iconsPlugin, getIconCollections } = require('@egoist/tailwindcss-icons');
-
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -31,9 +28,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    iconsPlugin({ collections: getIconCollections(['ri']) }, require('@tailwindcss/aspect-ratio')),
-  ],
+  plugins: [],
 };
 export default config;

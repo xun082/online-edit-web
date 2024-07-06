@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
+import { FaGithub } from 'react-icons/fa';
+import { RiTwitterXFill, RiRocketLine } from 'react-icons/ri';
+import { PiAcorn } from 'react-icons/pi';
 
 import { Header } from '@/components/home/header/header';
 import { HoverEffect } from '@/components/home/card-hover-effect/card-hover-effect';
@@ -9,37 +12,37 @@ import { Footer } from '@/components/home/footer/footer';
 
 export const projects = [
   {
-    icon: <i className="w-8 h-8 i-ri-code-s-slash-line" />,
+    icon: <PiAcorn className="w-8 h-8" />,
     title: 'title1',
     description: 'desc1!',
     link: '/',
   },
   {
-    icon: <i className="w-8 h-8 i-ri-node-tree" />,
+    icon: <PiAcorn className="w-8 h-8" />,
     title: 'title2',
     description: 'desc2',
     link: '/',
   },
   {
-    icon: <i className="w-8 h-8 i-ri-box-1-line" />,
+    icon: <PiAcorn className="w-8 h-8" />,
     title: 'title3',
     description: 'desc3',
     link: '/',
   },
   {
-    icon: <i className="w-8 h-8 i-ri-gallery-line" />,
+    icon: <PiAcorn className="w-8 h-8" />,
     title: 'title4',
     description: 'desc4',
     link: '/',
   },
   {
-    icon: <i className="w-8 h-8 i-ri-box-3-line" />,
+    icon: <PiAcorn className="w-8 h-8" />,
     title: 'title5',
     description: 'desc5',
     link: '/',
   },
   {
-    icon: <i className="w-8 h-8 i-ri-shapes-line" />,
+    icon: <PiAcorn className="w-8 h-8" />,
     title: 'title6',
     description: 'desc6',
     link: '/',
@@ -48,12 +51,12 @@ export const projects = [
 
 export const icons = [
   {
-    icon: <i className="w-6 h-6 i-ri-github-fill" />,
+    icon: <FaGithub className="w-6 h-6" />,
 
     link: 'https://github.com/xun082/online-edit-web',
   },
   {
-    icon: <i className="w-5 h-5 i-ri-twitter-x-line" />,
+    icon: <RiTwitterXFill className="w-6 h-6" />,
 
     link: 'https://github.com/xun082/online-edit-web',
   },
@@ -78,7 +81,7 @@ export default function Home() {
           </span>
           <div className="relative z-10 flex items-center px-6 py-2 space-x-2 rounded-full bg-zinc-950 ring-1 ring-white/10 ">
             <span>Get started</span>
-            <i className="i-ri-rocket-line" />
+            <RiRocketLine />
           </div>
           <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-emerald-400/90 to-emerald-400/0 transition-opacity duration-500 group-hover:opacity-40" />
         </button>
@@ -87,8 +90,8 @@ export default function Home() {
   }, []);
 
   return (
-    <>
-      <div className="relative flex flex-col items-center justify-center gap-12 antialiased bg-[#111111]">
+    <div className=" bg-[#111111]">
+      <div className="relative flex flex-col items-center justify-center gap-12 antialiased">
         <Header title="online-edit" icons={icons} router={router}></Header>
         <BackgroundBeams />
         <ContainerScroll
@@ -127,6 +130,6 @@ export default function Home() {
         <div className="text-center">{getStartedButton}</div>
       </div>
       <Footer></Footer>
-    </>
+    </div>
   );
 }
