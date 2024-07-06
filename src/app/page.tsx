@@ -1,3 +1,4 @@
+import { NextPage } from 'next';
 import Link from 'next/link';
 import { FaGithub } from 'react-icons/fa';
 import { RiTwitterXFill, RiRocketLine } from 'react-icons/ri';
@@ -9,7 +10,7 @@ import { ContainerScroll } from '@/components/home/container-scroll-animation';
 import { BackgroundBeams } from '@/components/home/background-beams';
 import { Footer } from '@/components/home/footer';
 
-export const projects = [
+const projects = [
   {
     icon: <PiAcorn className="w-8 h-8" />,
     title: 'title1',
@@ -48,7 +49,7 @@ export const projects = [
   },
 ];
 
-export const icons = [
+const socialIcons = [
   {
     icon: <FaGithub className="w-6 h-6" />,
     link: 'https://github.com/xun082/online-edit-web',
@@ -59,7 +60,7 @@ export const icons = [
   },
 ];
 
-export const router = [
+const router = [
   {
     title: 'page1',
     link: '/a',
@@ -70,7 +71,7 @@ export const router = [
   },
 ];
 
-export default function Home() {
+const Home: NextPage = () => {
   const getStartedButton = (
     <Link href="/">
       <button className="relative inline-block p-px text-base font-semibold leading-6 text-white no-underline rounded-full shadow-2xl cursor-pointer bg-slate-800 group shadow-zinc-900">
@@ -89,7 +90,7 @@ export default function Home() {
   return (
     <div className="bg-[#111111]">
       <div className="relative flex flex-col items-center justify-center gap-12 antialiased">
-        <Header title="online-edit" icons={icons} router={router}></Header>
+        <Header title="online-edit" icons={socialIcons} router={router}></Header>
         <BackgroundBeams />
         <ContainerScroll
           content={
@@ -128,4 +129,6 @@ export default function Home() {
       <Footer></Footer>
     </div>
   );
-}
+};
+
+export default Home;
