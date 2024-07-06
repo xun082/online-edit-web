@@ -6,4 +6,5 @@ html,
 body,
 :root {
   position: relative;
+  color-scheme: dark;
 }
