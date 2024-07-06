@@ -4,11 +4,11 @@ import { FaGithub } from 'react-icons/fa';
 import { RiTwitterXFill, RiRocketLine } from 'react-icons/ri';
 import { PiAcorn } from 'react-icons/pi';
 
-import { Header } from '@/components/home/header/header';
-import { HoverEffect } from '@/components/home/card-hover-effect/card-hover-effect';
-import { ContainerScroll } from '@/components/home/container-scroll-animation/container-scroll-animation';
-import { BackgroundBeams } from '@/components/home/background-beams/background-beams';
-import { Footer } from '@/components/home/footer/footer';
+import { Header } from '@/components/home/header';
+import { HoverEffect } from '@/components/home/card-hover-effect';
+import { ContainerScroll } from '@/components/home/container-scroll-animation';
+import { BackgroundBeams } from '@/components/home/background-beams';
+import { Footer } from '@/components/home/footer';
 
 export const projects = [
   {
