@@ -30,6 +30,7 @@ class Request {
 
     // 请求头
     const headers: Record<string, string> = {};
+
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
@@ -77,6 +78,7 @@ class Request {
   interceptorsResponse<T>(res: Response): Promise<T> {
     return new Promise((resolve, reject) => {
       const requestUrl = res.url;
+
       if (res.ok) {
         resolve(res.json() as Promise<T>);
       } else {
@@ -106,6 +108,7 @@ class Request {
     });
 
     const res = await fetch(req.url, req.options);
+
     return this.interceptorsResponse<T>(res);
   }
 

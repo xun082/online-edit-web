@@ -1,26 +1,29 @@
 'use client';
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
 
-export function Header({ translate, titleComponent }: any) {
+import React, { useRef, useEffect, useState } from 'react';
+import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
+
+interface HeaderProps {
+  translate: MotionValue<number>;
+  titleComponent: React.ReactNode;
+}
+
+export function Header({ translate, titleComponent }: HeaderProps) {
   return (
-    <motion.div className="max-w-5xl mx-auto text-center div" style={{ translateY: translate }}>
+    <motion.div className="max-w-5xl mx-auto text-center" style={{ translateY: translate }}>
       {titleComponent}
     </motion.div>
   );
 }
 
-export function Card({
-  rotate,
-  scale,
-  translate,
-  content,
-}: {
-  rotate: any;
-  scale: any;
-  translate: any;
+interface CardProps {
+  rotate: MotionValue<number>;
+  scale: MotionValue<number>;
+  translate: MotionValue<number>;
   content: React.ReactNode;
-}) {
+}
+
+export function Card({ rotate, scale, translate, content }: CardProps) {
   return (
     <motion.div
       className="-mt-2 mx-auto w-full rounded-[30px] max-w-5xl hidden sm:block"
@@ -43,23 +46,26 @@ export function Card({
   );
 }
 
-export function ContainerScroll({
-  titleComponent,
-  content,
-}: {
+interface ContainerScrollProps {
   titleComponent: string | React.ReactNode;
   content: React.ReactNode;
-}) {
-  const containerRef = useRef<any>(null);
-  const { scrollYProgress } = useScroll({ target: containerRef });
-  const [isMobile, setIsMobile] = React.useState(false);
+}
 
-  React.useEffect(() => {
+export function ContainerScroll({ titleComponent, content }: ContainerScrollProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({ target: containerRef });
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
+
     return () => {
       window.removeEventListener('resize', checkMobile);
     };

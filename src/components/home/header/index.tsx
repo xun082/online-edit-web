@@ -16,12 +16,14 @@ interface HeaderRouter {
   title: React.ReactNode;
   link: string;
 }
+
 const renderIcon = (icons: Icon[]) =>
   icons.map((icon) => (
     <a href={icon.link} key={icon.link} className="p-2 rounded-md text-[#ffffff]">
       {icon.icon}
     </a>
   ));
+
 const renderRouter = (router: HeaderRouter[]) =>
   router.map((item) => (
     <Link
@@ -32,6 +34,7 @@ const renderRouter = (router: HeaderRouter[]) =>
       {item.title}
     </Link>
   ));
+
 export const Header: React.FC<HeaderProps> = ({ title, icons, router }) => {
   return (
     <header className="flex items-center justify-between bg-[rgba(17,17,17,1)] py-4 px-6 fixed left-0 top-0 right-0 z-[999] opacity-65">

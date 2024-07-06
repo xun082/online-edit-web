@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import Link from 'next/link';
 import { FaGithub } from 'react-icons/fa';
 import { RiTwitterXFill, RiRocketLine } from 'react-icons/ri';
@@ -15,82 +14,80 @@ export const projects = [
     icon: <PiAcorn className="w-8 h-8" />,
     title: 'title1',
     description: 'desc1!',
-    link: '/',
+    link: '/a',
   },
   {
     icon: <PiAcorn className="w-8 h-8" />,
     title: 'title2',
     description: 'desc2',
-    link: '/',
+    link: '/b',
   },
   {
     icon: <PiAcorn className="w-8 h-8" />,
     title: 'title3',
     description: 'desc3',
-    link: '/',
+    link: '/c',
   },
   {
     icon: <PiAcorn className="w-8 h-8" />,
     title: 'title4',
     description: 'desc4',
-    link: '/',
+    link: '/d',
   },
   {
     icon: <PiAcorn className="w-8 h-8" />,
     title: 'title5',
     description: 'desc5',
-    link: '/',
+    link: '/e',
   },
   {
     icon: <PiAcorn className="w-8 h-8" />,
     title: 'title6',
     description: 'desc6',
-    link: '/',
+    link: '/f',
   },
 ];
 
 export const icons = [
   {
     icon: <FaGithub className="w-6 h-6" />,
-
     link: 'https://github.com/xun082/online-edit-web',
   },
   {
     icon: <RiTwitterXFill className="w-6 h-6" />,
-
-    link: 'https://github.com/xun082/online-edit-web',
+    link: 'https://github.com/xun082/online-edit-web111',
   },
 ];
+
 export const router = [
   {
     title: 'page1',
-    link: '/',
+    link: '/a',
   },
   {
     title: 'page2',
-    link: '/',
+    link: '/b',
   },
 ];
+
 export default function Home() {
-  const getStartedButton = useMemo(() => {
-    return (
-      <Link href="/">
-        <button className="relative inline-block p-px text-base font-semibold leading-6 text-white no-underline rounded-full shadow-2xl cursor-pointer bg-slate-800 group shadow-zinc-900">
-          <span className="absolute inset-0 overflow-hidden rounded-full">
-            <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          </span>
-          <div className="relative z-10 flex items-center px-6 py-2 space-x-2 rounded-full bg-zinc-950 ring-1 ring-white/10 ">
-            <span>Get started</span>
-            <RiRocketLine />
-          </div>
-          <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-emerald-400/90 to-emerald-400/0 transition-opacity duration-500 group-hover:opacity-40" />
-        </button>
-      </Link>
-    );
-  }, []);
+  const getStartedButton = (
+    <Link href="/">
+      <button className="relative inline-block p-px text-base font-semibold leading-6 text-white no-underline rounded-full shadow-2xl cursor-pointer bg-slate-800 group shadow-zinc-900">
+        <span className="absolute inset-0 overflow-hidden rounded-full">
+          <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        </span>
+        <div className="relative z-10 flex items-center px-6 py-2 space-x-2 rounded-full bg-zinc-950 ring-1 ring-white/10 ">
+          <span>Get started</span>
+          <RiRocketLine />
+        </div>
+        <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-emerald-400/90 to-emerald-400/0 transition-opacity duration-500 group-hover:opacity-40" />
+      </button>
+    </Link>
+  );
 
   return (
-    <div className=" bg-[#111111]">
+    <div className="bg-[#111111]">
       <div className="relative flex flex-col items-center justify-center gap-12 antialiased">
         <Header title="online-edit" icons={icons} router={router}></Header>
         <BackgroundBeams />
@@ -115,7 +112,6 @@ export default function Home() {
                 <br />
                 online edit
               </h1>
-
               <div className="my-6">{getStartedButton}</div>
             </div>
           }
