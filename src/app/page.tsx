@@ -9,6 +9,7 @@ import { HoverEffect } from '@/components/home/card-hover-effect';
 import { ContainerScroll } from '@/components/home/container-scroll-animation';
 import { BackgroundBeams } from '@/components/home/background-beams';
 import { Footer } from '@/components/home/footer';
+import { PROJECT_Name, PATHS } from '@/utils';
 
 const projects = [
   {
@@ -73,7 +74,7 @@ const router = [
 
 const Home: NextPage = () => {
   const getStartedButton = (
-    <Link href="/dashboard">
+    <Link href={PATHS.MAIN_DASHBOARD}>
       <button className="relative inline-block p-px text-base font-semibold leading-6 text-white no-underline rounded-full shadow-2xl cursor-pointer bg-slate-800 group shadow-zinc-900">
         <span className="absolute inset-0 overflow-hidden rounded-full">
           <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -90,7 +91,7 @@ const Home: NextPage = () => {
   return (
     <div className="bg-[#111111]">
       <div className="relative flex flex-col items-center justify-center gap-12 antialiased">
-        <Header title="online-edit" icons={socialIcons} router={router}></Header>
+        <Header title={PROJECT_Name} icons={socialIcons} router={router}></Header>
         <BackgroundBeams />
         <ContainerScroll
           content={
