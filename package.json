@@ -21,6 +21,9 @@
   "author": "Moment",
   "license": "MIT",
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "10.17.9",
     "next": "14.2.4",
@@ -28,7 +31,8 @@
     "react-dom": "^18.3.1",
     "react-icons": "^5.2.1",
     "react-resizable-panels": "^2.0.20",
-    "tailwind-merge": "^2.3.0"
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.6.1",
