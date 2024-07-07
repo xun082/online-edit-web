@@ -5,10 +5,10 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import { GoFileDirectory } from 'react-icons/go';
 import { MdComputer } from 'react-icons/md';
-import { FaBookOpen } from 'react-icons/fa';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/utils';
+import { PATHS } from '@/utils';
 
 interface RouterData {
   title: string;
@@ -20,17 +20,12 @@ const RouterDataList: RouterData[] = [
   {
     title: '项目',
     icon: <GoFileDirectory className=" w-6 text-[16px] mr-3" />,
-    link: '/dashboard',
+    link: PATHS.MAIN_DASHBOARD,
   },
   {
     title: '文档',
     icon: <MdComputer className=" w-6 text-[16px] mr-3" />,
-    link: '/templates',
-  },
-  {
-    title: '设置',
-    link: '/test',
-    icon: <FaBookOpen className=" w-6 text-[16px] mr-3" />,
+    link: PATHS.MAIN_TEMPLATES,
   },
 ];
 
