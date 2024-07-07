@@ -10,6 +10,7 @@ import ResizeHandle from '@/components/resize-handle';
 import { PATHS } from '@/utils';
 import { Preview } from '@/components/preview';
 import { Header } from '@/components/edit/header';
+import CodeEditor from '@/components/editor';
 
 const MockUserInfo = {
   name: 'xiaoming',
@@ -63,16 +64,14 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <Panel className="flex-1 bg-gray-700" minSize={1} defaultSize={50}>
             <PanelGroup direction="vertical" className="h-full" onLayout={editPanelGroupResize}>
               <Panel defaultSize={70} className="bg-gray-600" collapsible={true}>
-                <div className="p-4 h-full">
-                  <h2 className="text-white">Workspace Snippets</h2>
-                  {/* 在这里添加内容 */}
+                <div className="h-full">
+                  <CodeEditor />
                 </div>
               </Panel>
               <ResizeHandle direction="vertical" />
               <Panel defaultSize={30} minSize={2} className="bg-black">
                 <div className=" text-green-500 h-full">
                   <h2>Terminal</h2>
-                  {/* 在这里添加内容 */}
                 </div>
               </Panel>
             </PanelGroup>
