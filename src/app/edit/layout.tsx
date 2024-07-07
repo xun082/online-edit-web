@@ -1,13 +1,18 @@
 'use client';
 
-import { useRef } from 'react';
+import React, { useRef } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { PanelGroup, Panel } from 'react-resizable-panels';
 import { FaFileAlt, FaSearch, FaPlug, FaCog, FaQuestionCircle } from 'react-icons/fa';
 
 import ResizeHandle from '@/components/resize-handle';
+import { PATHS } from '@/utils';
+import { Preview } from '@/components/preview';
 
-const Page = () => {
+const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const terminalRef = useRef<any>(null);
+  const pathname = usePathname();
 
   const editPanelGroupResize = () => {
     terminalRef.current?.terminalResize();
@@ -18,10 +23,18 @@ const Page = () => {
       {/* 侧边栏 */}
       <div className="bg-gray-900 text-gray-400 w-16 flex flex-col justify-between items-center py-4">
         <div className="flex flex-col items-center space-y-4">
-          <FaFileAlt size="24" className="text-white" />
-          <FaSearch size="24" />
-          <FaPlug size="24" />
-          <FaCog size="24" />
+          <Link href={PATHS.EDIT_FILE}>
+            <FaFileAlt size="24" className={pathname === PATHS.EDIT_FILE ? 'text-white' : ''} />
+          </Link>
+          <Link href={PATHS.EDIT_SEARCH}>
+            <FaSearch size="24" className={pathname === PATHS.EDIT_SEARCH ? 'text-white' : ''} />
+          </Link>
+          <Link href={PATHS.EDIT_PLUGINS}>
+            <FaPlug size="24" className={pathname === PATHS.EDIT_PLUGINS ? 'text-white' : ''} />
+          </Link>
+          <Link href={PATHS.EDIT_SETTINGS}>
+            <FaCog size="24" className={pathname === PATHS.EDIT_SETTINGS ? 'text-white' : ''} />
+          </Link>
         </div>
         <div className="flex flex-col items-center space-y-4">
           <FaQuestionCircle size="24" />
@@ -31,15 +44,12 @@ const Page = () => {
       {/* 可调整大小的面板 */}
       <PanelGroup direction="horizontal" className="flex-1">
         <Panel minSize={1} defaultSize={15} className="bg-gray-800">
-          <div className="p-4 h-full">
-            <h2 className="text-white">Ports in Use</h2>
-            {/* 在这里添加内容 */}
-          </div>
+          {children}
         </Panel>
         <ResizeHandle />
         <Panel className="flex-1 bg-gray-700" minSize={1} defaultSize={50}>
           <PanelGroup direction="vertical" className="h-full" onLayout={editPanelGroupResize}>
-            <Panel className="bg-gray-600" collapsible={true}>
+            <Panel defaultSize={70} className="bg-gray-600" collapsible={true}>
               <div className="p-4 h-full">
                 <h2 className="text-white">Workspace Snippets</h2>
                 {/* 在这里添加内容 */}
@@ -47,7 +57,7 @@ const Page = () => {
             </Panel>
             <ResizeHandle direction="vertical" />
             <Panel defaultSize={30} minSize={2} className="bg-black">
-              <div className="p-4 text-green-500 h-full">
+              <div className=" text-green-500 h-full">
                 <h2>Terminal</h2>
                 {/* 在这里添加内容 */}
               </div>
@@ -57,8 +67,7 @@ const Page = () => {
         <ResizeHandle />
         <Panel className="bg-gray-900" minSize={1} defaultSize={35}>
           <div className="p-4 h-full">
-            <h2 className="text-white">Web Preview</h2>
-            {/* 在这里添加内容 */}
+            <Preview />
           </div>
         </Panel>
       </PanelGroup>
