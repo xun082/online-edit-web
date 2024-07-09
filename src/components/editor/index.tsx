@@ -44,12 +44,15 @@ const modelsInfo = [
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function CodeEditor({ splitId }: CodeEditorProps) {
-  const { setEditor } = useEditorStore();
+  const { getEditor, setEditor } = useEditorStore();
   const { setMonaco } = useMonacoStore();
   const { setModels } = useModelsStore();
-  const { setCurrentModel } = useCurrentModelStore();
+  const { currentMap, setCurrentModel } = useCurrentModelStore();
+  const thisEditor = getEditor(splitId);
+  const currentModel = currentMap[splitId];
+  console.log(currentModel, thisEditor, currentModel || thisEditor);
+
   const handleEditorDidMount = useCallback(
     (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
       monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -64,9 +67,9 @@ export default function CodeEditor({ splitId }: CodeEditorProps) {
         esModuleInterop: true,
       });
 
-      setEditor(editor);
-      setMonaco(monaco);
-      setModelsFromInfo(modelsInfo, monaco, editor, setModels, setCurrentModel);
+      setEditor(splitId, editor);
+      setMonaco(splitId, monaco);
+      setModelsFromInfo(modelsInfo, monaco, editor, setModels, setCurrentModel, splitId);
 
       monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
         noSemanticValidation: false,
@@ -82,23 +85,25 @@ export default function CodeEditor({ splitId }: CodeEditorProps) {
   const handleEditorChange = (value: string = ''): void => {};
 
   return (
-    <div className=" w-full h-full flex flex-col">
-      <div className=" h-[4.5vh] w-full bg-[#202327]/80">
-        <Tabbar />
+    (thisEditor === null || currentModel.model) && (
+      <div className=" w-full h-full flex flex-col">
+        <div className=" h-[4.5vh] w-full bg-[#202327]/80">
+          <Tabbar splitId={splitId} />
+        </div>
+        <Editor
+          className={'editor'}
+          theme="vs-dark"
+          language={'typescript'}
+          options={{
+            minimap: { enabled: true },
+            fontSize: 16,
+            wordWrap: 'on', // 是否换行
+            automaticLayout: true,
+          }}
+          onChange={handleEditorChange}
+          onMount={handleEditorDidMount}
+        />
       </div>
-      <Editor
-        className={'editor'}
-        theme="vs-dark"
-        language={'typescript'}
-        options={{
-          minimap: { enabled: true },
-          fontSize: 16,
-          wordWrap: 'on', // 是否换行
-          automaticLayout: true,
-        }}
-        onChange={handleEditorChange}
-        onMount={handleEditorDidMount}
-      />
-    </div>
+    )
   );
 }

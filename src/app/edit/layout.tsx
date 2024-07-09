@@ -11,7 +11,7 @@ import { PATHS } from '@/utils';
 import { Preview } from '@/components/preview';
 import { Header } from '@/components/edit/header';
 import CodeEditor from '@/components/editor';
-// import { useSplitStore } from '@/store/editorStore';
+import { useSplitStore } from '@/store/editorStore';
 
 const MockUserInfo = {
   name: 'xiaoming',
@@ -23,15 +23,21 @@ const MockProjectData = {
 
 const renderSplitCodeEditor = (splitCount: number): JSX.Element[] => {
   return Array.from({ length: splitCount }, (_, index) => (
-    <div key={index} className="flex-1 w-1/2">
-      <CodeEditor splitId={index + 1} />
-    </div>
+    <>
+      <Panel defaultSize={100} minSize={10}>
+        <div key={index} className="flex-1 h-full overflow-hidden">
+          <CodeEditor splitId={index + 1} />
+        </div>
+      </Panel>
+      {index < splitCount - 1 && <ResizeHandle />}
+    </>
   ));
 };
 const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const terminalRef = useRef<any>(null);
   const pathname = usePathname();
-  // const { splitCount } = useSplitStore();
+  const { splitCount } = useSplitStore();
+  console.log(splitCount);
 
   const editPanelGroupResize = () => {
     terminalRef.current?.terminalResize();
@@ -74,10 +80,12 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <Panel className="flex-1 bg-gray-700" minSize={1} defaultSize={50}>
             <PanelGroup direction="vertical" className="h-full" onLayout={editPanelGroupResize}>
               <Panel defaultSize={70} className="bg-gray-600" collapsible={true}>
-                <div className=" flex relative h-full">{renderSplitCodeEditor(2)}</div>
+                <PanelGroup direction="horizontal" className=" flex relative h-full">
+                  {renderSplitCodeEditor(splitCount)}
+                </PanelGroup>
               </Panel>
               <ResizeHandle direction="vertical" />
-              <Panel defaultSize={30} minSize={2} className="bg-black">
+              <Panel defaultSize={30} minSize={4} className="bg-black">
                 <div className=" text-green-500 h-full">
                   <h2>Terminal</h2>
                 </div>

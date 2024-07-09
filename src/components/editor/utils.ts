@@ -6,12 +6,12 @@ export function setModelsFromInfo(
   modelsInfo: modelInfoType[],
   monaco: typeof monacoForType,
   editor: editor.IStandaloneCodeEditor,
-  setModels: (modelInfo: any, model: any) => void,
-  setCurrentModel: (modelId: string, model: editor.ITextModel) => void,
+  setModels: (modelInfo: any, model: any, editorId: number) => void,
+  setCurrentModel: (modelId: string, model: editor.ITextModel, editorId: number) => void,
+  editorId: number,
 ) {
-  setModels(null, null);
   modelsInfo.map((modelInfo, modelIndex) => {
-    addNewModel(modelInfo, modelIndex, monaco, editor, setModels, setCurrentModel);
+    addNewModel(modelInfo, modelIndex, monaco, editor, setModels, setCurrentModel, editorId);
   });
 }
 
@@ -20,8 +20,9 @@ export function addNewModel(
   modelIndex: number,
   monaco: typeof monacoForType,
   editor: editor.IStandaloneCodeEditor,
-  setModels: (modelInfo: any, model: any) => void,
-  setCurrentModel: (modelId: string, model: editor.ITextModel) => void,
+  setModels: (modelInfo: any, model: any, editorId: number) => void,
+  setCurrentModel: (modelId: string, model: editor.ITextModel, editorId: number) => void,
+  editorId: number,
 ) {
   let model = monaco.editor.getModel(monaco.Uri.file(modelInfo.filename));
 
@@ -33,7 +34,8 @@ export function addNewModel(
     );
   }
 
-  setCurrentModel(modelInfo.filename, model);
-  setModels(modelInfo, model);
+  setCurrentModel(modelInfo.filename, model, editorId);
+  console.log(modelInfo, model, editorId);
+  setModels(modelInfo, model, editorId);
   editor.setModel(model);
 }

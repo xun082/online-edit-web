@@ -1,28 +1,60 @@
 import { create } from 'zustand';
 import monacoForTypes, { editor } from 'monaco-editor';
 
-interface editorAction {
-  setEditor: (editor: editor.IStandaloneCodeEditor) => void;
+interface EditorAction {
+  setEditor: (index: number, editor: editor.IStandaloneCodeEditor) => void;
+  getEditor: (index: number) => editor.IStandaloneCodeEditor | null;
 }
 
-interface editorState {
-  editor: editor.IStandaloneCodeEditor | null;
+interface EditorState {
+  editors: (editor.IStandaloneCodeEditor | null)[];
 }
-export const useEditorStore = create<editorState & editorAction>((set) => ({
-  editor: null,
-  setEditor: (editor: editor.IStandaloneCodeEditor) => set({ editor }),
+
+export const useEditorStore = create<EditorState & EditorAction>((set, get) => ({
+  editors: [],
+
+  setEditor: (index: number, editor: editor.IStandaloneCodeEditor) => {
+    set((state) => {
+      const preEditors = [...state.editors];
+      preEditors[index] = editor;
+
+      return {
+        editors: [...preEditors],
+      };
+    });
+  },
+
+  getEditor: (index: number) => {
+    return get().editors[index] || null;
+  },
 }));
 
-interface monacoState {
-  monaco: typeof monacoForTypes | null;
-}
-interface monacoAction {
-  setMonaco: (editor: editor.IStandaloneCodeEditor) => void;
+interface MonacoState {
+  monacos: (typeof monacoForTypes | null)[];
 }
 
-export const useMonacoStore = create<monacoState & monacoAction>((set) => ({
-  monaco: null,
-  setMonaco: (monaco: typeof monacoForTypes) => set({ monaco }),
+interface MonacoAction {
+  setMonaco: (index: number, monaco: typeof monacoForTypes) => void;
+  getMonaco: (index: number) => typeof monacoForTypes | null;
+}
+
+export const useMonacoStore = create<MonacoState & MonacoAction>((set, get) => ({
+  monacos: [],
+
+  setMonaco: (index: number, monaco: typeof monacoForTypes) => {
+    set((state) => {
+      const preMonacos = [...state.monacos];
+      preMonacos[index] = monaco;
+
+      return {
+        monacos: [...preMonacos],
+      };
+    });
+  },
+
+  getMonaco: (index: number) => {
+    return get().monacos[index] || null;
+  },
 }));
 
 export type modelInfoType = {
@@ -35,20 +67,20 @@ export type modelInfoType = {
   language: string;
 };
 
-export type modelType = modelInfoType & { model: editor.ITextModel };
+export type modelType = modelInfoType & { model: editor.ITextModel; usedBy: number[] };
 export type modelsType = modelType[];
 
 interface ModelsState {
   models: modelsType | [];
 }
 interface ModelsAction {
-  setModels: (modelInfo: any, model: any) => void;
-  removeModel: (filename: string) => any;
+  setModels: (modelInfo: any, model: any, editorId: number) => void;
+  removeModel: (filename: string, editorId: number) => any;
 }
 export const useModelsStore = create<ModelsState & ModelsAction>((set, get) => ({
   models: [],
 
-  setModels: (modelInfo, model) => {
+  setModels: (modelInfo, model, editorId: number) => {
     if (!modelInfo || typeof modelInfo !== 'object' || !modelInfo.hasOwnProperty('filename')) {
       console.error('Invalid modelInfo passed to setModels.');
 
@@ -59,47 +91,93 @@ export const useModelsStore = create<ModelsState & ModelsAction>((set, get) => (
       const existingModelIndex = state.models.findIndex((m) => m.filename === modelInfo.filename);
 
       if (existingModelIndex === -1) {
-        // 如果没有找到相同filename的模型，则添加新模型
         return {
           models: [
             ...(state.models || []),
             {
               ...modelInfo,
               model,
+              usedBy: [editorId],
             },
           ],
         };
       } else {
-        // 如果找到了相同filename的模型，则不进行任何操作
-        return state;
+        if (state.models[existingModelIndex].usedBy.includes(editorId)) {
+          return state;
+        } else {
+          const preModels = [...state.models];
+          preModels[existingModelIndex].usedBy.push(editorId);
+
+          return {
+            models: [...preModels],
+          };
+        }
       }
     });
   },
 
-  removeModel: (filename: string) => {
+  removeModel: (filename: string, editorId: number) => {
     set((state) => {
-      const updatedModels = state.models.filter((model) => model.filename !== filename);
+      const existingModelIndex = state.models.findIndex((m) => m.filename === filename);
 
-      return { models: updatedModels };
+      if (existingModelIndex !== -1) {
+        const preModels = [...state.models];
+
+        if (preModels[existingModelIndex].usedBy.includes(editorId)) {
+          preModels[existingModelIndex].usedBy = preModels[existingModelIndex].usedBy.filter(
+            (id) => id !== editorId,
+          );
+
+          if (preModels[existingModelIndex].usedBy.length === 0) {
+            return {
+              models: [...preModels.filter((model) => model.filename !== filename)],
+            };
+          } else {
+            return {
+              models: [...preModels],
+            };
+          }
+        }
+      }
+
+      return {
+        models: state.models,
+      };
     });
 
-    return get().models[get().models.length - 1] || null;
+    return (
+      get()
+        .models.filter((model) => model.usedBy.includes(editorId))
+        .at(-1) || null
+    );
   },
 }));
 
 interface CurrentModleState {
-  modelId: string;
-  model: editor.ITextModel | null;
+  currentMap: { modelId: string; model: editor.ITextModel | null }[];
 }
 
 interface CurrentModleAction {
-  setCurrentModel: (modelId: string, model: editor.ITextModel) => void;
+  setCurrentModel: (modelId: string, model: editor.ITextModel, editorId: number) => void;
+  clearCuurentModel: (editorId: number) => void;
 }
 
 export const useCurrentModelStore = create<CurrentModleState & CurrentModleAction>((set) => ({
-  modelId: '',
-  model: null,
-  setCurrentModel: (modelId: string, model: editor.ITextModel) => set({ modelId, model }),
+  currentMap: [],
+  setCurrentModel: (modelId: string, model: editor.ITextModel, editorId: number) =>
+    set((state) => {
+      const preCurrentMap = [...state.currentMap];
+      preCurrentMap[editorId] = { modelId, model };
+
+      return { currentMap: preCurrentMap };
+    }),
+  clearCuurentModel: (editorId: number) =>
+    set((state) => {
+      const preCurrentMap = [...state.currentMap];
+      preCurrentMap[editorId] = { modelId: '', model: null };
+
+      return { currentMap: preCurrentMap };
+    }),
 }));
 interface splitState {
   splitCount: number;
