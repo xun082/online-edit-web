@@ -26,10 +26,7 @@ export function addNewModel(
   let model = monaco.editor.getModel(monaco.Uri.file(modelInfo.filename));
 
   if (model === null) {
-    model = monaco.editor.createModel(
-      modelInfo.value,
-      monaco.Uri.file(modelInfo.filename).toString(),
-    );
+    model = monaco.editor.createModel(modelInfo.value, monaco.Uri.file(modelInfo.filename));
   }
 
   setActiveModel(modelInfo.filename, model, editorId);
