@@ -70,6 +70,7 @@ export const useMonacoStore = create<MonacoState & MonacoAction>((set, get) => (
 
 export type modelInfoType = {
   filename: string;
+  language: string;
   value: string;
 };
 
