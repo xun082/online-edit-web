@@ -1,4 +1,8 @@
-export const stepQueue = [
+export interface IStepQueue {
+  condition: number;
+  title: string;
+}
+export const stepQueue: Array<IStepQueue> = [
   // {
   //     condition: -1,
   //     title: 'Error-status',
