@@ -45,8 +45,8 @@ export const Preview: FC = memo(function Preview() {
 
   useEffect(() => {
     setTimeout(() => {
-      setLoaded(true);
-    }, 1000);
+      setLoaded(true); //测试，可删
+    }, 5000);
   }, []);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {

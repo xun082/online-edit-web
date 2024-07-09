@@ -1,29 +1,34 @@
-import { FC, useState } from 'react';
+import { FC, useState, memo, ReactNode } from 'react';
 import { FaLightbulb, FaArrowsRotate, FaCircleCheck, FaO, FaCircleXmark } from 'react-icons/fa6';
 
 import { stepQueue, IStepQueue } from './constant';
 
-const BootingStep: FC<IStepQueue> = ({ condition = 0, title }) => {
-  function getStatuByCode(condition: number) {
-    switch (condition) {
-      case -1:
-        return <FaCircleXmark className="text-red-400" />;
-      case 0:
-        return <FaO />;
-      case 1:
-        return <FaCircleCheck />;
-      case 2:
-        return <FaArrowsRotate className="animate-spin rotate-360 infinite duration-1000" />;
-    }
-  }
+let statusIcon: Record<string, ReactNode> = {
+  '-1': <FaCircleXmark className="text-red-400" aria-label="Error" />,
+  '2': <FaCircleCheck className="text-green-500" aria-label="Success" />,
+  '1': (
+    <FaArrowsRotate
+      className="animate-spin text-blue-500 rotate-360 infinite duration-1000"
+      aria-label="Loading"
+    />
+  ),
+  '0': (
+    <span className="text-yellow-500" aria-label="Initializing">
+      <FaO />
+    </span>
+  ),
+};
+
+const BootingStep: FC<IStepQueue> = memo(({ condition, title }) => {
+  let Icon = statusIcon[condition];
 
   return (
     <div className="flex items-center">
-      {getStatuByCode(condition)}
+      {Icon}
       <span className="mx-2">{title}</span>
     </div>
   );
-};
+});
 
 const BootingWebContainer: FC = () => {
   const [steps] = useState<Array<IStepQueue>>(stepQueue);
