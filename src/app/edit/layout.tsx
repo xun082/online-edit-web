@@ -78,7 +78,7 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </Panel>
           <ResizeHandle />
           <Panel className="bg-gray-900" minSize={1} defaultSize={35}>
-            <div className="p-4 h-full">
+            <div className=" h-full">
               <Preview />
             </div>
           </Panel>
