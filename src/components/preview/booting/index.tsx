@@ -1,8 +1,6 @@
 import { FC, useState, memo, ReactNode } from 'react';
 import { FaLightbulb, FaArrowsRotate, FaCircleCheck, FaO, FaCircleXmark } from 'react-icons/fa6';
 
-import { stepQueue, IStepQueue } from './constant';
-
 let statusIcon: Record<string, ReactNode> = {
   '-1': <FaCircleXmark className="text-red-400" aria-label="Error" />,
   '2': <FaCircleCheck className="text-green-500" aria-label="Success" />,
@@ -18,6 +16,10 @@ let statusIcon: Record<string, ReactNode> = {
     </span>
   ),
 };
+interface IStepQueue {
+  condition: string;
+  title: string;
+}
 
 const BootingStep: FC<IStepQueue> = memo(({ condition, title }) => {
   let Icon = statusIcon[condition];
@@ -29,6 +31,21 @@ const BootingStep: FC<IStepQueue> = memo(({ condition, title }) => {
     </div>
   );
 });
+
+const stepQueue: Array<IStepQueue> = [
+  {
+    condition: '2',
+    title: 'Booting WebContainer',
+  },
+  {
+    condition: '1',
+    title: 'Installing dependencies',
+  },
+  {
+    condition: '0',
+    title: 'Running start command',
+  },
+];
 
 const BootingWebContainer: FC = () => {
   const [steps] = useState<Array<IStepQueue>>(stepQueue);
