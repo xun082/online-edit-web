@@ -1,7 +1,7 @@
 import { FC, useState, ReactNode } from 'react';
 import { FaLightbulb, FaArrowsRotate, FaCircleCheck, FaO, FaCircleXmark } from 'react-icons/fa6';
 
-let statusIcon: Record<string, ReactNode> = {
+const statusIcon: Record<string, ReactNode> = {
   '-1': <FaCircleXmark className="text-red-400" aria-label="Error" />,
   '2': <FaCircleCheck className="text-green-500" aria-label="Success" />,
   '1': (
