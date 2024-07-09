@@ -12,30 +12,29 @@ import {
 import { cn } from '@/utils';
 import {
   useModelsStore,
-  useCurrentModelStore,
+  useActiveModelStore,
   useEditorStore,
   useSplitStore,
+  useActiveEditorStore,
 } from '@/store/editorStore';
 interface TabbarProps {
-  splitId: number;
+  editorId: number;
 }
 
-export const Tabbar: React.FC<TabbarProps> = ({ splitId }) => {
-  const { models, removeModel } = useModelsStore();
-  const { currentMap, setCurrentModel, clearCuurentModel } = useCurrentModelStore();
-  const { getEditor } = useEditorStore();
+export const Tabbar: React.FC<TabbarProps> = ({ editorId }) => {
+  const { models, removeModel, removeAllModel } = useModelsStore();
+  const { activeMap, setActiveModel, clearActiveModel } = useActiveModelStore();
+  const { getEditor, removeEditor } = useEditorStore();
   const { addSplit, removeSplit } = useSplitStore();
-  const editor = getEditor(splitId);
-  console.log(currentMap);
+  const { activeEditorId } = useActiveEditorStore();
 
-  const modelId = currentMap[splitId]?.modelId ?? 0;
+  const editor = getEditor(editorId);
 
-  console.log(currentMap);
+  const modelId = activeMap[editorId]?.modelId ?? 0;
 
   function renderTabs(models: any[], currentFile: string) {
     return models.map((model) => {
-      // 检查 model 是否有 filename 属性，且 usedBy 是数组，且 includes splitId
-      if (model.filename && model?.usedBy instanceof Array && model.usedBy.includes(splitId)) {
+      if (model.filename && model?.usedBy instanceof Array && model.usedBy.includes(editorId)) {
         return (
           <div
             key={model.filename}
@@ -44,12 +43,7 @@ export const Tabbar: React.FC<TabbarProps> = ({ splitId }) => {
               model.filename === currentFile ? 'bg-[#15181e]/1 border-blue-500' : '',
             )}
             onClick={() => {
-              setCurrentModel(model.filename, model.model, splitId);
-              // console.log(model);
-              // console.log(models);
-              // console.log(splitId);
-              // console.log(editors);
-              // console.log(editor);
+              setActiveModel(model.filename, model.model, editorId);
               editor && editor.setModel(model.model);
             }}
           >
@@ -59,14 +53,16 @@ export const Tabbar: React.FC<TabbarProps> = ({ splitId }) => {
                 e.preventDefault();
                 e.stopPropagation();
 
-                const newModels = removeModel(model.filename, splitId);
+                const newModels = removeModel(model.filename, editorId);
 
                 if (newModels && newModels.filename) {
-                  setCurrentModel(newModels.filename, newModels.model, splitId);
+                  setActiveModel(newModels.filename, newModels.model, editorId);
                   editor && editor.setModel(newModels.model);
                 } else {
-                  clearCuurentModel(splitId);
+                  clearActiveModel(editorId);
                   editor && editor.setModel(null);
+                  removeSplit(editorId);
+                  removeEditor(editorId);
                 }
               }}
               className="hidden group-hover:block absolute right-1 p-2"
@@ -90,8 +86,13 @@ export const Tabbar: React.FC<TabbarProps> = ({ splitId }) => {
       <div className=" bg-transparent flex flex-1 gap-x-4 justify-end ml-4 mr-4 items-center">
         <div className=" flex justify-center items-center cursor-pointer">
           <VscSplitHorizontal
-            onClick={() => addSplit()}
-            className=" text-[14px] text-[#cacfd7] hover:text-[white]"
+            onClick={() => {
+              addSplit();
+            }}
+            className={cn(
+              ' text-[14px] text-[#cacfd7] hover:text-[white] hidden',
+              (activeEditorId === editorId || (activeEditorId === -1 && editorId === 0)) && 'block',
+            )}
           />
         </div>
         <div className="flex justify-center items-center cursor-pointer">
@@ -104,8 +105,12 @@ export const Tabbar: React.FC<TabbarProps> = ({ splitId }) => {
             <DropdownMenuContent className=" w-24 bg-[#343a46]">
               <DropdownMenuItem>
                 <span
+                  className=" w-full h-full"
                   onClick={() => {
-                    removeSplit();
+                    editor && editor.setModel(null);
+                    removeSplit(editorId);
+                    removeEditor(editorId);
+                    removeAllModel(editorId);
                   }}
                 >
                   Close

@@ -3,6 +3,7 @@ import monacoForTypes, { editor } from 'monaco-editor';
 
 interface EditorAction {
   setEditor: (index: number, editor: editor.IStandaloneCodeEditor) => void;
+  removeEditor: (index: number) => void;
   getEditor: (index: number) => editor.IStandaloneCodeEditor | null;
 }
 
@@ -26,6 +27,16 @@ export const useEditorStore = create<EditorState & EditorAction>((set, get) => (
 
   getEditor: (index: number) => {
     return get().editors[index] || null;
+  },
+  removeEditor(index: number) {
+    set((state) => {
+      const preEditors = [...state.editors];
+      preEditors[index] = null;
+
+      return {
+        editors: [...preEditors],
+      };
+    });
   },
 }));
 
@@ -58,13 +69,8 @@ export const useMonacoStore = create<MonacoState & MonacoAction>((set, get) => (
 }));
 
 export type modelInfoType = {
-  notInitial?: boolean;
-  shown?: boolean;
-  readOnly?: boolean;
-  tested?: boolean;
   filename: string;
   value: string;
-  language: string;
 };
 
 export type modelType = modelInfoType & { model: editor.ITextModel; usedBy: number[] };
@@ -74,17 +80,18 @@ interface ModelsState {
   models: modelsType | [];
 }
 interface ModelsAction {
-  setModels: (modelInfo: any, model: any, editorId: number) => void;
+  setModels: (modelInfo: modelInfoType, model: editor.ITextModel, editorId: number) => void;
   removeModel: (filename: string, editorId: number) => any;
+  removeAllModel: (editorId: number) => void;
 }
 export const useModelsStore = create<ModelsState & ModelsAction>((set, get) => ({
   models: [],
 
-  setModels: (modelInfo, model, editorId: number) => {
+  setModels: (modelInfo: modelInfoType, model: editor.ITextModel, editorId: number) => {
     if (!modelInfo || typeof modelInfo !== 'object' || !modelInfo.hasOwnProperty('filename')) {
-      console.error('Invalid modelInfo passed to setModels.');
+      // console.error('Invalid modelInfo passed to setModels.');
 
-      return; // 退出函数，不执行后续操作
+      return;
     }
 
     set((state) => {
@@ -151,70 +158,117 @@ export const useModelsStore = create<ModelsState & ModelsAction>((set, get) => (
         .at(-1) || null
     );
   },
+  removeAllModel: (editorId: number) => {
+    set((state) => {
+      const updatedModels = state.models
+        .map((model) => {
+          if (model.usedBy.includes(editorId)) {
+            const updatedUsedBy = model.usedBy.filter((id) => id !== editorId);
+
+            return {
+              ...model,
+              usedBy: updatedUsedBy,
+            };
+          }
+
+          return model;
+        })
+        .filter((model) => model.usedBy.length > 0);
+
+      return {
+        models: updatedModels,
+      };
+    });
+  },
 }));
 
-interface CurrentModleState {
-  currentMap: { modelId: string; model: editor.ITextModel | null }[];
+interface activeModelState {
+  activeMap: { modelId: string; model: editor.ITextModel | null }[];
 }
 
-interface CurrentModleAction {
-  setCurrentModel: (modelId: string, model: editor.ITextModel, editorId: number) => void;
-  clearCuurentModel: (editorId: number) => void;
+interface activeModelAction {
+  setActiveModel: (modelId: string, model: editor.ITextModel, editorId: number) => void;
+  clearActiveModel: (editorId: number) => void;
 }
 
-export const useCurrentModelStore = create<CurrentModleState & CurrentModleAction>((set) => ({
-  currentMap: [],
-  setCurrentModel: (modelId: string, model: editor.ITextModel, editorId: number) =>
+export const useActiveModelStore = create<activeModelState & activeModelAction>((set) => ({
+  activeMap: [],
+
+  setActiveModel: (modelId: string, model: editor.ITextModel, editorId: number) =>
     set((state) => {
-      const preCurrentMap = [...state.currentMap];
-      preCurrentMap[editorId] = { modelId, model };
+      const preActiveMap = [...state.activeMap];
+      preActiveMap[editorId] = { modelId, model };
 
-      return { currentMap: preCurrentMap };
+      return { activeMap: preActiveMap };
     }),
-  clearCuurentModel: (editorId: number) =>
-    set((state) => {
-      const preCurrentMap = [...state.currentMap];
-      preCurrentMap[editorId] = { modelId: '', model: null };
 
-      return { currentMap: preCurrentMap };
+  clearActiveModel: (editorId: number) =>
+    set((state) => {
+      const preActiveMap = [...state.activeMap];
+      preActiveMap[editorId] = { modelId: '', model: null };
+
+      return { activeMap: preActiveMap };
     }),
 }));
 interface splitState {
-  splitCount: number;
+  splitState: boolean[];
 }
 
 interface splitAction {
-  setSplitCount: (splitCount: number) => void;
   addSplit: () => void;
-  removeSplit: () => void;
+  removeSplit: (index: number) => void;
 }
 
 export const useSplitStore = create<splitState & splitAction>((set) => ({
-  splitCount: 1,
-
-  setSplitCount: (splitCount: number) => {
-    if (splitCount >= 1 && splitCount <= 3) {
-      set({ splitCount });
-    }
-  },
+  splitState: [true, false, false],
 
   addSplit: () => {
     set((state) => {
-      if (state.splitCount < 3) {
-        return { splitCount: state.splitCount + 1 };
+      const index = state.splitState.findIndex((s) => s === false);
+
+      if (index !== -1) {
+        const newState = [...state.splitState];
+        newState[index] = true;
+
+        return { splitState: newState };
       }
 
       return state;
     });
   },
 
-  removeSplit: () => {
+  removeSplit: (index: number) => {
     set((state) => {
-      if (state.splitCount > 1) {
-        return { splitCount: state.splitCount - 1 };
+      const newState = [...state.splitState];
+
+      if (index >= 0 && index < newState.length) {
+        newState[index] = false;
       }
 
-      return state;
+      return { splitState: newState };
+    });
+  },
+}));
+
+interface ActiveEditorState {
+  activeEditor: editor.IStandaloneCodeEditor | null;
+  activeEditorId: number;
+}
+
+interface ActiveEditorAction {
+  setActiveEditor: (editor: editor.IStandaloneCodeEditor, index: number) => void;
+}
+
+// 标记active状态下的editor，默认第一个
+export const useActiveEditorStore = create<ActiveEditorState & ActiveEditorAction>((set) => ({
+  activeEditor: null,
+  activeEditorId: -1,
+
+  setActiveEditor: (editor, index) => {
+    set({
+      // 更新状态
+      activeEditor: editor,
+      activeEditorId: index,
     });
   },
 }));

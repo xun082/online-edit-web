@@ -21,23 +21,26 @@ const MockProjectData = {
   name: '这是一个project',
 };
 
-const renderSplitCodeEditor = (splitCount: number): JSX.Element[] => {
-  return Array.from({ length: splitCount }, (_, index) => (
-    <>
-      <Panel defaultSize={100} minSize={10}>
-        <div key={index} className="flex-1 h-full overflow-hidden">
-          <CodeEditor splitId={index + 1} />
-        </div>
-      </Panel>
-      {index < splitCount - 1 && <ResizeHandle />}
-    </>
-  ));
+const renderSplitCodeEditor = (splitState: boolean[]): JSX.Element[] => {
+  return splitState.map((state, index) => {
+    return state ? (
+      <>
+        <Panel defaultSize={100} minSize={10}>
+          <div key={index} className="flex-1 h-full overflow-hidden">
+            <CodeEditor editorId={index} />
+          </div>
+        </Panel>
+        {index < splitState.length - 1 && <ResizeHandle />}
+      </>
+    ) : (
+      <></>
+    );
+  });
 };
 const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const terminalRef = useRef<any>(null);
   const pathname = usePathname();
-  const { splitCount } = useSplitStore();
-  console.log(splitCount);
+  const { splitState } = useSplitStore();
 
   const editPanelGroupResize = () => {
     terminalRef.current?.terminalResize();
@@ -81,7 +84,7 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <PanelGroup direction="vertical" className="h-full" onLayout={editPanelGroupResize}>
               <Panel defaultSize={70} className="bg-gray-600" collapsible={true}>
                 <PanelGroup direction="horizontal" className=" flex relative h-full">
-                  {renderSplitCodeEditor(splitCount)}
+                  {renderSplitCodeEditor(splitState)}
                 </PanelGroup>
               </Panel>
               <ResizeHandle direction="vertical" />

@@ -8,12 +8,13 @@ import {
   useEditorStore,
   useMonacoStore,
   useModelsStore,
-  useCurrentModelStore,
+  useActiveModelStore,
+  useActiveEditorStore,
 } from '@/store/editorStore';
 import { setModelsFromInfo } from '@/components/editor/utils';
 import { Tabbar } from '@/components/edit/tabbar';
 interface CodeEditorProps {
-  splitId: number;
+  editorId: number;
 }
 
 const modelsInfo = [
@@ -44,13 +45,14 @@ const modelsInfo = [
   },
 ];
 
-export default function CodeEditor({ splitId }: CodeEditorProps) {
+export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { getEditor, setEditor } = useEditorStore();
   const { setMonaco } = useMonacoStore();
   const { setModels } = useModelsStore();
-  const { currentMap, setCurrentModel } = useCurrentModelStore();
-  const thisEditor = getEditor(splitId);
-  const currentModel = currentMap[splitId];
+  const { activeMap, setActiveModel } = useActiveModelStore();
+  const { activeEditorId, setActiveEditor } = useActiveEditorStore();
+  const thisEditor = getEditor(editorId);
+  const currentModel = activeMap[editorId];
   console.log(currentModel, thisEditor, currentModel || thisEditor);
 
   const handleEditorDidMount = useCallback(
@@ -67,13 +69,25 @@ export default function CodeEditor({ splitId }: CodeEditorProps) {
         esModuleInterop: true,
       });
 
-      setEditor(splitId, editor);
-      setMonaco(splitId, monaco);
-      setModelsFromInfo(modelsInfo, monaco, editor, setModels, setCurrentModel, splitId);
+      setEditor(editorId, editor);
+      setMonaco(editorId, monaco);
+
+      if (editorId === 0) {
+        setModelsFromInfo(modelsInfo, monaco, editor, setModels, setActiveModel, editorId);
+      } else {
+        const newModel = activeEditorId < 1 ? activeMap[0] : activeMap[1];
+        newModel.model && setActiveModel(newModel.modelId, newModel.model, editorId);
+        newModel.model &&
+          setModels({ filename: newModel.modelId, value: '' }, newModel.model, editorId);
+        editor.setModel(newModel.model);
+      }
 
       monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
         noSemanticValidation: false,
         noSyntaxValidation: false,
+      });
+      editor.onDidFocusEditorText(() => {
+        setActiveEditor(editor, editorId);
       });
 
       loader.init().then(/* ... */);
@@ -85,10 +99,10 @@ export default function CodeEditor({ splitId }: CodeEditorProps) {
   const handleEditorChange = (value: string = ''): void => {};
 
   return (
-    (thisEditor === null || currentModel.model) && (
+    (thisEditor === null || currentModel?.model) && (
       <div className=" w-full h-full flex flex-col">
         <div className=" h-[4.5vh] w-full bg-[#202327]/80">
-          <Tabbar splitId={splitId} />
+          <Tabbar editorId={editorId} />
         </div>
         <Editor
           className={'editor'}
