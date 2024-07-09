@@ -22,7 +22,7 @@ cd 项目名
 为了保持你的仓库与原始仓库同步，请添加上游远程仓库：
 
 ```bash
-git remote add upstream https://github.com/xun082/create-ai-toolkit.git
+git remote add upstream https://github.com/xun082/online-edit-web.git
 ```
 
 ### 4. 创建新分支
