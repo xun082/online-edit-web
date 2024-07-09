@@ -22,7 +22,7 @@ cd repository-name
 To keep your repository in sync with the original repository, add the upstream remote:
 
 ```bash
-git remote add upstream https://github.com/xun082/create-ai-toolkit.git
+git remote add upstream https://github.com/xun082/online-edit-web.git
 ```
 
 ### 4. Create a New Branch
