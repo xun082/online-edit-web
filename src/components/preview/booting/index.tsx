@@ -1,4 +1,4 @@
-import { FC, useState, memo, ReactNode } from 'react';
+import { FC, useState, ReactNode } from 'react';
 import { FaLightbulb, FaArrowsRotate, FaCircleCheck, FaO, FaCircleXmark } from 'react-icons/fa6';
 
 let statusIcon: Record<string, ReactNode> = {
@@ -21,8 +21,8 @@ interface IStepQueue {
   title: string;
 }
 
-const BootingStep: FC<IStepQueue> = memo(({ condition, title }) => {
-  let Icon = statusIcon[condition];
+const BootingStep: FC<IStepQueue> = ({ condition, title }) => {
+  const Icon = statusIcon[condition];
 
   return (
     <div className="flex items-center">
@@ -30,7 +30,7 @@ const BootingStep: FC<IStepQueue> = memo(({ condition, title }) => {
       <span className="mx-2">{title}</span>
     </div>
   );
-});
+};
 
 const stepQueue: Array<IStepQueue> = [
   {
