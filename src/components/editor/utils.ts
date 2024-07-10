@@ -29,7 +29,7 @@ export function addNewModel(
     model = monaco.editor.createModel(
       modelInfo.value,
       modelInfo.language,
-      monaco.Uri.file(modelInfo.filename).toString(),
+      monaco.Uri.file(modelInfo.filename),
     );
   }
 

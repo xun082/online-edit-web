@@ -78,7 +78,11 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
         const newModel = activeEditorId < 1 ? activeMap[0] : activeMap[1];
         newModel.model && setActiveModel(newModel.modelId, newModel.model, editorId);
         newModel.model &&
-          setModels({ filename: newModel.modelId, value: '' }, newModel.model, editorId);
+          setModels(
+            { filename: newModel.modelId, value: '', language: '' },
+            newModel.model,
+            editorId,
+          );
         editor.setModel(newModel.model);
       }
 
