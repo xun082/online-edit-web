@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Fragment, useRef } from 'react';
+import React, { useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PanelGroup, Panel } from 'react-resizable-panels';
@@ -21,22 +21,25 @@ const MockProjectData = {
   name: '这是一个project',
 };
 
-const renderSplitCodeEditor = (splitState: boolean[]): React.ReactNode => {
-  return splitState.map((state, index) => {
-    return (
-      state && (
-        <Fragment key={`${state}+${index}}`}>
-          <Panel defaultSize={100} minSize={10} key={`${state}+${index}}`}>
-            <div className="flex-1 h-full overflow-hidden">
+const renderSplitCodeEditor = (splitState: boolean[]): JSX.Element[] => {
+  return splitState
+    .map((state, index) => {
+      if (!state) return null;
+
+      return (
+        <React.Fragment key={index}>
+          <Panel key={`panel-${index}`} defaultSize={100} minSize={10}>
+            <div key={`div-${index}`} className="flex-1 h-full overflow-hidden">
               <CodeEditor editorId={index} />
             </div>
           </Panel>
-          {index < splitState.length - 1 && <ResizeHandle />}
-        </Fragment>
-      )
-    );
-  });
+          {index < splitState.length - 1 && <ResizeHandle key={`resize-${index}`} />}
+        </React.Fragment>
+      );
+    })
+    .filter((element): element is JSX.Element => element !== null); // 过滤掉 null 值
 };
+
 const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const terminalRef = useRef<any>(null);
   const pathname = usePathname();
@@ -53,7 +56,6 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Header userInfo={MockUserInfo} project={MockProjectData} />
       </div>
       <div className=" w-full flex flex-1 overflow-hidden">
-        {' '}
         {/* 侧边栏 */}
         <div className="bg-gray-900 text-gray-400 w-[2.9vw] flex flex-col justify-between items-center py-4">
           <div className="flex flex-col items-center space-y-4">
