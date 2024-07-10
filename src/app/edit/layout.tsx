@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PanelGroup, Panel } from 'react-resizable-panels';
 import { FaFileAlt, FaSearch, FaPlug, FaCog, FaQuestionCircle } from 'react-icons/fa';
+import { PiOpenAiLogo } from 'react-icons/pi';
 
 import ResizeHandle from '@/components/resize-handle';
 import { PATHS } from '@/utils';
@@ -70,6 +71,9 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </Link>
             <Link href={PATHS.EDIT_SETTINGS}>
               <FaCog size="24" className={pathname === PATHS.EDIT_SETTINGS ? 'text-white' : ''} />
+            </Link>
+            <Link href={PATHS.AI}>
+              <PiOpenAiLogo size="24" className={pathname === PATHS.AI ? 'text-white' : ''} />
             </Link>
           </div>
           <div className="flex flex-col items-center space-y-4">
