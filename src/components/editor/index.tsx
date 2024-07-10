@@ -12,7 +12,7 @@ import {
   useActiveEditorStore,
 } from '@/store/editorStore';
 import { setModelsFromInfo } from '@/components/editor/utils';
-import { Tabbar } from '@/components/edit/tabbar';
+import { TabBar } from '@/components/edit/tabbar';
 interface CodeEditorProps {
   editorId: number;
 }
@@ -106,7 +106,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
     (thisEditor === null || currentModel?.model) && (
       <div className=" w-full h-full flex flex-col">
         <div className=" h-[4.5vh] w-full bg-[#202327]/80">
-          <Tabbar editorId={editorId} />
+          <TabBar editorId={editorId} />
         </div>
         <Editor
           className={'editor'}

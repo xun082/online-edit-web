@@ -17,11 +17,11 @@ import {
   useSplitStore,
   useActiveEditorStore,
 } from '@/store/editorStore';
-interface TabbarProps {
+interface TabBarProps {
   editorId: number;
 }
 
-export const Tabbar: React.FC<TabbarProps> = ({ editorId }) => {
+export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   const { models, removeModel, removeAllModel } = useModelsStore();
   const { activeMap, setActiveModel, clearActiveModel } = useActiveModelStore();
   const { getEditor, removeEditor } = useEditorStore();
