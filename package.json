@@ -24,10 +24,13 @@
     "@giscus/react": "^3.0.0",
     "@monaco-editor/react": "^4.6.0",
     "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-scroll-area": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "10.17.9",
+    "lucide-react": "^0.403.0",
     "monaco-editor": "^0.50.0",
     "next": "14.2.4",
     "react": "^18.3.1",
@@ -36,7 +39,8 @@
     "react-resizable-panels": "^2.0.20",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.6.1",
