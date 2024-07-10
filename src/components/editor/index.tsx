@@ -78,7 +78,11 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
         const newModel = activeEditorId < 1 ? activeMap[0] : activeMap[1];
         newModel.model && setActiveModel(newModel.modelId, newModel.model, editorId);
         newModel.model &&
-          setModels({ filename: newModel.modelId, value: '' }, newModel.model, editorId);
+          setModels(
+            { filename: newModel.modelId, value: '', language: 'typescript' },
+            newModel.model,
+            editorId,
+          );
         editor.setModel(newModel.model);
       }
 
@@ -95,8 +99,9 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
     [],
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleEditorChange = (value: string = ''): void => {};
+  const handleEditorChange = (value: string = ''): void => {
+    console.log(value);
+  };
 
   return (
     (thisEditor === null || currentModel?.model) && (

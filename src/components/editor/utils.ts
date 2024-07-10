@@ -10,7 +10,7 @@ export function setModelsFromInfo(
   setActiveModel: (modelId: string, model: editor.ITextModel, editorId: number) => void,
   editorId: number,
 ) {
-  modelsInfo.map((modelInfo) => {
+  modelsInfo.forEach((modelInfo) => {
     addNewModel(modelInfo, monaco, editor, setModels, setActiveModel, editorId);
   });
 }
@@ -23,15 +23,10 @@ export function addNewModel(
   setActiveModel: (modelId: string, model: editor.ITextModel, editorId: number) => void,
   editorId: number,
 ) {
-  let model = monaco.editor.getModel(monaco.Uri.file(modelInfo.filename));
-
-  if (model === null) {
-    model = monaco.editor.createModel(
-      modelInfo.value,
-      modelInfo.language,
-      monaco.Uri.file(modelInfo.filename).toString(),
-    );
-  }
+  const modelUri = monaco.Uri.file(modelInfo.filename);
+  const model =
+    monaco.editor.getModel(modelUri) ||
+    monaco.editor.createModel(modelInfo.value, modelInfo.language, modelUri);
 
   setActiveModel(modelInfo.filename, model, editorId);
   setModels(modelInfo, model, editorId);
