@@ -6,6 +6,7 @@ export const PATHS = {
   HOME: '/',
   MAIN_DASHBOARD: '/dashboard',
   MAIN_TEMPLATES: '/templates',
+  AI: '/edit/ai',
 } as const;
 
 export const PROJECT_Name = 'online-edit';
