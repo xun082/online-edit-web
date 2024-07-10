@@ -33,11 +33,11 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   const modelId = activeMap[editorId]?.modelId ?? 0;
 
   function renderTabs(models: any[], currentFile: string) {
-    return models.map((model) => {
+    return models.map((model, index) => {
       if (model.filename && model?.usedBy instanceof Array && model.usedBy.includes(editorId)) {
         return (
           <div
-            key={model.filename}
+            key={`${model.filename}+${index}`}
             className={cn(
               'group relative flex items-center cursor-pointer transition-all duration-200 h-full pl-6 pr-7 bg-[#15181e] hover:bg-[#15181e]/20 border-[white]/20 border-[1px]',
               model.filename === currentFile ? 'bg-[#15181e]/1 border-blue-500' : '',

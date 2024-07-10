@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { Fragment, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PanelGroup, Panel } from 'react-resizable-panels';
@@ -21,19 +21,19 @@ const MockProjectData = {
   name: '这是一个project',
 };
 
-const renderSplitCodeEditor = (splitState: boolean[]): JSX.Element[] => {
+const renderSplitCodeEditor = (splitState: boolean[]): React.ReactNode => {
   return splitState.map((state, index) => {
-    return state ? (
-      <>
-        <Panel defaultSize={100} minSize={10}>
-          <div key={index} className="flex-1 h-full overflow-hidden">
-            <CodeEditor editorId={index} />
-          </div>
-        </Panel>
-        {index < splitState.length - 1 && <ResizeHandle />}
-      </>
-    ) : (
-      <></>
+    return (
+      state && (
+        <Fragment key={`${state}+${index}}`}>
+          <Panel defaultSize={100} minSize={10} key={`${state}+${index}}`}>
+            <div className="flex-1 h-full overflow-hidden">
+              <CodeEditor editorId={index} />
+            </div>
+          </Panel>
+          {index < splitState.length - 1 && <ResizeHandle />}
+        </Fragment>
+      )
     );
   });
 };
