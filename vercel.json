@@ -2,7 +2,7 @@
   "build": {
     "env": {
       "NODE_VERSION": "18.x",
-      "PNPM_VERSION": "9.5.0"
+      "PNPM_VERSION": "9.4.0"
     }
   }
 }
