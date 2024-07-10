@@ -101,5 +101,10 @@
     "extends": [
       "plugin:storybook/recommended"
     ]
-  }
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": "9.5.0"
+  },
+  "engineStrict": true
 }
