@@ -1,8 +1,10 @@
+import Image from 'next/image';
 import React from 'react';
 import { HiOutlineEllipsisHorizontal } from 'react-icons/hi2';
 import { VscSplitHorizontal } from 'react-icons/vsc';
 
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import css from '@/assets/image/fileIcon/JavaScript.svg';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,11 +19,11 @@ import {
   useSplitStore,
   useActiveEditorStore,
 } from '@/store/editorStore';
-interface TabbarProps {
+interface TabBarProps {
   editorId: number;
 }
 
-export const Tabbar: React.FC<TabbarProps> = ({ editorId }) => {
+export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   const { models, removeModel, removeAllModel } = useModelsStore();
   const { activeMap, setActiveModel, clearActiveModel } = useActiveModelStore();
   const { getEditor, removeEditor } = useEditorStore();
@@ -39,14 +41,17 @@ export const Tabbar: React.FC<TabbarProps> = ({ editorId }) => {
           <div
             key={model.filename}
             className={cn(
-              'group relative flex items-center cursor-pointer transition-all duration-200 h-full pl-6 pr-7 bg-[#15181e] hover:bg-[#15181e]/20 border-[white]/20 border-[1px]',
-              model.filename === currentFile ? 'bg-[#15181e]/1 border-blue-500' : '',
+              'group relative flex items-center gap-2 cursor-pointer transition-all duration-100 h-full pl-6 pr-7 bg-[#26292e]/1 hover:bg-[#15181e]/50 border-[white]/20 border-[1px]',
+              model.filename === currentFile
+                ? 'bg-[#15181e] border-l border-r border-white/35 border-t-blue-500 border-t-[1.5px] border-b-0'
+                : '',
             )}
             onClick={() => {
               setActiveModel(model.filename, model.model, editorId);
               editor && editor.setModel(model.model);
             }}
           >
+            <Image className=" absolute w-4 h-4 left-1" src={css} alt="" />
             {model.filename}
             <span
               onClick={(e) => {
@@ -65,7 +70,7 @@ export const Tabbar: React.FC<TabbarProps> = ({ editorId }) => {
                   removeEditor(editorId);
                 }
               }}
-              className="hidden group-hover:block absolute right-1 p-2"
+              className="hidden group-hover:block absolute right-3"
             >
               x
             </span>
@@ -80,7 +85,7 @@ export const Tabbar: React.FC<TabbarProps> = ({ editorId }) => {
   return (
     <div className="flex items-center w-full h-full justify-start bg-transparent z-[999] font-[300] text-[12px]">
       <ScrollArea className=" w-[80%] h-full scrollbar-thin scrollbar-thumb-red">
-        <div className=" w-full h-[4vh] flex">{renderTabs(models, modelId)}</div>
+        <div className=" w-full h-[3.5vh] flex">{renderTabs(models, modelId)}</div>
         <ScrollBar className=" bg-transparent " orientation="horizontal" />
       </ScrollArea>
       <div className=" bg-transparent flex flex-1 gap-x-4 justify-end ml-4 mr-4 items-center">

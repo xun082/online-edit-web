@@ -29,12 +29,12 @@ const renderSplitCodeEditor = (splitState: boolean[]): JSX.Element[] => {
 
       return (
         <React.Fragment key={index}>
+          {index !== 0 && <ResizeHandle key={`resize-${index}`} />}
           <Panel key={`panel-${index}`} defaultSize={100} minSize={10}>
             <div key={`div-${index}`} className="flex-1 h-full overflow-hidden">
               <CodeEditor editorId={index} />
             </div>
           </Panel>
-          {index < splitState.length - 1 && <ResizeHandle key={`resize-${index}`} />}
         </React.Fragment>
       );
     })
@@ -85,7 +85,7 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <Panel minSize={1} defaultSize={15} className="bg-gray-800">
             {children}
           </Panel>
-          <ResizeHandle />
+          <ResizeHandle className=" w-[3px] bg-white/25" />
           <Panel className="flex-1 bg-gray-700" minSize={1} defaultSize={50}>
             <PanelGroup direction="vertical" className="h-full" onLayout={editPanelGroupResize}>
               <Panel defaultSize={70} className="bg-gray-600" collapsible={true}>
