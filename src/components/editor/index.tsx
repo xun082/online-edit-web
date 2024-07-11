@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import Editor, { Monaco, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 
@@ -13,6 +13,7 @@ import {
 } from '@/store/editorStore';
 import { setModelsFromInfo } from '@/components/editor/utils';
 import { TabBar } from '@/components/edit/tabbar';
+
 interface CodeEditorProps {
   editorId: number;
 }
@@ -53,7 +54,6 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
   const thisEditor = getEditor(editorId);
   const currentModel = activeMap[editorId];
-  console.log(currentModel, thisEditor, currentModel || thisEditor);
 
   const handleEditorDidMount = useCallback(
     (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
@@ -102,6 +102,8 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const handleEditorChange = (value: string = ''): void => {
     console.log(value);
   };
+
+  useEffect(() => {}, []);
 
   return (
     (thisEditor === null || currentModel?.model) && (

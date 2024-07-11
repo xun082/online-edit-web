@@ -27,7 +27,7 @@ export function addNewModel(
   const model =
     monaco.editor.getModel(modelUri) ||
     monaco.editor.createModel(modelInfo.value, modelInfo.language, modelUri);
-
+  console.log(monaco.editor.getModel(modelUri));
   setActiveModel(modelInfo.filename, model, editorId);
   setModels(modelInfo, model, editorId);
   editor.setModel(model);
