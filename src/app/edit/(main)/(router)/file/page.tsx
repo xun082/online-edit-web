@@ -44,8 +44,9 @@ const PortsPage: React.FC = () => {
     <div className="p-4 h-full w-full flex flex-col bg-[#202327]">
       <span className=" text-[11px]">资源管理器</span>
       <div className=" flex flex-col w-full">
-        {MockFileList.map((file) => (
+        {MockFileList.map((file, index) => (
           <div
+            key={index}
             onClick={() => {
               const willChangeEditor =
                 activeEditor ?? editors[splitState.findIndex((item) => item)];
