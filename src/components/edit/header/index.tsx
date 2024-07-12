@@ -6,6 +6,7 @@ import { GoRepoForked } from 'react-icons/go';
 
 import { Avatar } from '@/components/common/Avatar';
 import { Button } from '@/components/ui/button';
+import AvatarPopover from '@/components/avatarPopover';
 
 interface ProjectData {
   [key: string]: any;
@@ -49,7 +50,11 @@ export const Header: React.FC<HeaderProps> = ({ project, userInfo }) => {
       <div className=" absolute left-[50%] leading-[5vh] font-[300] text-[15px]">
         {project.name}
       </div>
-      <Avatar src={userInfo.imgurl} className=" flex h-[3.5vh] w-[3.5vh] mr-4" />
+      <div className="mr-4">
+        <AvatarPopover>
+          <Avatar src={userInfo.imgurl} className=" flex h-[3.5vh] w-[3.5vh]" />
+        </AvatarPopover>
+      </div>
     </header>
   );
 };
