@@ -40,7 +40,7 @@ const PortsPage: React.FC = () => {
       <span className=" text-[11px]">资源管理器</span>
       <div className=" flex flex-col w-full">
         {MockFileList.map((file, index) => (
-          <FileItem file={file} index={index}></FileItem>
+          <FileItem key={index} file={file} index={index}></FileItem>
         ))}
       </div>
     </div>
