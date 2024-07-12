@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import Editor, { Monaco, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
+import { useDroppable } from '@dnd-kit/core';
 
 import {
   useEditorStore,
@@ -54,6 +55,19 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
   const thisEditor = getEditor(editorId);
   const currentModel = activeMap[editorId];
+  console.log(thisEditor);
+  // used for dnd
+
+  const { isOver, setNodeRef } = useDroppable({
+    id: editorId,
+    data: {
+      editorInstance: thisEditor,
+    },
+  });
+
+  const style = {
+    color: isOver ? 'green' : undefined,
+  };
 
   const handleEditorDidMount = useCallback(
     (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
@@ -103,11 +117,9 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
     console.log(value);
   };
 
-  useEffect(() => {}, []);
-
   return (
     (thisEditor === null || currentModel?.model) && (
-      <div className=" w-full h-full flex flex-col">
+      <div ref={setNodeRef} className=" w-full h-full flex flex-col" style={style}>
         <div className=" h-[3.5vh] w-full bg-[#202327]/80">
           <TabBar editorId={editorId} />
         </div>
