@@ -4,15 +4,23 @@ import React, { useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PanelGroup, Panel } from 'react-resizable-panels';
+import { DndContext } from '@dnd-kit/core';
 import { FaFileAlt, FaSearch, FaPlug, FaCog, FaQuestionCircle } from 'react-icons/fa';
 import { PiOpenAiLogo } from 'react-icons/pi';
+import { editor } from 'monaco-editor';
 
 import ResizeHandle from '@/components/resize-handle';
 import { PATHS } from '@/utils';
 import { Preview } from '@/components/preview';
 import { Header } from '@/components/edit/header';
 import CodeEditor from '@/components/editor';
-import { useSplitStore } from '@/store/editorStore';
+import {
+  useActiveModelStore,
+  useEditorStore,
+  useModelsStore,
+  useSplitStore,
+} from '@/store/editorStore';
+import { addNewModel } from '@/components/editor/utils';
 
 const MockUserInfo = {
   name: 'xiaoming',
@@ -46,9 +54,53 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const { splitState } = useSplitStore();
 
+  const { editors } = useEditorStore();
+  const { models, setModels } = useModelsStore();
+
+  const { setActiveModel } = useActiveModelStore();
+
   const editPanelGroupResize = () => {
     terminalRef.current?.terminalResize();
   };
+
+  function handleFileDrop({ active, over }: any) {
+    console.log(over);
+    if (!active || !over) return;
+    console.log(splitState, editors);
+    console.log(active, over);
+
+    const { file, monacos } = active.data.current;
+    const editor = over.data.current.editorInstance;
+    console.log(file, editor);
+
+    const willChangeEditor = editor;
+    const willChangeEditorId = over.id;
+
+    const mathModel = models.filter((model) => model.filename === file.filename);
+    // console.log(splitState, mathModel[0], willChangeEditor, willChangeEditorId);
+
+    if (mathModel.length > 0) {
+      mathModel[0].model &&
+        setActiveModel(mathModel[0].filename, mathModel[0].model, willChangeEditorId);
+      mathModel[0].model &&
+        setModels(
+          { filename: mathModel[0].filename, value: '', language: 'typescript' },
+          mathModel[0].model,
+          willChangeEditorId,
+        );
+      willChangeEditor?.setModel(mathModel[0].model);
+    } else {
+      const monaco = monacos[willChangeEditorId];
+      addNewModel(
+        file,
+        monaco as any,
+        willChangeEditor as editor.IStandaloneCodeEditor,
+        setModels,
+        setActiveModel,
+        willChangeEditorId,
+      );
+    }
+  }
 
   return (
     <div className="flex flex-col justify-start items-center h-[100vh] overflow-hidden">
@@ -81,33 +133,35 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </div>
         </div>
         {/* 可调整大小的面板 */}
-        <PanelGroup direction="horizontal" className="flex-1">
-          <Panel minSize={1} defaultSize={15} className="bg-gray-800">
-            {children}
-          </Panel>
-          <ResizeHandle className=" w-[3px] bg-white/25" />
-          <Panel className="flex-1 bg-gray-700" minSize={1} defaultSize={50}>
-            <PanelGroup direction="vertical" className="h-full" onLayout={editPanelGroupResize}>
-              <Panel defaultSize={70} className="bg-gray-600" collapsible={true}>
-                <PanelGroup direction="horizontal" className=" flex relative h-full">
-                  {renderSplitCodeEditor(splitState)}
-                </PanelGroup>
-              </Panel>
-              <ResizeHandle direction="vertical" />
-              <Panel defaultSize={30} minSize={4} className="bg-black">
-                <div className=" text-green-500 h-full">
-                  <h2>Terminal</h2>
-                </div>
-              </Panel>
-            </PanelGroup>
-          </Panel>
-          <ResizeHandle />
-          <Panel className="bg-gray-900" minSize={1} defaultSize={35}>
-            <div className=" h-full">
-              <Preview />
-            </div>
-          </Panel>
-        </PanelGroup>
+        <DndContext onDragEnd={(e) => handleFileDrop(e)}>
+          <PanelGroup direction="horizontal" className="flex-1">
+            <Panel minSize={1} defaultSize={15} className="bg-gray-800">
+              {children}
+            </Panel>
+            <ResizeHandle className=" w-[3px] bg-white/25" />
+            <Panel className="flex-1 bg-gray-700" minSize={1} defaultSize={50}>
+              <PanelGroup direction="vertical" className="h-full" onLayout={editPanelGroupResize}>
+                <Panel defaultSize={70} className="bg-gray-600" collapsible={true}>
+                  <PanelGroup direction="horizontal" className=" flex relative h-full">
+                    {renderSplitCodeEditor(splitState)}
+                  </PanelGroup>
+                </Panel>
+                <ResizeHandle direction="vertical" />
+                <Panel defaultSize={30} minSize={4} className="bg-black">
+                  <div className=" text-green-500 h-full">
+                    <h2>Terminal</h2>
+                  </div>
+                </Panel>
+              </PanelGroup>
+            </Panel>
+            <ResizeHandle />
+            <Panel className="bg-gray-900" minSize={1} defaultSize={35}>
+              <div className=" h-full">
+                <Preview />
+              </div>
+            </Panel>
+          </PanelGroup>
+        </DndContext>
       </div>
     </div>
   );

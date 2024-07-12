@@ -27,7 +27,7 @@ interface TabBarProps {
 
 export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   const { models, removeModel, removeAllModel } = useModelsStore();
-  const { activeMap, setActiveModel, clearActiveModel } = useActiveModelStore();
+  const { activeMap, setActiveModel } = useActiveModelStore();
   const { getEditor, removeEditor } = useEditorStore();
   const { splitState, addSplit, removeSplit } = useSplitStore();
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
@@ -77,7 +77,7 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
                   setActiveModel(newModels.filename, newModels.model, editorId);
                   editor && editor.setModel(newModels.model);
                 } else {
-                  clearActiveModel(editorId);
+                  removeAllModel(editorId);
                   editor && editor.setModel(null);
 
                   if (keepedEditorCount > 1) {
