@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 
 import { Avatar } from '@/components/common/Avatar';
+import AvatarPopover from '@/components/avatarPopover';
 import { PROJECT_Name } from '@/utils';
 
 interface HeaderProps {}
@@ -12,8 +13,9 @@ export const Header: React.FC<HeaderProps> = () => {
       <Link className=" text-white font-bold" href="/">
         {PROJECT_Name}
       </Link>
-
-      <Avatar className=" flex h-[3.5vh] w-[3.5vh]" />
+      <AvatarPopover>
+        <Avatar className="flex h-[3.5vh] w-[3.5vh]" />
+      </AvatarPopover>
     </header>
   );
 };
