@@ -28,7 +28,7 @@ interface TabBarProps {
 
 export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   const { models, removeModel, removeAllModel } = useModelsStore();
-  const [mockModelsForSort, setMockModelsForSort] = useState([]);
+  const [mockModelsForSort, setMockModelsForSort] = useState<any[]>([]);
 
   const { activeMap, setActiveModel } = useActiveModelStore();
   const { getEditor, removeEditor } = useEditorStore();

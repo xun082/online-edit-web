@@ -41,7 +41,7 @@ const Tab: React.FC<TabProps> = ({
 
   const style = transform
     ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        transform: `translate3d(${transform.x}px, 0, 0)`,
       }
     : undefined;
 
@@ -51,7 +51,7 @@ const Tab: React.FC<TabProps> = ({
     }
   }, [active]);
 
-  const handleTabClick = (e) => {
+  const handleTabClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setActiveModel(filename, model, editorId);

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactPortal, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +8,7 @@ import { useDragIconStore } from '@/store/dragIconStore';
 
 interface DragIconProps {}
 
-export const DragIcon: React.FC<DragIconProps> = () => {
+export const DragIcon = ({}: DragIconProps): ReactPortal | null => {
   const { setDragIconRef } = useDragIconStore();
   const flagRef = useRef(false);
 
@@ -17,7 +17,7 @@ export const DragIcon: React.FC<DragIconProps> = () => {
   useEffect(() => {
     setBody(document.body);
   }, []);
-  if (!body) return;
+  if (!body) return null;
 
   return ReactDOM.createPortal(
     <div
