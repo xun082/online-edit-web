@@ -66,7 +66,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   });
 
   const style = {
-    color: isOver ? 'green' : undefined,
+    border: isOver ? '1px #3b82f6 solid' : undefined,
   };
 
   const handleEditorDidMount = useCallback(

@@ -14,12 +14,14 @@ import { PATHS } from '@/utils';
 import { Preview } from '@/components/preview';
 import { Header } from '@/components/edit/header';
 import CodeEditor from '@/components/editor';
+import { DragIcon } from '@/components/file/dragIcon';
 import {
   useActiveModelStore,
-  useEditorStore,
+  // useEditorStore,
   useModelsStore,
   useSplitStore,
 } from '@/store/editorStore';
+import { useDragIconStore } from '@/store/dragIconStore';
 import { addNewModel } from '@/components/editor/utils';
 
 const MockUserInfo = {
@@ -54,30 +56,33 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const { splitState } = useSplitStore();
 
-  const { editors } = useEditorStore();
+  // const { editors } = useEditorStore();
   const { models, setModels } = useModelsStore();
 
   const { setActiveModel } = useActiveModelStore();
+
+  const { dragIconRef } = useDragIconStore();
 
   const editPanelGroupResize = () => {
     terminalRef.current?.terminalResize();
   };
 
   function handleFileDrop({ active, over }: any) {
-    console.log(over);
+    // 清除dropIcon
+
+    dragIconRef.style.display = 'none';
+    dragIconRef.style.left = '0px';
+    dragIconRef.style.top = '0px';
+    dragIconRef.innerHtml = '';
     if (!active || !over) return;
-    console.log(splitState, editors);
-    console.log(active, over);
 
     const { file, monacos } = active.data.current;
     const editor = over.data.current.editorInstance;
-    console.log(file, editor);
 
     const willChangeEditor = editor;
     const willChangeEditorId = over.id;
 
     const mathModel = models.filter((model) => model.filename === file.filename);
-    // console.log(splitState, mathModel[0], willChangeEditor, willChangeEditorId);
 
     if (mathModel.length > 0) {
       mathModel[0].model &&
@@ -163,6 +168,7 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </PanelGroup>
         </DndContext>
       </div>
+      <DragIcon />
     </div>
   );
 };
