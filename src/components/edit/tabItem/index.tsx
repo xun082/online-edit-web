@@ -4,6 +4,7 @@ import { editor } from 'monaco-editor';
 import { useSortable } from '@dnd-kit/sortable';
 
 import { cn } from '@/utils';
+import jsIcon from '@/assets/image/fileIcon/JavaScript.svg';
 
 interface TabProps {
   id: string;
@@ -92,7 +93,7 @@ const Tab: React.FC<TabProps> = ({
       )}
       onMouseUp={(e) => handleTabClick(e)}
     >
-      <Image className="absolute w-4 h-4 left-1" src="" alt="" />
+      <Image className="absolute w-4 h-4 left-1" src={jsIcon} alt="" />
       {filename}
       <span
         ref={tabRef}

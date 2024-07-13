@@ -43,6 +43,7 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
 
   function handleDragEnd(event: any) {
     const { active, over } = event;
+    if (!active || !over) return;
 
     if (active.id !== over.id) {
       setMockModelsForSort((pre) => {
