@@ -1,17 +1,18 @@
-import Image from 'next/image';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { HiOutlineEllipsisHorizontal } from 'react-icons/hi2';
 import { VscSplitHorizontal } from 'react-icons/vsc';
 import { editor } from 'monaco-editor';
+import { arrayMove, SortableContext } from '@dnd-kit/sortable';
+import { DndContext } from '@dnd-kit/core';
 
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import css from '@/assets/image/fileIcon/JavaScript.svg';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import TabItem from '@/components/edit/tabItem';
 import { cn } from '@/utils';
 import {
   useModelsStore,
@@ -27,6 +28,8 @@ interface TabBarProps {
 
 export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   const { models, removeModel, removeAllModel } = useModelsStore();
+  const [mockModelsForSort, setMockModelsForSort] = useState([]);
+
   const { activeMap, setActiveModel } = useActiveModelStore();
   const { getEditor, removeEditor } = useEditorStore();
   const { splitState, addSplit, removeSplit } = useSplitStore();
@@ -37,6 +40,20 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
 
   const activeTabRef = useRef<HTMLDivElement>(null);
   const keepedEditorCount = splitState.filter((item) => item).length;
+
+  function handleDragEnd(event: any) {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setMockModelsForSort((pre) => {
+        const oldIndex = pre.findIndex((item) => item.id === active.id);
+        const newIndex = pre.findIndex((item) => item.id === over.id);
+
+        return arrayMove(pre, oldIndex, newIndex);
+      });
+    }
+  }
+
   useEffect(() => {
     if (activeTabRef.current) {
       activeTabRef.current.scrollIntoView({
@@ -45,52 +62,33 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
       });
     }
   }, [activeModelId]);
+  useEffect(() => {
+    setMockModelsForSort(
+      models.map((item) => {
+        return { ...item, id: item.filename };
+      }),
+    );
+  }, [models]);
 
   function renderTabs(models: any[], activeModelId: string) {
     return models.map((model) => {
       if (model.filename && model?.usedBy instanceof Array && model.usedBy.includes(editorId)) {
         return (
-          <div
-            ref={model.filename === activeModelId ? activeTabRef : undefined}
+          <TabItem
+            id={model.id}
             key={model.filename}
-            className={cn(
-              'group relative flex items-center gap-2 cursor-pointer transition-all duration-100 h-full pl-6 pr-7 bg-[#26292e]/1 hover:bg-[#15181e]/50 border-[white]/20 border-[1px]',
-              model.filename === activeModelId
-                ? 'bg-[#15181e] border-l border-r border-white/35 border-t-blue-500 border-t-[1.5px] border-b-0'
-                : '',
-            )}
-            onClick={() => {
-              setActiveModel(model.filename, model.model, editorId);
-              editor && editor.setModel(model.model);
-            }}
-          >
-            <Image className="absolute w-4 h-4 left-1" src={css} alt="" />
-            {model.filename}
-            <span
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                const newModels = removeModel(model.filename, editorId);
-
-                if (newModels && newModels.filename) {
-                  setActiveModel(newModels.filename, newModels.model, editorId);
-                  editor && editor.setModel(newModels.model);
-                } else {
-                  removeAllModel(editorId);
-                  editor && editor.setModel(null);
-
-                  if (keepedEditorCount > 1) {
-                    removeEditor(editorId);
-                    removeSplit(editorId);
-                  }
-                }
-              }}
-              className="hidden group-hover:block absolute right-3"
-            >
-              x
-            </span>
-          </div>
+            filename={model.filename}
+            active={model.filename === activeModelId}
+            editorId={editorId}
+            setActiveModel={setActiveModel}
+            editor={editor}
+            model={model.model}
+            removeModel={removeModel}
+            removeAllModel={removeAllModel}
+            removeEditor={removeEditor}
+            removeSplit={removeSplit}
+            keepedEditorCount={keepedEditorCount}
+          />
         );
       }
 
@@ -99,53 +97,60 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   }
 
   return (
-    <div className="flex items-center w-full h-full justify-start bg-transparent z-[999] font-[300] text-[12px]">
-      <ScrollArea className="w-[80%] h-full scrollbar-thin scrollbar-thumb-red">
-        <div className="w-full h-[3.5vh] flex">{renderTabs(models, activeModelId)}</div>
-        <ScrollBar className="bg-transparent" orientation="horizontal" />
-      </ScrollArea>
-      <div className="bg-transparent flex flex-1 gap-x-4 justify-end ml-4 mr-4 items-center">
-        <div className="flex justify-center items-center cursor-pointer">
-          <VscSplitHorizontal
-            onClick={() => {
-              addSplit();
-            }}
-            className={cn(
-              'text-[14px] text-[#cacfd7] hover:text-[white] hidden',
-              (activeEditorId === editorId || (activeEditorId === -1 && editorId === 0)) && 'block',
-            )}
-          />
-        </div>
-        <div className="flex justify-center items-center cursor-pointer">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div>
-                <HiOutlineEllipsisHorizontal className="text-[18px] text-[#cacfd7] hover:text-white" />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-24 bg-[#343a46]">
-              <DropdownMenuItem>
-                <span
-                  className="w-full h-full"
-                  onClick={() => {
-                    editor && editor.setModel(null);
+    <DndContext onDragEnd={handleDragEnd} onDragStart={() => console.log('drag start')}>
+      <div className="flex items-center w-full h-full justify-start bg-transparent z-[999] font-[300] text-[12px]">
+        <ScrollArea className="w-[80%] h-full scrollbar-thin scrollbar-thumb-red">
+          <div className="w-full h-[3.5vh] flex">
+            <SortableContext items={mockModelsForSort}>
+              {renderTabs(mockModelsForSort, activeModelId)}
+            </SortableContext>
+          </div>
+          <ScrollBar className="bg-transparent" orientation="horizontal" />
+        </ScrollArea>
+        <div className="bg-transparent flex flex-1 gap-x-4 justify-end ml-4 mr-4 items-center">
+          <div className="flex justify-center items-center cursor-pointer">
+            <VscSplitHorizontal
+              onClick={() => {
+                addSplit();
+              }}
+              className={cn(
+                'text-[14px] text-[#cacfd7] hover:text-[white] hidden',
+                (activeEditorId === editorId || (activeEditorId === -1 && editorId === 0)) &&
+                  'block',
+              )}
+            />
+          </div>
+          <div className="flex justify-center items-center cursor-pointer">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div>
+                  <HiOutlineEllipsisHorizontal className="text-[18px] text-[#cacfd7] hover:text-white" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-24 bg-[#343a46]">
+                <DropdownMenuItem>
+                  <span
+                    className="w-full h-full"
+                    onClick={() => {
+                      editor && editor.setModel(null);
 
-                    removeAllModel(editorId);
+                      removeAllModel(editorId);
 
-                    if (keepedEditorCount > 1) {
-                      removeEditor(editorId);
-                      removeSplit(editorId);
-                      setActiveEditor(getEditor(0) as editor.IStandaloneCodeEditor, 0);
-                    }
-                  }}
-                >
-                  Close
-                </span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                      if (keepedEditorCount > 1) {
+                        removeEditor(editorId);
+                        removeSplit(editorId);
+                        setActiveEditor(getEditor(0) as editor.IStandaloneCodeEditor, 0);
+                      }
+                    }}
+                  >
+                    Close
+                  </span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
-    </div>
+    </DndContext>
   );
 };
