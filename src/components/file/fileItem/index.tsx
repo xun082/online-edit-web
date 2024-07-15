@@ -14,9 +14,10 @@ import { useDragIconStore } from '@/store/dragIconStore';
 import { addNewModel } from '@/components/editor/utils';
 interface FileItemProps {
   file: any;
+  onMouseupFn?: () => void;
 }
 
-export const FileItem: React.FC<FileItemProps> = ({ file }) => {
+export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileItemProps) => {
   // used for editor
   const { splitState } = useSplitStore();
   const { editors } = useEditorStore();
@@ -53,9 +54,7 @@ export const FileItem: React.FC<FileItemProps> = ({ file }) => {
     dragIconRef.innerHTML = `${file.filename}`;
   }
 
-  function handleFileItemMouseUp(e: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
-    e.preventDefault();
-    e.stopPropagation();
+  function handleFileItemMouseUp() {
     clickClient.current = {
       x: 0,
       y: 0,
@@ -92,19 +91,22 @@ export const FileItem: React.FC<FileItemProps> = ({ file }) => {
   }
 
   return (
-    <div className=" px-3 py-[1px] text-[14px] hover:bg-[#3c4453]">
+    <div
+      onMouseUp={() => {
+        onMouseupFn && onMouseupFn();
+        handleFileItemMouseUp();
+      }}
+      className=" flex justify-start px-2 py-[1px] text-[14px] w-full "
+    >
       <span
         className=" cursor-pointer"
         ref={setNodeRef}
         {...listeners}
-        onMouseUp={(e) => handleFileItemMouseUp(e)}
         onMouseDown={(e) => {
           clickClient.current = {
             x: e.clientX,
             y: e.clientY,
           };
-          e.preventDefault();
-          e.stopPropagation();
         }}
       >
         {file.filename}
