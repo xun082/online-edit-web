@@ -47,8 +47,10 @@ const Tab: React.FC<TabProps> = ({
     : undefined;
 
   useEffect(() => {
+    console.log(active, tabRef.current);
+
     if (active && tabRef.current) {
-      tabRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      tabRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [active]);
 
@@ -86,7 +88,7 @@ const Tab: React.FC<TabProps> = ({
       ref={setNodeRef}
       {...listeners}
       className={cn(
-        'group relative flex items-center gap-2 cursor-pointer transition-all duration-100 h-full pl-6 pr-7 bg-[#26292e]/1 hover:bg-[#15181e]/50 border-[white]/20 border-[1px]',
+        'group relative flex items-center w-max gap-2 cursor-pointer transition-all duration-100 h-full pl-6 pr-7 bg-[#26292e]/1 hover:bg-[#15181e]/50 border-[white]/20 border-[1px]',
         active
           ? 'bg-[#15181e] border-l border-r border-white/35 border-t-blue-500 border-t-[1.5px] border-b-0'
           : '',
@@ -94,12 +96,9 @@ const Tab: React.FC<TabProps> = ({
       onMouseUp={(e) => handleTabClick(e)}
     >
       <Image className="absolute w-4 h-4 left-1" src={jsIcon} alt="" />
-      {filename}
-      <span
-        ref={tabRef}
-        onMouseUp={handleTabClose}
-        className="hidden group-hover:block absolute right-3"
-      >
+
+      <p ref={tabRef}>{filename}</p>
+      <span onMouseUp={handleTabClose} className="hidden group-hover:block absolute right-3">
         x
       </span>
     </div>

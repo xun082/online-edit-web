@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HiOutlineEllipsisHorizontal } from 'react-icons/hi2';
 import { VscSplitHorizontal } from 'react-icons/vsc';
 import { editor } from 'monaco-editor';
@@ -38,7 +38,6 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   const editor = getEditor(editorId);
   const activeModelId = activeMap[editorId]?.modelId ?? 0;
 
-  const activeTabRef = useRef<HTMLDivElement>(null);
   const keepedEditorCount = splitState.filter((item) => item).length;
 
   function handleDragEnd(event: any) {
@@ -55,14 +54,6 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
     }
   }
 
-  useEffect(() => {
-    if (activeTabRef.current) {
-      activeTabRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
-    }
-  }, [activeModelId]);
   useEffect(() => {
     setMockModelsForSort(
       models.map((item) => {

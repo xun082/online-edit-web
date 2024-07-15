@@ -19,33 +19,7 @@ interface CodeEditorProps {
   editorId: number;
 }
 
-const modelsInfo = [
-  {
-    filename: '1.py',
-    language: 'python',
-    value: `1111print("Hello World!")`,
-  },
-  {
-    filename: '2.js',
-    language: 'javascript',
-    value: `2222console.log("Hello World!")`,
-  },
-  {
-    filename: '333.ts',
-    language: 'typescript',
-    value: `3333console.log("Hello World!")`,
-  },
-  {
-    filename: 'ma5in.ts',
-    language: 'typescript',
-    value: `5555console.log("Hello World!")`,
-  },
-  {
-    filename: 'ma6in.ts',
-    language: 'typescript',
-    value: `6666console.log("Hello World!")`,
-  },
-];
+const modelsInfo: any[] = [];
 
 export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { getEditor, setEditor } = useEditorStore();
@@ -119,7 +93,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
   return (
     (thisEditor === null || currentModel?.model) && (
-      <div ref={setNodeRef} className=" w-full h-full flex flex-col" style={style}>
+      <div ref={setNodeRef} className=" w-full h-full flex flex-col border-[1px]" style={style}>
         <div className=" h-[3.5vh] w-full bg-[#202327]/80">
           <TabBar editorId={editorId} />
         </div>
