@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PanelGroup, Panel } from 'react-resizable-panels';
@@ -8,6 +8,7 @@ import { DndContext } from '@dnd-kit/core';
 import { FaFileAlt, FaSearch, FaPlug, FaCog, FaQuestionCircle } from 'react-icons/fa';
 import { PiOpenAiLogo } from 'react-icons/pi';
 import { editor } from 'monaco-editor';
+import { motion, useAnimation } from 'framer-motion';
 
 import ResizeHandle from '@/components/resize-handle';
 import { PATHS } from '@/utils';
@@ -55,6 +56,17 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const terminalRef = useRef<any>(null);
   const pathname = usePathname();
   const { splitState } = useSplitStore();
+
+  const controls = useAnimation();
+
+  useEffect(() => {
+    controls.start({
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      transition: { ease: 'easeInOut', duration: 1 },
+    });
+  }, [pathname, controls]);
 
   // const { editors } = useEditorStore();
   const { models, setModels } = useModelsStore();
@@ -141,7 +153,14 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <DndContext onDragEnd={(e) => handleFileDrop(e)}>
           <PanelGroup direction="horizontal" className="flex-1">
             <Panel minSize={1} defaultSize={15} className="bg-gray-800">
-              {children}
+              <motion.div
+                key={pathname}
+                initial={{ y: 20, opacity: 0, scale: 0.95 }}
+                animate={controls}
+                transition={{ ease: 'easeInOut', duration: 1 }}
+              >
+                {children}
+              </motion.div>
             </Panel>
             <ResizeHandle className=" w-[3px] bg-white/25" />
             <Panel className="flex-1 bg-gray-700" minSize={1} defaultSize={50}>
