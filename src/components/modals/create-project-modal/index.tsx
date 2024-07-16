@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client';
 
 import { useState } from 'react';
@@ -31,8 +32,11 @@ export const CreateProjectModal = () => {
               let res = await getDirectory();
 
               if (res) {
+                // @ts-expect-error
+                if (!Array.isArray(res)) res = [res];
                 setTimeout(() => {
                   onClose();
+                  // @ts-expect-error
                   setFileData(res);
                   router.push('edit/file');
                 }, 1000);

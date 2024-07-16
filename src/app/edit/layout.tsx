@@ -152,9 +152,10 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         {/* 可调整大小的面板 */}
         <DndContext onDragEnd={(e) => handleFileDrop(e)}>
           <PanelGroup direction="horizontal" className="flex-1">
-            <Panel minSize={1} defaultSize={15} className="bg-gray-800">
+            <Panel minSize={1} defaultSize={15} className="bg-[#202327]">
               <motion.div
                 key={pathname}
+                className=" overflow-y-scroll h-full hide-scrollbar"
                 initial={{ y: 20, opacity: 0, scale: 0.95 }}
                 animate={controls}
                 transition={{ ease: 'easeInOut', duration: 1 }}

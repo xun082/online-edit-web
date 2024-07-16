@@ -54,3 +54,13 @@ body,
       'calt' 1;
   }
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* 针对 WebKit 浏览器 */
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE 和 Edge */
+  scrollbar-width: none;  /* Firefox */
+  overflow: -moz-scrollbars-none; /* Old Firefox */
+}

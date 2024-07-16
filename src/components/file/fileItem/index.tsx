@@ -96,10 +96,10 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
         onMouseupFn && onMouseupFn();
         handleFileItemMouseUp();
       }}
-      className=" flex justify-start px-2 py-[1px] text-[14px] w-full "
+      className=" flex justify-start px-2 py-[0.2px] font-[250] text-[11.5px] w-full "
     >
       <span
-        className=" cursor-pointer"
+        className=" cursor-pointer overflow-ellipsis whitespace-nowrap overflow-hidden"
         ref={setNodeRef}
         {...listeners}
         onMouseDown={(e) => {
