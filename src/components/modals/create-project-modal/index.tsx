@@ -35,9 +35,12 @@ export const CreateProjectModal = () => {
                   onClose();
                   setFileData(res);
                   router.push('edit/file');
-                  setLoading(false);
                 }, 1000);
               }
+
+              setTimeout(() => {
+                setLoading(false);
+              }, 1000);
             }}
             className="flex justify-center flex-col items-center mt-2 gap-x-2 py-6 border-white/20 border-[1px] rounded-sm cursor-pointer"
           >
