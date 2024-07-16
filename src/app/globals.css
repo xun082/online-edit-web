@@ -60,7 +60,7 @@ body,
 }
 
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE 和 Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE 和 Edge */
+  scrollbar-width: none; /* Firefox */
   overflow: -moz-scrollbars-none; /* Old Firefox */
 }
