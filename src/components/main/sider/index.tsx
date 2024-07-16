@@ -9,6 +9,7 @@ import { MdComputer } from 'react-icons/md';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/utils';
 import { PATHS } from '@/utils';
+import { useModal } from '@/hooks/useModal';
 
 interface RouterData {
   title: string;
@@ -51,11 +52,17 @@ interface SiderProps {}
 
 export const Sider: React.FC<SiderProps> = () => {
   const currentRoute = usePathname();
+  const { onOpen } = useModal();
 
   return (
     <aside className="flex flex-col items-center justify-between py-5 z-[999] bg-[#181a1f] h-full">
       <div className=" flex items-center justify-center w-full pb-4 border-b boder-[rgba(194,202,242,.08)]">
-        <Button className=" w-[15vw] h-[3.8vh] bg-[#387BFF] hover:bg-blue-700 text-white">
+        <Button
+          onClick={() => {
+            onOpen('createProject');
+          }}
+          className=" w-[15vw] h-[3.8vh] bg-[#387BFF] hover:bg-blue-700 text-white"
+        >
           <span className=" text-lg">＋</span> 项目
         </Button>
       </div>

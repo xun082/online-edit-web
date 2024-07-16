@@ -23,23 +23,24 @@ export const TreeItem = ({ elements }: TreeItemProps) => {
   return (
     <ul className="w-full space-y-1">
       {elements.map((element) => (
-        <li key={element.id} className="w-full space-y-2">
+        <li key={`${element.id}+${element.filename}`} className="w-full space-y-2">
           {element.children && element.children?.length > 0 ? (
             <Folder
               element={element.filename}
-              value={element.id}
+              value={`Folder-${element.id}`}
+              key={`Folder-${element.id}`}
               isSelectable={element.isSelectable}
               className="px-px pr-1 text-[13px] font-[400]"
             >
               <TreeItem
-                key={element.id}
+                key={`iFolder-${element.id}`}
                 aria-label={`folder ${element.filename}`}
                 elements={element.children}
               />
             </Folder>
           ) : (
-            <File key={element.id} value={element.id} isSelectable={element.isSelectable}>
-              <FileItem key={element.id} file={element}></FileItem>
+            <File key={`File-${element.id}`} value={element.id} isSelectable={element.isSelectable}>
+              <FileItem key={`iFile-${element.id}`} file={element}></FileItem>
             </File>
           )}
         </li>
