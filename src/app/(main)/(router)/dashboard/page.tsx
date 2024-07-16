@@ -16,17 +16,17 @@ const TemplateCardData = [
 ];
 const LinkCardData = [
   {
-    linkText: 'Node',
+    linkText: 'Node1',
     LinkUrl: 'https://www.baidu.com',
     linkDesc: 'ai帮助你学习前端后端运维安全',
   },
   {
-    linkText: 'Node',
+    linkText: 'Node2',
     LinkUrl: 'https://www.baidu.com',
     linkDesc: 'ai帮助你学习前端后端运维安全',
   },
   {
-    linkText: 'Node',
+    linkText: 'Node3',
     LinkUrl: 'https://www.baidu.com',
     linkDesc: 'ai帮助你学习前端后端运维安全',
   },
@@ -34,7 +34,10 @@ const LinkCardData = [
 
 function createTemplateCard(templateName: string, templateIconUrl: string) {
   return (
-    <div className=" group relative h-[20vh] py-[16px] px-[16px] duration-200 transition-all rounded-[8px] hover:rounded-[16px] hover:bg-black/50 bg-black/40 overflow-hidden flex flex-col w-1/3 cursor-pointer">
+    <div
+      key={templateName}
+      className=" group relative h-[20vh] py-[16px] px-[16px] duration-200 transition-all rounded-[8px] hover:rounded-[16px] hover:bg-black/50 bg-black/40 overflow-hidden flex flex-col w-1/3 cursor-pointer"
+    >
       <div className="flex items-center h-[28px]">
         <div className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center">
           <img className="rounded-[6px]" width="28" height="28" src={templateIconUrl} />
@@ -57,7 +60,13 @@ function createTemplateCard(templateName: string, templateIconUrl: string) {
 
 function createLinkCard(linkText: string, linkUrl: string, linkDesc: string) {
   return (
-    <a rel="noreferrer" className="w-1/3 cursor-pointer" href={linkUrl} target="_blank">
+    <a
+      key={linkText}
+      rel="noreferrer"
+      className="w-1/3 cursor-pointer"
+      href={linkUrl}
+      target="_blank"
+    >
       <div className="relative group py-[20px] px-[20px] rounded-[8px] hover:rounded-[16px] hover:bg-[#282A2E] bg-[#1F2124] overflow-hidden flex flex-col transition-all duration-200">
         <div className="flex items-center h-[16px] w-full place-content-between mb-[12px]">
           <div className="font-[600] text-[16px] my-[12px] flex-1 leading-[20px] h-[20px]">
