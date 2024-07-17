@@ -16,7 +16,7 @@ interface FileDataState {
 }
 
 function removeItemById(data: DirectoryInterface[], id: string): DirectoryInterface[] {
-  let dataArray = Array.isArray(data) ? data : [data];
+  const dataArray = Array.isArray(data) ? data : [data];
 
   return dataArray.reduce((acc: DirectoryInterface[], item) => {
     if (item.id !== id) {
