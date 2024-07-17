@@ -121,7 +121,6 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
         onMouseUp={(e) => {
           e.stopPropagation();
           removeFileById(file.id);
-          // 删除后更新editor
 
           editors.forEach((editor, editorId) => {
             const newModels = removeModel(file.id, editorId);
