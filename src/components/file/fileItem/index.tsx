@@ -21,12 +21,13 @@ interface FileItemProps {
 
 export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileItemProps) => {
   // used for editor
-  const { splitState } = useSplitStore();
-  const { editors } = useEditorStore();
+  const { splitState, removeSplit } = useSplitStore();
+  const { editors, removeEditor } = useEditorStore();
   const { activeEditor, activeEditorId } = useActiveEditorStore();
   const { monacos } = useMonacoStore();
   const { setActiveModel } = useActiveModelStore();
-  const { models, setModels } = useModelsStore();
+  const { models, setModels, removeModel, removeAllModel } = useModelsStore();
+  const keepedEditorCount = splitState.filter((item) => item).length;
   //  used for dnd
   const clickClient = useRef({
     x: 0,
@@ -120,6 +121,24 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
         onMouseUp={(e) => {
           e.stopPropagation();
           removeFileById(file.id);
+          // 删除后更新editor
+
+          editors.forEach((editor, editorId) => {
+            const newModels = removeModel(file.filename, editorId);
+
+            if (newModels && newModels.filename) {
+              setActiveModel(newModels.filename, newModels.model, editorId);
+              editor && editor.setModel(newModels.model);
+            } else {
+              removeAllModel(editorId);
+              editor && editor.setModel(null);
+
+              if (keepedEditorCount > 1) {
+                removeEditor(editorId);
+                removeSplit(editorId);
+              }
+            }
+          });
         }}
         className=" w-[15px] pr-[-4px] h-[15px] text-white/70 hover:text-white hidden group-hover:block"
       />
