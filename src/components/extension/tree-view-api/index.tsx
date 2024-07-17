@@ -249,8 +249,8 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
           }}
         >
           {expendedItems?.includes(value)
-            ? openIcon ?? <FolderOpenIcon className="h-3 w-3" />
-            : closeIcon ?? <FolderIcon className="h-3 w-3" />}
+            ? (openIcon ?? <FolderOpenIcon className="h-3 w-3" />)
+            : (closeIcon ?? <FolderIcon className="h-3 w-3" />)}
           <span>{element}</span>
         </AccordionPrimitive.Trigger>
         <AccordionPrimitive.Content className="text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down relative overflow-hidden h-full">
