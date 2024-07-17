@@ -154,6 +154,7 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <PanelGroup direction="horizontal" className="flex-1">
             <Panel minSize={1} defaultSize={15} className="bg-gray-800">
               <motion.div
+                className="h-full"
                 key={pathname}
                 initial={{ y: 20, opacity: 0, scale: 0.95 }}
                 animate={controls}
