@@ -70,17 +70,17 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
 
     const willChangeEditorId = activeEditor ? activeEditorId : splitState.findIndex((item) => item);
 
-    const mathModel = models.filter((model) => model.filename === file.filename);
+    const mathModel = models.filter((model) => model.id === file.id);
     // console.log(splitState, mathModel[0], willChangeEditor, willChangeEditorId);
 
     if (mathModel.length > 0) {
-      mathModel[0].model &&
-        setActiveModel(mathModel[0].filename, mathModel[0].model, willChangeEditorId);
+      mathModel[0].model && setActiveModel(mathModel[0].id, mathModel[0].model, willChangeEditorId);
       mathModel[0].model &&
         setModels(
-          { filename: mathModel[0].filename, value: '', language: 'typescript' },
+          { filename: mathModel[0].filename, value: '', language: 'typescript', id: file.id },
           mathModel[0].model,
           willChangeEditorId,
+          file.id,
         );
       willChangeEditor?.setModel(mathModel[0].model);
     } else {
@@ -124,7 +124,7 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
           // 删除后更新editor
 
           editors.forEach((editor, editorId) => {
-            const newModels = removeModel(file.filename, editorId);
+            const newModels = removeModel(file.id, editorId);
 
             if (newModels && newModels.filename) {
               setActiveModel(newModels.filename, newModels.model, editorId);

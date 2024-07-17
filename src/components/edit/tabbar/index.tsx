@@ -57,7 +57,7 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   useEffect(() => {
     setMockModelsForSort(
       models.map((item) => {
-        return { ...item, id: item.filename };
+        return { ...item, id: item.id };
       }),
     );
   }, [models]);
@@ -70,7 +70,7 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
             id={model.id}
             key={model.filename}
             filename={model.filename}
-            active={model.filename === activeModelId}
+            active={model.id === activeModelId}
             editorId={editorId}
             setActiveModel={setActiveModel}
             editor={editor}
