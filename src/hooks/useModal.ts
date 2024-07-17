@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type ModalType = 'createProject';
+export type ModalType = 'createProject' | 'createFile' | 'createDirector';
 
 interface ModalData {
   [key: string]: any;

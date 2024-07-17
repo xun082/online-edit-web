@@ -29,7 +29,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
   const thisEditor = getEditor(editorId);
   const currentModel = activeMap[editorId];
-  console.log(thisEditor);
+  // console.log(thisEditor);
   // used for dnd
 
   const { isOver, setNodeRef } = useDroppable({
