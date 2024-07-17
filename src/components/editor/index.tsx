@@ -8,25 +8,20 @@ import { useDroppable } from '@dnd-kit/core';
 import {
   useEditorStore,
   useMonacoStore,
-  useModelsStore,
   useActiveModelStore,
   useActiveEditorStore,
 } from '@/store/editorStore';
-import { setModelsFromInfo } from '@/components/editor/utils';
 import { TabBar } from '@/components/edit/tabbar';
 
 interface CodeEditorProps {
   editorId: number;
 }
 
-const modelsInfo: any[] = [];
-
 export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { getEditor, setEditor } = useEditorStore();
   const { setMonaco } = useMonacoStore();
-  const { setModels } = useModelsStore();
-  const { activeMap, setActiveModel } = useActiveModelStore();
-  const { activeEditorId, setActiveEditor } = useActiveEditorStore();
+  const { activeMap } = useActiveModelStore();
+  const { setActiveEditor } = useActiveEditorStore();
   const thisEditor = getEditor(editorId);
   const currentModel = activeMap[editorId];
   // console.log(thisEditor);
@@ -59,20 +54,6 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
       setEditor(editorId, editor);
       setMonaco(editorId, monaco);
-
-      if (editorId === 0) {
-        setModelsFromInfo(modelsInfo, monaco, editor, setModels, setActiveModel, editorId);
-      } else {
-        const newModel = activeEditorId < 1 ? activeMap[0] : activeMap[1];
-        newModel.model && setActiveModel(newModel.modelId, newModel.model, editorId);
-        newModel.model &&
-          setModels(
-            { filename: newModel.modelId, value: '', language: 'typescript' },
-            newModel.model,
-            editorId,
-          );
-        editor.setModel(newModel.model);
-      }
 
       monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
         noSemanticValidation: false,

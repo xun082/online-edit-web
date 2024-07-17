@@ -94,16 +94,17 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const willChangeEditor = editor;
     const willChangeEditorId = over.id;
 
-    const mathModel = models.filter((model) => model.filename === file.filename);
+    const mathModel = models.filter((model) => model.id === file.id);
 
     if (mathModel.length > 0) {
       mathModel[0].model &&
         setActiveModel(mathModel[0].filename, mathModel[0].model, willChangeEditorId);
       mathModel[0].model &&
         setModels(
-          { filename: mathModel[0].filename, value: '', language: 'typescript' },
+          { filename: mathModel[0].filename, value: '', language: 'typescript', id: file.id },
           mathModel[0].model,
           willChangeEditorId,
+          file.id,
         );
       willChangeEditor?.setModel(mathModel[0].model);
     } else {

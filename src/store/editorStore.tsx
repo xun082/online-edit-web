@@ -67,11 +67,12 @@ export const useMonacoStore = create<MonacoState & MonacoAction>((set, get) => (
     return get().monacos[index] || null;
   },
 }));
-
+// filename 为model对应文件名,id为uuid
 export type modelInfoType = {
   filename: string;
   language: string;
   value: string;
+  id: string;
 };
 
 export type modelType = modelInfoType & { model: editor.ITextModel; usedBy: number[] };
@@ -81,8 +82,13 @@ interface ModelsState {
   models: modelsType | [];
 }
 interface ModelsAction {
-  setModels: (modelInfo: modelInfoType, model: editor.ITextModel, editorId: number) => void;
-  removeModel: (filename: string, editorId: number) => any;
+  setModels: (
+    modelInfo: modelInfoType,
+    model: editor.ITextModel,
+    editorId: number,
+    id: string,
+  ) => void;
+  removeModel: (id: string, editorId: number) => any;
   removeAllModel: (editorId: number) => void;
 }
 export const useModelsStore = create<ModelsState & ModelsAction>((set, get) => ({
@@ -96,7 +102,7 @@ export const useModelsStore = create<ModelsState & ModelsAction>((set, get) => (
     }
 
     set((state) => {
-      const existingModelIndex = state.models.findIndex((m) => m.filename === modelInfo.filename);
+      const existingModelIndex = state.models.findIndex((m) => m.id === modelInfo.id);
 
       if (existingModelIndex === -1) {
         return {
@@ -124,21 +130,21 @@ export const useModelsStore = create<ModelsState & ModelsAction>((set, get) => (
     });
   },
 
-  removeModel: (filename: string, editorId: number) => {
+  removeModel: (id: string, editorId: number) => {
     set((state) => {
-      const existingModelIndex = state.models.findIndex((m) => m.filename === filename);
+      const existingModelIndex = state.models.findIndex((m) => m.id === id);
 
       if (existingModelIndex !== -1) {
         const preModels = [...state.models];
 
         if (preModels[existingModelIndex].usedBy.includes(editorId)) {
           preModels[existingModelIndex].usedBy = preModels[existingModelIndex].usedBy.filter(
-            (id) => id !== editorId,
+            (eid) => eid !== editorId,
           );
 
           if (preModels[existingModelIndex].usedBy.length === 0) {
             return {
-              models: [...preModels.filter((model) => model.filename !== filename)],
+              models: [...preModels.filter((model) => model.id !== id)],
             };
           } else {
             return {
@@ -183,6 +189,7 @@ export const useModelsStore = create<ModelsState & ModelsAction>((set, get) => (
   },
 }));
 
+// modelId原为model对应文件名，为满足打开多个同名文件修改为对应文件的uuid
 interface activeModelState {
   activeMap: { modelId: string; model: editor.ITextModel | null }[];
 }
@@ -194,7 +201,6 @@ interface activeModelAction {
 
 export const useActiveModelStore = create<activeModelState & activeModelAction>((set) => ({
   activeMap: [],
-
   setActiveModel: (modelId: string, model: editor.ITextModel, editorId: number) =>
     set((state) => {
       const preActiveMap = [...state.activeMap];

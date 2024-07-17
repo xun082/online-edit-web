@@ -57,7 +57,7 @@ const Tab: React.FC<TabProps> = ({
   const handleTabClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    setActiveModel(filename, model, editorId);
+    setActiveModel(id, model, editorId);
     editor && editor.setModel(model);
   };
 
@@ -65,10 +65,10 @@ const Tab: React.FC<TabProps> = ({
     e.preventDefault();
     e.stopPropagation();
 
-    const newModels = removeModel(filename, editorId);
+    const newModels = removeModel(id, editorId);
 
-    if (newModels && newModels.filename) {
-      setActiveModel(newModels.filename, newModels.model, editorId);
+    if (newModels && newModels.id) {
+      setActiveModel(newModels.id, newModels.model, editorId);
       editor && editor.setModel(newModels.model);
     } else {
       removeAllModel(editorId);

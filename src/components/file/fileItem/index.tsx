@@ -21,12 +21,13 @@ interface FileItemProps {
 
 export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileItemProps) => {
   // used for editor
-  const { splitState } = useSplitStore();
-  const { editors } = useEditorStore();
+  const { splitState, removeSplit } = useSplitStore();
+  const { editors, removeEditor } = useEditorStore();
   const { activeEditor, activeEditorId } = useActiveEditorStore();
   const { monacos } = useMonacoStore();
   const { setActiveModel } = useActiveModelStore();
-  const { models, setModels } = useModelsStore();
+  const { models, setModels, removeModel, removeAllModel } = useModelsStore();
+  const keepedEditorCount = splitState.filter((item) => item).length;
   //  used for dnd
   const clickClient = useRef({
     x: 0,
@@ -69,17 +70,17 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
 
     const willChangeEditorId = activeEditor ? activeEditorId : splitState.findIndex((item) => item);
 
-    const mathModel = models.filter((model) => model.filename === file.filename);
+    const mathModel = models.filter((model) => model.id === file.id);
     // console.log(splitState, mathModel[0], willChangeEditor, willChangeEditorId);
 
     if (mathModel.length > 0) {
-      mathModel[0].model &&
-        setActiveModel(mathModel[0].filename, mathModel[0].model, willChangeEditorId);
+      mathModel[0].model && setActiveModel(mathModel[0].id, mathModel[0].model, willChangeEditorId);
       mathModel[0].model &&
         setModels(
-          { filename: mathModel[0].filename, value: '', language: 'typescript' },
+          { filename: mathModel[0].filename, value: '', language: 'typescript', id: file.id },
           mathModel[0].model,
           willChangeEditorId,
+          file.id,
         );
       willChangeEditor?.setModel(mathModel[0].model);
     } else {
@@ -120,6 +121,23 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
         onMouseUp={(e) => {
           e.stopPropagation();
           removeFileById(file.id);
+
+          editors.forEach((editor, editorId) => {
+            const newModels = removeModel(file.id, editorId);
+
+            if (newModels && newModels.filename) {
+              setActiveModel(newModels.filename, newModels.model, editorId);
+              editor && editor.setModel(newModels.model);
+            } else {
+              removeAllModel(editorId);
+              editor && editor.setModel(null);
+
+              if (keepedEditorCount > 1) {
+                removeEditor(editorId);
+                removeSplit(editorId);
+              }
+            }
+          });
         }}
         className=" w-[15px] pr-[-4px] h-[15px] text-white/70 hover:text-white hidden group-hover:block"
       />
