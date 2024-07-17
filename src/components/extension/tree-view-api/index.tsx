@@ -11,6 +11,7 @@ import React, {
 } from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { FolderIcon, FolderOpenIcon } from 'lucide-react';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -227,13 +228,16 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
       openIcon,
       closeIcon,
     } = useTree();
+    const { removeFileById } = useUploadFileDataStore();
     const Ele = empty ? 'div' : AccordionPrimitive.Item;
+    const Trigger = empty ? 'div' : AccordionPrimitive.Trigger;
+    const Content = empty ? 'div' : AccordionPrimitive.Content;
 
     return (
       <Ele ref={ref} {...props} value={value} className="relative overflow-hidden h-full ">
-        <AccordionPrimitive.Trigger
+        <Trigger
           className={cn(
-            `flex items-center gap-1 text-sm w-full border-[1px] border-[#202327]`,
+            ` group min-h-[22px]  flex items-center justify-between text-sm w-full border-[1px] border-[#202327]`,
             className,
             {
               'bg-muted rounded-md': isSelect && isSelectable,
@@ -248,12 +252,21 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
             selectItem(value);
           }}
         >
-          {expendedItems?.includes(value)
-            ? (openIcon ?? <FolderOpenIcon className="h-3 w-3" />)
-            : (closeIcon ?? <FolderIcon className="h-3 w-3" />)}
-          <span>{element}</span>
-        </AccordionPrimitive.Trigger>
-        <AccordionPrimitive.Content className="text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down relative overflow-hidden h-full">
+          <div className=" flex items-center justify-start gap-x-1">
+            {expendedItems?.includes(value)
+              ? (openIcon ?? <FolderOpenIcon className="h-3 w-3" />)
+              : (closeIcon ?? <FolderIcon className="h-3 w-3" />)}
+            <span>{element}</span>
+          </div>
+          <RiDeleteBin6Line
+            onMouseUp={(e) => {
+              e.stopPropagation();
+              removeFileById(value);
+            }}
+            className=" pr-2 w-5 h-5 text-white/70 hover:text-white hidden group-hover:block"
+          />
+        </Trigger>
+        <Content className="text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down relative overflow-hidden h-full">
           {element && indicator && <TreeIndicator aria-hidden="true" />}
           {!empty && (
             <AccordionPrimitive.Root
@@ -269,7 +282,7 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
               {children}
             </AccordionPrimitive.Root>
           )}
-        </AccordionPrimitive.Content>
+        </Content>
       </Ele>
     );
   },

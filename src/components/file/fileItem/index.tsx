@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { editor } from 'monaco-editor';
 import { useDraggable } from '@dnd-kit/core';
+import { TiDocumentDelete } from 'react-icons/ti';
 
 import {
   useActiveEditorStore,
@@ -11,6 +12,7 @@ import {
   useSplitStore,
 } from '@/store/editorStore';
 import { useDragIconStore } from '@/store/dragIconStore';
+import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
 import { addNewModel } from '@/components/editor/utils';
 interface FileItemProps {
   file: any;
@@ -53,6 +55,9 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
     dragIconRef.style.top = `${transform.y + clickClient.current.y + 5}px`;
     dragIconRef.innerHTML = `${file.filename}`;
   }
+  //used for fileTree
+
+  const { removeFileById } = useUploadFileDataStore();
 
   function handleFileItemMouseUp() {
     clickClient.current = {
@@ -96,7 +101,7 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
         onMouseupFn && onMouseupFn();
         handleFileItemMouseUp();
       }}
-      className=" flex justify-start px-2 py-[0.2px] font-[250] text-[11.5px] w-full "
+      className=" group relative flex justify-between items-center px-2 py-[0.2px] font-[250] text-[11.5px] w-full "
     >
       <span
         className=" cursor-pointer overflow-ellipsis whitespace-nowrap overflow-hidden"
@@ -111,6 +116,13 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
       >
         {file.filename}
       </span>
+      <TiDocumentDelete
+        onMouseUp={(e) => {
+          e.stopPropagation();
+          removeFileById(file.id);
+        }}
+        className=" w-[15px] pr-[-4px] h-[15px] text-white/70 hover:text-white hidden group-hover:block"
+      />
     </div>
   );
 };
