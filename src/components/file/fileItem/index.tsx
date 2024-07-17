@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { editor } from 'monaco-editor';
 import { useDraggable } from '@dnd-kit/core';
+import { TiDocumentDelete } from 'react-icons/ti';
 
 import {
   useActiveEditorStore,
@@ -11,6 +12,7 @@ import {
   useSplitStore,
 } from '@/store/editorStore';
 import { useDragIconStore } from '@/store/dragIconStore';
+import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
 import { addNewModel } from '@/components/editor/utils';
 interface FileItemProps {
   file: any;
@@ -19,12 +21,13 @@ interface FileItemProps {
 
 export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileItemProps) => {
   // used for editor
-  const { splitState } = useSplitStore();
-  const { editors } = useEditorStore();
+  const { splitState, removeSplit } = useSplitStore();
+  const { editors, removeEditor } = useEditorStore();
   const { activeEditor, activeEditorId } = useActiveEditorStore();
   const { monacos } = useMonacoStore();
   const { setActiveModel } = useActiveModelStore();
-  const { models, setModels } = useModelsStore();
+  const { models, setModels, removeModel, removeAllModel } = useModelsStore();
+  const keepedEditorCount = splitState.filter((item) => item).length;
   //  used for dnd
   const clickClient = useRef({
     x: 0,
@@ -53,6 +56,9 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
     dragIconRef.style.top = `${transform.y + clickClient.current.y + 5}px`;
     dragIconRef.innerHTML = `${file.filename}`;
   }
+  //used for fileTree
+
+  const { removeFileById } = useUploadFileDataStore();
 
   function handleFileItemMouseUp() {
     clickClient.current = {
@@ -64,17 +70,17 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
 
     const willChangeEditorId = activeEditor ? activeEditorId : splitState.findIndex((item) => item);
 
-    const mathModel = models.filter((model) => model.filename === file.filename);
+    const mathModel = models.filter((model) => model.id === file.id);
     // console.log(splitState, mathModel[0], willChangeEditor, willChangeEditorId);
 
     if (mathModel.length > 0) {
-      mathModel[0].model &&
-        setActiveModel(mathModel[0].filename, mathModel[0].model, willChangeEditorId);
+      mathModel[0].model && setActiveModel(mathModel[0].id, mathModel[0].model, willChangeEditorId);
       mathModel[0].model &&
         setModels(
-          { filename: mathModel[0].filename, value: '', language: 'typescript' },
+          { filename: mathModel[0].filename, value: '', language: 'typescript', id: file.id },
           mathModel[0].model,
           willChangeEditorId,
+          file.id,
         );
       willChangeEditor?.setModel(mathModel[0].model);
     } else {
@@ -96,10 +102,10 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
         onMouseupFn && onMouseupFn();
         handleFileItemMouseUp();
       }}
-      className=" flex justify-start px-2 py-[1px] text-[14px] w-full "
+      className=" group relative flex justify-between items-center px-2 py-[0.2px] font-[250] text-[11.5px] w-full "
     >
       <span
-        className=" cursor-pointer"
+        className=" cursor-pointer overflow-ellipsis whitespace-nowrap overflow-hidden"
         ref={setNodeRef}
         {...listeners}
         onMouseDown={(e) => {
@@ -111,6 +117,30 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
       >
         {file.filename}
       </span>
+      <TiDocumentDelete
+        onMouseUp={(e) => {
+          e.stopPropagation();
+          removeFileById(file.id);
+
+          editors.forEach((editor, editorId) => {
+            const newModels = removeModel(file.id, editorId);
+
+            if (newModels && newModels.filename) {
+              setActiveModel(newModels.filename, newModels.model, editorId);
+              editor && editor.setModel(newModels.model);
+            } else {
+              removeAllModel(editorId);
+              editor && editor.setModel(null);
+
+              if (keepedEditorCount > 1) {
+                removeEditor(editorId);
+                removeSplit(editorId);
+              }
+            }
+          });
+        }}
+        className=" w-[15px] pr-[-4px] h-[15px] text-white/70 hover:text-white hidden group-hover:block"
+      />
     </div>
   );
 };
