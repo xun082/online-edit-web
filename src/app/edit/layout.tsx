@@ -155,7 +155,6 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <PanelGroup direction="horizontal" className="flex-1">
             <Panel minSize={1} defaultSize={15} className="bg-[#202327]">
               <motion.div
-                className="h-full"
                 key={pathname}
                 className=" overflow-y-scroll h-full hide-scrollbar"
                 initial={{ y: 20, opacity: 0, scale: 0.95 }}
