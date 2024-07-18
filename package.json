@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": "husky install",
+    "postinstall": "husky install && pnpm format",
     "commit": "git-cz",
     "lint": "eslint \"src/**/*.{js,ts,jsx,tsx}\" --fix",
     "lint:ci": "eslint \"src/**/*.{js,ts,jsx,tsx}\"",
