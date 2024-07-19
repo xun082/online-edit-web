@@ -191,17 +191,17 @@ export const useModelsStore = create<ModelsState & ModelsAction>((set, get) => (
 
 // modelId原为model对应文件名，为满足打开多个同名文件修改为对应文件的uuid
 interface activeModelState {
-  activeMap: { modelId: string; model: editor.ITextModel | null }[];
+  activeMap: { modelId: string; model: modelType | null }[];
 }
 
 interface activeModelAction {
-  setActiveModel: (modelId: string, model: editor.ITextModel, editorId: number) => void;
+  setActiveModel: (modelId: string, model: modelType, editorId: number) => void;
   clearActiveModel: (editorId: number) => void;
 }
 
 export const useActiveModelStore = create<activeModelState & activeModelAction>((set) => ({
   activeMap: [],
-  setActiveModel: (modelId: string, model: editor.ITextModel, editorId: number) =>
+  setActiveModel: (modelId: string, model: modelType, editorId: number) =>
     set((state) => {
       const preActiveMap = [...state.activeMap];
       preActiveMap[editorId] = { modelId, model };
