@@ -16,9 +16,7 @@ interface FileDataState {
 }
 
 function removeItemById(data: DirectoryInterface[], id: string): DirectoryInterface[] {
-  const dataArray = Array.isArray(data) ? data : [data];
-
-  return dataArray.reduce((acc: DirectoryInterface[], item) => {
+  return data.reduce((acc: DirectoryInterface[], item) => {
     if (item.id !== id) {
       if (item.children) {
         item.children = removeItemById(item.children, id);
@@ -38,62 +36,50 @@ function addItem(
   parentId?: string,
   status?: string,
 ): DirectoryInterface[] {
-  parentId = parentId || data[0].id;
-
   const newId = uuidv4();
   const newEntry: DirectoryInterface = {
     id: newId,
-    filename: filename,
+    filename,
     kind: type,
     children: type === 'directory' ? [] : undefined,
-    status: status,
+    status,
   };
-
-  data = Array.isArray(data) ? [...data] : [data];
 
   const isDuplicate = (
     items: DirectoryInterface[],
     name: string,
     type: 'directory' | 'file',
-  ): boolean => {
-    return items.some((item) => item.filename === name && item.kind === type);
-  };
+  ): boolean => items.some((item) => item.filename === name && item.kind === type);
 
-  let parentItem: DirectoryInterface | undefined;
   const findParentRecursive = (
     items: DirectoryInterface[],
     id?: string,
   ): DirectoryInterface | undefined => {
-    for (let item of items) {
-      if (item.id === id) {
-        parentItem = item;
-        break;
-      } else if (item.children) {
-        findParentRecursive(item.children, id);
+    for (const item of items) {
+      if (item.id === id) return item;
+
+      if (item.children) {
+        const found = findParentRecursive(item.children, id);
+        if (found) return found;
       }
     }
-
-    return parentItem;
   };
+
   const findFileParent = (
     items: DirectoryInterface[],
     id?: string,
   ): DirectoryInterface | undefined => {
-    for (let item of items) {
-      if (item.children?.some((item) => item.id === id)) {
-        parentItem = item;
-        break;
-      } else if (item.children) {
-        findFileParent(item.children, id);
+    for (const item of items) {
+      if (item.children?.some((child) => child.id === id)) return item;
+
+      if (item.children) {
+        const found = findFileParent(item.children, id);
+        if (found) return found;
       }
     }
-
-    return parentItem;
   };
 
-  if (parentId) {
-    parentItem = findParentRecursive(data, parentId);
-  }
+  const parentItem = parentId ? findParentRecursive(data, parentId) : data[0];
 
   if (parentItem) {
     if (parentItem.children && isDuplicate(parentItem.children, filename, type)) {
@@ -103,30 +89,23 @@ function addItem(
     }
 
     if (parentItem.kind === 'file') {
-      const parentOfParentId = parentItem.id;
-      const parentOfParent = findFileParent(data, parentOfParentId);
+      const parentOfParent = findFileParent(data, parentItem.id);
 
       if (parentOfParent) {
         parentOfParent.children = [...(parentOfParent.children || []), newEntry];
-
-        return data;
-      } else {
-        return data;
       }
     } else {
       parentItem.children = [...(parentItem.children || []), newEntry];
-
-      return data;
     }
   } else {
     if (isDuplicate(data, filename, type)) {
       console.warn(`Item with name "${filename}" and type "${type}" already exists.`);
-
-      return data;
+    } else {
+      data = [...data, newEntry];
     }
-
-    return [...data, newEntry];
   }
+
+  return data;
 }
 
 function updateItem(
@@ -136,18 +115,14 @@ function updateItem(
 ): DirectoryInterface[] {
   return data.map((item) => {
     if (item.id === id) {
-      return {
-        ...item,
-        ...updatedProperties,
-      };
-    } else if (item.children) {
-      return {
-        ...item,
-        children: updateItem(item.children, id, updatedProperties),
-      };
-    } else {
-      return item;
+      return { ...item, ...updatedProperties };
     }
+
+    if (item.children) {
+      return { ...item, children: updateItem(item.children, id, updatedProperties) };
+    }
+
+    return item;
   });
 }
 
@@ -166,30 +141,18 @@ interface FileDataActions {
 export const useUploadFileDataStore = create<FileDataState & FileDataActions>((set) => ({
   fileData: null,
   selected: '',
-  setSelected: (selected: string) => {
-    set({ selected });
-  },
-  setFileData: (fileData: DirectoryInterface[] | null) => {
-    set({ fileData });
-  },
-  removeFileById: (id: string) => {
+  setSelected: (selected: string) => set({ selected }),
+  setFileData: (fileData: DirectoryInterface[] | null) => set({ fileData }),
+  removeFileById: (id: string) =>
     set((state) => ({
-      fileData: removeItemById(state.fileData as DirectoryInterface[], id),
-    }));
-  },
-  addFileOrFolder: (
-    type: 'directory' | 'file',
-    filename: string,
-    parentId?: string,
-    status?: string,
-  ) => {
+      fileData: state.fileData ? removeItemById(state.fileData, id) : null,
+    })),
+  addFileOrFolder: (type, filename, parentId, status) =>
     set((state) => ({
-      fileData: addItem(state.fileData as DirectoryInterface[], type, filename, parentId, status),
-    }));
-  },
-  updateItem: (id: string, updatedProperties: Partial<DirectoryInterface>) => {
+      fileData: state.fileData ? addItem(state.fileData, type, filename, parentId, status) : null,
+    })),
+  updateItem: (id, updatedProperties) =>
     set((state) => ({
-      fileData: updateItem(state.fileData as DirectoryInterface[], id, updatedProperties),
-    }));
-  },
+      fileData: state.fileData ? updateItem(state.fileData, id, updatedProperties) : null,
+    })),
 }));
