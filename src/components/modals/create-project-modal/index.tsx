@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { getDirectory } from '@/utils/getLocalDirectory';
+import { getDirectory } from '@/utils';
 import { useModal } from '@/hooks/useModal';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
 

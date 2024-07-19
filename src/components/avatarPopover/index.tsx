@@ -10,8 +10,8 @@ import {
   AiOutlinePoweroff,
 } from 'react-icons/ai';
 
-import { Avatar } from '../common/Avatar';
-import { Menu, MenuItem } from './menu/index';
+import { Avatar } from '@/components/common/Avatar';
+import { Menu, MenuItem } from '@/components/avatarPopover/menu';
 
 const AvatarPopoverContent: FC = () => {
   const menuItemTwStyle = `flex items-center`;
@@ -54,9 +54,9 @@ const AvatarPopoverContent: FC = () => {
 
 const AvatarPopover: FC<{ children: ReactNode }> = ({ children }) => {
   const twAnimation = `
-  data-[state=open]:data-[side=top]:animate-slideDownAndFade 
-  data-[state=open]:data-[side=right]:animate-slideLeftAndFade 
-  data-[state=open]:data-[side=bottom]:animate-slideUpAndFade 
+  data-[state=open]:data-[side=top]:animate-slideDownAndFade
+  data-[state=open]:data-[side=right]:animate-slideLeftAndFade
+  data-[state=open]:data-[side=bottom]:animate-slideUpAndFade
   data-[state=open]:data-[side=left]:animate-slideRightAndFade
   `;
   const twShadow = `
@@ -70,7 +70,7 @@ const AvatarPopover: FC<{ children: ReactNode }> = ({ children }) => {
         {children}
       </PopoverTrigger>
       <PopoverContent
-        className={`rounded  w-[260px] bg-slate-900 
+        className={`rounded  w-[260px] bg-slate-900
         will-change-[transform,opacity] ${twAnimation} ${twShadow}`}
         sideOffset={5}
       >

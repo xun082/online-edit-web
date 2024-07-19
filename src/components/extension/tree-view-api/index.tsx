@@ -15,7 +15,7 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
 
 type TreeViewElement = {

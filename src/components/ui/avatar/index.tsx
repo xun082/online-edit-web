@@ -3,7 +3,7 @@
 import * as React from 'react';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 
 type AvatarProps = React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>;
 type AvatarImageProps = React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>;
