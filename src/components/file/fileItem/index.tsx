@@ -13,7 +13,7 @@ import {
 } from '@/store/editorStore';
 import { useDragIconStore } from '@/store/dragIconStore';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
-import { addNewModel } from '@/components/editor/utils';
+import { addNewModel } from '@/utils';
 interface FileItemProps {
   file: any;
   onMouseupFn?: () => void;

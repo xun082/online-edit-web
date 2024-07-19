@@ -23,7 +23,7 @@ import {
   useSplitStore,
 } from '@/store/editorStore';
 import { useDragIconStore } from '@/store/dragIconStore';
-import { addNewModel } from '@/components/editor/utils';
+import { addNewModel } from '@/utils';
 
 const MockUserInfo = {
   name: 'xiaoming',
