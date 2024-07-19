@@ -74,7 +74,7 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
     // console.log(splitState, mathModel[0], willChangeEditor, willChangeEditorId);
 
     if (mathModel.length > 0) {
-      mathModel[0].model && setActiveModel(mathModel[0].id, mathModel[0].model, willChangeEditorId);
+      mathModel[0].model && setActiveModel(mathModel[0].id, mathModel[0], willChangeEditorId);
       mathModel[0].model &&
         setModels(
           { filename: mathModel[0].filename, value: '', language: 'typescript', id: file.id },
@@ -126,7 +126,7 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
             const newModels = removeModel(file.id, editorId);
 
             if (newModels && newModels.filename) {
-              setActiveModel(newModels.filename, newModels.model, editorId);
+              setActiveModel(newModels.id, newModels.model, editorId);
               editor && editor.setModel(newModels.model);
             } else {
               removeAllModel(editorId);

@@ -11,7 +11,7 @@ interface TabProps {
   filename: string;
   active: boolean;
   editorId: number;
-  setActiveModel: (filename: string, model: any, editorId: number) => void;
+  setActiveModel: (id: string, model: any, editorId: number) => void;
   editor: any;
   model: editor.ITextModel;
   removeModel: (filename: string, editorId: number) => any;
