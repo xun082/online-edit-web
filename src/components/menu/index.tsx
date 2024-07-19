@@ -16,12 +16,17 @@ const MenuItem: FC<{
   );
 };
 
-const Menu: FC<{ children?: ReactNode; className?: string }> = ({ children, className }) => {
+const Menu: FC<{
+  children?: ReactNode;
+  className?: string;
+  topLine?: boolean | undefined;
+}> = ({ children, className, topLine = false }) => {
   const defaultClassName = `relative w-full py-2 `;
+  const hasTopLine = topLine || (typeof topLine === 'undefined' && children);
 
   return (
     <div className={`${defaultClassName} ${className ?? ''}`}>
-      <div className="w-full h-[1px] bg-gray-600 absolute top-0 opacity-50"></div>
+      {hasTopLine && <div className="w-full h-[1px] bg-gray-600 absolute top-0 opacity-50"></div>}
       {children}
     </div>
   );
