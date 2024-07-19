@@ -36,7 +36,7 @@ const Tab: React.FC<TabProps> = ({
   keepedEditorCount,
 }) => {
   const tabRef = useRef<HTMLDivElement>(null);
-  console.log(id);
+  // console.log(id);
 
   const { listeners, setNodeRef, transform } = useSortable({ id });
 
@@ -47,7 +47,7 @@ const Tab: React.FC<TabProps> = ({
     : undefined;
 
   useEffect(() => {
-    console.log(active, tabRef.current);
+    // console.log(active, tabRef.current);
 
     if (active && tabRef.current) {
       tabRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -57,7 +57,7 @@ const Tab: React.FC<TabProps> = ({
   const handleTabClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    setActiveModel(filename, model, editorId);
+    setActiveModel(id, model, editorId);
     editor && editor.setModel(model);
   };
 
@@ -65,10 +65,10 @@ const Tab: React.FC<TabProps> = ({
     e.preventDefault();
     e.stopPropagation();
 
-    const newModels = removeModel(filename, editorId);
+    const newModels = removeModel(id, editorId);
 
-    if (newModels && newModels.filename) {
-      setActiveModel(newModels.filename, newModels.model, editorId);
+    if (newModels && newModels.id) {
+      setActiveModel(newModels.id, newModels.model, editorId);
       editor && editor.setModel(newModels.model);
     } else {
       removeAllModel(editorId);
@@ -96,8 +96,8 @@ const Tab: React.FC<TabProps> = ({
       onMouseUp={(e) => handleTabClick(e)}
     >
       <Image className="absolute w-4 h-4 left-1" src={jsIcon} alt="" />
-
-      <p ref={tabRef}>{filename}</p>
+      <div ref={tabRef} className=" absolute left-0 top-0 w-full h-0 pointer-events-none"></div>
+      <p>{filename}</p>
       <span onMouseUp={handleTabClose} className="hidden group-hover:block absolute right-3">
         x
       </span>

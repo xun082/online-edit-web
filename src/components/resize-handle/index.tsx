@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { PanelResizeHandle } from 'react-resizable-panels';
 
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 
 interface ResizeHandleType {
   direction?: 'vertical' | 'horizontal';

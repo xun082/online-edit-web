@@ -23,7 +23,7 @@ import {
   useSplitStore,
 } from '@/store/editorStore';
 import { useDragIconStore } from '@/store/dragIconStore';
-import { addNewModel } from '@/components/editor/utils';
+import { addNewModel } from '@/utils';
 
 const MockUserInfo = {
   name: 'xiaoming',
@@ -94,16 +94,17 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const willChangeEditor = editor;
     const willChangeEditorId = over.id;
 
-    const mathModel = models.filter((model) => model.filename === file.filename);
+    const mathModel = models.filter((model) => model.id === file.id);
 
     if (mathModel.length > 0) {
       mathModel[0].model &&
         setActiveModel(mathModel[0].filename, mathModel[0].model, willChangeEditorId);
       mathModel[0].model &&
         setModels(
-          { filename: mathModel[0].filename, value: '', language: 'typescript' },
+          { filename: mathModel[0].filename, value: '', language: 'typescript', id: file.id },
           mathModel[0].model,
           willChangeEditorId,
+          file.id,
         );
       willChangeEditor?.setModel(mathModel[0].model);
     } else {
@@ -152,9 +153,10 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         {/* 可调整大小的面板 */}
         <DndContext onDragEnd={(e) => handleFileDrop(e)}>
           <PanelGroup direction="horizontal" className="flex-1">
-            <Panel minSize={1} defaultSize={15} className="bg-gray-800">
+            <Panel minSize={1} defaultSize={15} className="bg-[#202327]">
               <motion.div
                 key={pathname}
+                className=" overflow-y-scroll h-full hide-scrollbar"
                 initial={{ y: 20, opacity: 0, scale: 0.95 }}
                 animate={controls}
                 transition={{ ease: 'easeInOut', duration: 1 }}
