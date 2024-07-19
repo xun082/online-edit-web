@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { NextDevtoolsProvider } from '@next-devtools/core';
 
 import './globals.css';
-import { ModalProvider } from '@/components/provider/modal-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,12 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <NextDevtoolsProvider>
-          {children}
-          <ModalProvider />
-        </NextDevtoolsProvider>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

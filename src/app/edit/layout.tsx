@@ -68,7 +68,6 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     });
   }, [pathname, controls]);
 
-  // const { editors } = useEditorStore();
   const { models, setModels } = useModelsStore();
 
   const { setActiveModel } = useActiveModelStore();
@@ -80,8 +79,6 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   function handleFileDrop({ active, over }: any) {
-    // 清除dropIcon
-
     dragIconRef.style.display = 'none';
     dragIconRef.style.left = '0px';
     dragIconRef.style.top = '0px';
