@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-import { withNextDevtools } from '@next-devtools/core/plugin';
 
 const nextConfig = {
   eslint: {
@@ -37,4 +36,4 @@ const nextConfig = {
   },
 };
 
-export default withNextDevtools(nextConfig);
+export default nextConfig;
