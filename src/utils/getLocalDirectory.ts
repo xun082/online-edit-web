@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 export interface FilerInterface {
   handler: FileSystemFileHandle;
   filename: string;
-  kind: string;
+  kind: 'file';
   path: string;
   value: string;
   id: string;
@@ -12,7 +12,7 @@ export interface FilerInterface {
 export interface DirectoryInterface {
   handler: FileSystemDirectoryHandle;
   filename: string;
-  kind: string;
+  kind: 'directory';
   path: string;
   children: Array<FilerInterface | DirectoryInterface>;
   id: string;
@@ -20,19 +20,18 @@ export interface DirectoryInterface {
 
 export const DirectoryKeySet = new Set<string>();
 export const DirectoryMap = new Map<string, DirectoryInterface>();
-export let curDirectory: null | DirectoryInterface = null;
+export let curDirectory: DirectoryInterface | null = null;
 
 export const getDirectory = async (id?: string): Promise<DirectoryInterface | null> => {
   if (id && DirectoryKeySet.has(id)) {
-    return DirectoryMap.get(id) as DirectoryInterface;
+    return DirectoryMap.get(id) || null;
   }
 
   let directoryHandler: FileSystemDirectoryHandle | null = null;
 
   try {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-expect-error
-    directoryHandler = await window.showDirectoryPicker({
+    // 使用类型断言处理实验性 API
+    directoryHandler = await (window as any).showDirectoryPicker({
       startIn: id ? DirectoryMap.get(id)?.handler : undefined,
       mode: 'readwrite',
     });
@@ -41,11 +40,10 @@ export const getDirectory = async (id?: string): Promise<DirectoryInterface | nu
   }
 
   if (directoryHandler) {
-    const id = uuidv4();
-    DirectoryKeySet.add(id);
-
     const directory = await getDirectoryHandlerDeep(directoryHandler);
-    DirectoryMap.set(id, directory);
+    const newId = uuidv4();
+    DirectoryKeySet.add(newId);
+    DirectoryMap.set(newId, directory);
     curDirectory = directory;
 
     return directory;
@@ -72,22 +70,34 @@ export const getFileContent = (file: File): Promise<string> => {
 };
 
 export const directoryDataFormatter = async (
-  directoryHandler: FileSystemDirectoryHandle | FileSystemFileHandle,
+  handler: FileSystemDirectoryHandle | FileSystemFileHandle,
   path: string = '',
   children?: (FilerInterface | DirectoryInterface)[],
 ): Promise<FilerInterface | DirectoryInterface> => {
   const id = uuidv4();
-  const obj = {
-    handler: directoryHandler,
-    filename: directoryHandler.name,
-    kind: directoryHandler.kind,
-    path,
-    ...(directoryHandler.kind === 'directory'
-      ? { children: children || [], id }
-      : { value: await getFileContent(await directoryHandler.getFile()), id }),
-  };
 
-  return obj as FilerInterface | DirectoryInterface;
+  if (handler.kind === 'directory') {
+    return {
+      handler: handler as FileSystemDirectoryHandle,
+      filename: handler.name,
+      kind: 'directory',
+      path,
+      children: children || [],
+      id,
+    };
+  } else {
+    const fileHandler = handler as FileSystemFileHandle;
+    const value = await getFileContent(await fileHandler.getFile());
+
+    return {
+      handler: fileHandler,
+      filename: handler.name,
+      kind: 'file',
+      path,
+      value,
+      id,
+    };
+  }
 };
 
 export const getDirectoryHandlerDeep = async (
@@ -97,16 +107,16 @@ export const getDirectoryHandlerDeep = async (
   path = path ? `${path}/${directoryHandler.name}` : directoryHandler.name;
 
   const children: (FilerInterface | DirectoryInterface)[] = [];
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
 
-  for await (const handle of directoryHandler.values()) {
+  for await (const handle of (
+    directoryHandler as any
+  ).values() as AsyncIterable<FileSystemHandle>) {
     if (handle.kind === 'directory' && handle.name !== 'node_modules') {
-      children.push(await getDirectoryHandlerDeep(handle, path));
+      children.push(await getDirectoryHandlerDeep(handle as FileSystemDirectoryHandle, path));
     } else if (handle.kind === 'file') {
-      children.push(await directoryDataFormatter(handle, path));
+      children.push(await directoryDataFormatter(handle as FileSystemFileHandle, path));
     }
   }
 
-  return directoryDataFormatter(directoryHandler, path, children) as unknown as DirectoryInterface;
+  return directoryDataFormatter(directoryHandler, path, children) as Promise<DirectoryInterface>;
 };
