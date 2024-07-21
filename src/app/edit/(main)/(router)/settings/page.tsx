@@ -37,32 +37,30 @@ const editorSettingOptions: SettingOption[] = [
 ];
 
 const Settings: FC = () => (
-  <TooltipProvider delayDuration={{ enter: 500, exit: 100 }}>
-    <div className="p-4 h-full">
-      <div>Settings</div>
-      <div>
-        <div className={titleStyle}>WEBCONTAINERS</div>
-        <div className={textStyle}>
-          <span className="mr-2">Compile trigger</span>
+  <div className="p-4 h-full">
+    <div>Settings</div>
+    <div>
+      <div className={titleStyle}>WEBCONTAINERS</div>
+      <div className={textStyle}>
+        <span className="mr-2">Compile trigger</span>
+        <TooltipProvider delayDuration={500}>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <span>
-                <PiWarningCircleBold />
-              </span>
+            <TooltipTrigger>
+              <PiWarningCircleBold />
             </TooltipTrigger>
-            <TooltipContent className="bg-gray-800 text-white" side={'right'}>
+            <TooltipContent className="bg-gray-800 text-white" side="right">
               <p>Controls when edited files are synced to the WebContainers filesystem.</p>
             </TooltipContent>
           </Tooltip>
-        </div>
-        <CompileSelector />
+        </TooltipProvider>
       </div>
-      <div>
-        <div className={titleStyle}>EDITOR SETTINGS</div>
-        <EditorSettings />
-      </div>
+      <CompileSelector />
     </div>
-  </TooltipProvider>
+    <div>
+      <div className={titleStyle}>EDITOR SETTINGS</div>
+      <EditorSettings />
+    </div>
+  </div>
 );
 
 const CompileSelector: FC = () => (

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './index';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './index'; // 确保路径正确
 
 export default {
   title: 'Components/Tooltip',
@@ -9,8 +9,8 @@ export default {
   subcomponents: { TooltipTrigger, TooltipContent, TooltipProvider },
 } as Meta;
 
-const Template: StoryFn<typeof Tooltip> = (args) => (
-  <TooltipProvider delayDuration={{ enter: 500, exit: 100 }}>
+const Template: StoryFn<typeof TooltipContent> = (args) => (
+  <TooltipProvider delayDuration={500}>
     <Tooltip>
       <TooltipTrigger asChild>
         <button className="px-4 py-2 bg-blue-500 text-white rounded">Hover or Focus me</button>
@@ -28,7 +28,7 @@ Default.args = {
 };
 
 export const WithDifferentPosition: StoryFn = () => (
-  <TooltipProvider delayDuration={{ enter: 500, exit: 100 }}>
+  <TooltipProvider delayDuration={500}>
     <div className="flex gap-4">
       <Tooltip>
         <TooltipTrigger asChild>
@@ -67,7 +67,7 @@ export const WithDifferentPosition: StoryFn = () => (
 );
 
 export const CustomStyles: StoryFn = () => (
-  <TooltipProvider delayDuration={{ enter: 500, exit: 100 }}>
+  <TooltipProvider delayDuration={500}>
     <Tooltip>
       <TooltipTrigger asChild>
         <button className="px-4 py-2 bg-blue-500 text-white rounded">Hover or Focus me</button>
@@ -80,7 +80,7 @@ export const CustomStyles: StoryFn = () => (
 );
 
 export const WithDelay: StoryFn = () => (
-  <TooltipProvider delayDuration={{ enter: 1000, exit: 300 }}>
+  <TooltipProvider delayDuration={1000}>
     <Tooltip>
       <TooltipTrigger asChild>
         <button className="px-4 py-2 bg-blue-500 text-white rounded">Hover or Focus me</button>
@@ -93,7 +93,7 @@ export const WithDelay: StoryFn = () => (
 );
 
 export const InsideMenu: StoryFn = () => (
-  <TooltipProvider delayDuration={{ enter: 500, exit: 100 }}>
+  <TooltipProvider delayDuration={500}>
     <div className="flex flex-col gap-2">
       <Tooltip>
         <TooltipTrigger asChild>
