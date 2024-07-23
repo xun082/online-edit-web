@@ -4,31 +4,19 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  compress: false, // 禁用gzip压缩
-  async rewrites() {
-    return [
-      {
-        source: '/ai/:path*',
-        destination: `${process.env.MODEL_API_BASE_URL}${process.env.QWEN_APP_ID}/:path*`, // 你想要代理的外部 API
-      },
-    ];
-  },
+
   async headers() {
     return [
       {
-        source: '/ai/:path*',
+        source: '/(.*)',
         headers: [
           {
-            key: 'Content-Type',
-            value: 'application/json',
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp',
           },
           {
-            key: 'Authorization',
-            value: `Bearer ${process.env.QWEN_AUTH}`,
-          },
-          {
-            key: 'Accept',
-            value: `text/event-stream`,
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
           },
         ],
       },

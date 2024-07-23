@@ -1,14 +1,11 @@
-import type { Metadata } from 'next';
+'use client';
+
 import { Inter } from 'next/font/google';
 
+import { WebContainerProvider } from '@/context/webContainer';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
-
-export const metadata: Metadata = {
-  title: 'online-edit',
-  description: 'online edit web app',
-};
 
 export default function RootLayout({
   children,
@@ -17,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <WebContainerProvider>{children}</WebContainerProvider>
+      </body>
     </html>
   );
 }
