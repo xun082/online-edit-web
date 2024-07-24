@@ -12,3 +12,16 @@ export const PATHS = {
 export const PROJECT_Name = 'online-edit';
 export type PathKeys = keyof typeof PATHS;
 export type PathValues = (typeof PATHS)[PathKeys];
+
+export const PRETTIER_FORMAT_PATH: string = 'PRETTIER_FORMAT_PATH';
+
+export const DEFAULT_PRETTIER_CONFIG: string = `{
+  "printWidth": 80,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "semi": true,
+  "endOfLine": "auto",
+  "arrowParens": "avoid",
+  "bracketSpacing": true
+}
+`;
