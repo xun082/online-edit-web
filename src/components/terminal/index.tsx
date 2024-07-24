@@ -10,8 +10,6 @@ export interface TerminalPanelRefInterface {
 
 export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
   function TerminalPanel(props, ref) {
-    if (!window) return null;
-
     const terminalRef = useRef<HTMLDivElement>(null);
     const { webContainerInstance } = useWebContainerStore();
 
@@ -44,7 +42,7 @@ export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
         webglAddon = new WebglAddon();
 
         if (webContainerInstance) {
-          if (terminalRef.current) {
+          if (terminalRef.current && !terminal) {
             terminal = new Terminal({
               fontFamily: '"Cascadia Code", Menlo, monospace',
               convertEol: true,
@@ -94,6 +92,11 @@ export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
           }
         }
       })();
+
+      return () => {
+        webContainerInstance?.fs.rm('/', { recursive: true });
+        terminal = null;
+      };
     }, [webContainerInstance]);
 
     return <div className="h-full" ref={terminalRef} />;
