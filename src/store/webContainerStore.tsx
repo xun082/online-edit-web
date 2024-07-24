@@ -1,12 +1,7 @@
 import { create } from 'zustand';
 import { WebContainer } from '@webcontainer/api';
 
-import {
-  WebContainerFileSystemTreeSavePoint,
-  clearCurDirectory,
-  curDirectory,
-  writeDirByLocal,
-} from '@/utils';
+import { WebContainerFileSystemTreeSavePoint, curDirectory, writeDirByLocal } from '@/utils';
 
 interface WebContainerState {
   webContainerInstance: WebContainer | null;
@@ -25,11 +20,10 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
 
   async initWebContainer() {
     const { webContainerInstance, isInitialized } = get();
+    const treeData = localStorage.getItem(WebContainerFileSystemTreeSavePoint);
 
     if (!isInitialized && !webContainerInstance) {
       const newWebContainerInstance = await WebContainer.boot();
-
-      const treeData = localStorage.getItem(WebContainerFileSystemTreeSavePoint);
 
       if (treeData) {
         const fileSystemTree = JSON.parse(treeData);
@@ -38,10 +32,20 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
 
       if (curDirectory) {
         await writeDirByLocal(curDirectory, newWebContainerInstance);
-        clearCurDirectory();
       }
 
       set({ webContainerInstance: newWebContainerInstance, isInitialized: true });
+    } else {
+      if (treeData) {
+        const fileSystemTree = JSON.parse(treeData);
+        await webContainerInstance!.mount(fileSystemTree);
+      }
+
+      if (curDirectory) {
+        await writeDirByLocal(curDirectory, webContainerInstance!);
+      }
+
+      set({ webContainerInstance: webContainerInstance, isInitialized: true });
     }
   },
 }));

@@ -1,40 +1,50 @@
+'use client';
+
 import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
-import { Terminal } from 'xterm';
-import { FitAddon } from 'xterm-addon-fit';
-import { WebLinksAddon } from 'xterm-addon-web-links';
-import { WebglAddon } from 'xterm-addon-webgl';
-import { WebContainerProcess } from '@webcontainer/api';
 
 import { useWebContainerStore } from '@/store/webContainerStore';
 
-let terminal: Terminal;
-const fitAddon = new FitAddon();
-
-const webLinksAddon = new WebLinksAddon();
-const webglAddon = new WebglAddon();
 export interface TerminalPanelRefInterface {
   terminalResize: () => void;
 }
 
 export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
   function TerminalPanel(props, ref) {
+    if (!window) return null;
+
     const terminalRef = useRef<HTMLDivElement>(null);
     const { webContainerInstance } = useWebContainerStore();
-    let shell: WebContainerProcess | null;
+
+    let shell: any; // This should be of type WebContainerProcess from @webcontainer/api but we use 'any' for simplicity
+    let terminal: any;
+    let fitAddon: any;
+    let webLinksAddon: any;
+    let webglAddon: any;
+
     useImperativeHandle(ref, () => ({
-      // Expose terminal change size method
       terminalResize: () => {
-        fitAddon.fit();
-        shell?.resize({
-          cols: terminal.cols,
-          rows: terminal.rows,
-        });
+        if (fitAddon && shell) {
+          fitAddon.fit();
+          shell.resize({
+            cols: terminal.cols,
+            rows: terminal.rows,
+          });
+        }
       },
     }));
+
     useEffect(() => {
-      async function init() {
-        if (webContainerInstance !== null) {
-          if (terminalRef.current && !terminal) {
+      (async function init() {
+        const { Terminal } = await import('xterm');
+        const { FitAddon } = await import('xterm-addon-fit');
+        const { WebLinksAddon } = await import('xterm-addon-web-links');
+        const { WebglAddon } = await import('xterm-addon-webgl');
+        fitAddon = new FitAddon();
+        webLinksAddon = new WebLinksAddon();
+        webglAddon = new WebglAddon();
+
+        if (webContainerInstance) {
+          if (terminalRef.current) {
             terminal = new Terminal({
               fontFamily: '"Cascadia Code", Menlo, monospace',
               convertEol: true,
@@ -50,7 +60,8 @@ export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
 
             terminal.open(terminalRef.current);
             fitAddon.fit();
-            shell = await webContainerInstance?.spawn('jsh', {
+
+            shell = await webContainerInstance.spawn('jsh', {
               terminal: {
                 cols: terminal.cols,
                 rows: terminal.rows,
@@ -58,14 +69,16 @@ export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
             });
 
             window.addEventListener('resize', () => {
-              fitAddon.fit();
-              shell?.resize({
-                cols: terminal.cols,
-                rows: terminal.rows,
-              });
+              if (fitAddon && shell) {
+                fitAddon.fit();
+                shell.resize({
+                  cols: terminal.cols,
+                  rows: terminal.rows,
+                });
+              }
             });
 
-            shell?.output.pipeTo(
+            shell.output.pipeTo(
               new WritableStream({
                 write(data) {
                   terminal.write(data);
@@ -73,18 +86,16 @@ export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
               }),
             );
 
-            const input = shell?.input.getWriter();
+            const input = shell.input.getWriter();
 
-            terminal.onData((data: string) => {
-              input?.write(data);
+            terminal.onData((data: any) => {
+              input.write(data);
             });
           }
         }
-      }
-
-      init();
+      })();
     }, [webContainerInstance]);
 
-    return <div className=" h-full" ref={terminalRef} />;
+    return <div className="h-full" ref={terminalRef} />;
   },
 );
