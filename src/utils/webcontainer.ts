@@ -36,7 +36,7 @@ export function createFile(path: string, webcontainerInstance: WebContainer) {
 
 export async function writeDirByLocal(dir: any, webcontainerInstance: WebContainer) {
   if (dir.kind === 'file') {
-    await writeFile(dir.path, dir.content ?? '', webcontainerInstance);
+    await writeFile(dir.path, dir.value ?? '', webcontainerInstance);
 
     return;
   }

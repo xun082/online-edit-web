@@ -86,7 +86,7 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
     } else {
       const monaco = monacos[willChangeEditorId];
       addNewModel(
-        file,
+        { ...file, language: 'typescript' },
         monaco as any,
         willChangeEditor as editor.IStandaloneCodeEditor,
         setModels,

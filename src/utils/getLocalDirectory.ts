@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export interface FilerInterface {
-  handler: FileSystemFileHandle;
+  handler?: FileSystemFileHandle;
   filename: string;
   kind: 'file';
   path: string;
@@ -10,7 +10,7 @@ export interface FilerInterface {
 }
 
 export interface DirectoryInterface {
-  handler: FileSystemDirectoryHandle;
+  handler?: FileSystemDirectoryHandle;
   filename: string;
   kind: 'directory';
   path: string;
@@ -76,12 +76,11 @@ export const directoryDataFormatter = async (
 ): Promise<FilerInterface | DirectoryInterface> => {
   const id = uuidv4();
 
-  if (handler.kind === 'directory') {
+  if (handler.kind === 'directory' && handler.name !== '.git' && handler.name !== '.vscode') {
     return {
-      handler: handler as FileSystemDirectoryHandle,
       filename: handler.name,
       kind: 'directory',
-      path,
+      path: `/${path}/${handler.name}`,
       children: children || [],
       id,
     };
@@ -93,7 +92,7 @@ export const directoryDataFormatter = async (
       handler: fileHandler,
       filename: handler.name,
       kind: 'file',
-      path,
+      path: `/${path}/${handler.name}`,
       value,
       id,
     };
@@ -111,7 +110,12 @@ export const getDirectoryHandlerDeep = async (
   for await (const handle of (
     directoryHandler as any
   ).values() as AsyncIterable<FileSystemHandle>) {
-    if (handle.kind === 'directory' && handle.name !== 'node_modules') {
+    if (
+      handle.kind === 'directory' &&
+      handle.name !== 'node_modules' &&
+      handle.name !== '.git' &&
+      handle.name !== '.vscode'
+    ) {
       children.push(await getDirectoryHandlerDeep(handle as FileSystemDirectoryHandle, path));
     } else if (handle.kind === 'file') {
       children.push(await directoryDataFormatter(handle as FileSystemFileHandle, path));
@@ -119,4 +123,8 @@ export const getDirectoryHandlerDeep = async (
   }
 
   return directoryDataFormatter(directoryHandler, path, children) as Promise<DirectoryInterface>;
+};
+
+export const clearCurDirectory = () => {
+  curDirectory = null;
 };
