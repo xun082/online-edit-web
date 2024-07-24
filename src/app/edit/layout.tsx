@@ -16,12 +16,8 @@ import { Preview } from '@/components/preview';
 import { Header } from '@/components/edit/header';
 import CodeEditor from '@/components/editor';
 import { DragIcon } from '@/components/file/dragIcon';
-import {
-  useActiveModelStore,
-  // useEditorStore,
-  useModelsStore,
-  useSplitStore,
-} from '@/store/editorStore';
+import { TerminalPanel } from '@/components/terminal';
+import { useActiveModelStore, useModelsStore, useSplitStore } from '@/store/editorStore';
 import { useDragIconStore } from '@/store/dragIconStore';
 import { addNewModel } from '@/utils';
 
@@ -171,7 +167,7 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <ResizeHandle direction="vertical" />
                 <Panel defaultSize={30} minSize={4} className="bg-black">
                   <div className=" text-green-500 h-full">
-                    <h2>Terminal</h2>
+                    <TerminalPanel ref={terminalRef} />
                   </div>
                 </Panel>
               </PanelGroup>
