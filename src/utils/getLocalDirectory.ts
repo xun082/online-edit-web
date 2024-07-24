@@ -80,7 +80,7 @@ export const directoryDataFormatter = async (
     return {
       filename: handler.name,
       kind: 'directory',
-      path: `/${path}/${handler.name}`,
+      path: `/${path}`,
       children: children || [],
       id,
     };
