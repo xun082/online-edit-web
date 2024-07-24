@@ -1,7 +1,12 @@
 import { create } from 'zustand';
 import { WebContainer } from '@webcontainer/api';
 
-import { WebContainerFileSystemTreeSavePoint, saveFileSystemTree } from '@/utils';
+import {
+  WebContainerFileSystemTreeSavePoint,
+  clearCurDirectory,
+  curDirectory,
+  writeDirByLocal,
+} from '@/utils';
 
 interface WebContainerState {
   webContainerInstance: WebContainer | null;
@@ -10,7 +15,6 @@ interface WebContainerState {
 
 interface WebContainerActions {
   initWebContainer: () => Promise<void>;
-  saveFileSystemOnUnload: () => void;
 }
 
 type WebContainerStore = WebContainerState & WebContainerActions;
@@ -32,21 +36,12 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
         await newWebContainerInstance.mount(fileSystemTree);
       }
 
+      if (curDirectory) {
+        await writeDirByLocal(curDirectory, newWebContainerInstance);
+        clearCurDirectory();
+      }
+
       set({ webContainerInstance: newWebContainerInstance, isInitialized: true });
-
-      // Add the beforeunload listener here
-      window.addEventListener('beforeunload', get().saveFileSystemOnUnload);
     }
-  },
-
-  saveFileSystemOnUnload() {
-    const { webContainerInstance } = get();
-
-    if (webContainerInstance) {
-      saveFileSystemTree(webContainerInstance);
-    }
-
-    // Remove the listener when the function is called
-    window.removeEventListener('beforeunload', this.saveFileSystemOnUnload);
   },
 }));

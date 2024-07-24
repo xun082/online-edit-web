@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 interface DirectoryInterface {
   id: string;
   filename: string;
+  path: string;
   kind: 'directory' | 'file';
   children?: DirectoryInterface[];
   status?: string;
@@ -40,6 +41,7 @@ function addItem(
   const newEntry: DirectoryInterface = {
     id: newId,
     filename,
+    path: '',
     kind: type,
     children: type === 'directory' ? [] : undefined,
     status,
@@ -92,16 +94,22 @@ function addItem(
       const parentOfParent = findFileParent(data, parentItem.id);
 
       if (parentOfParent) {
-        parentOfParent.children = [...(parentOfParent.children || []), newEntry];
+        parentOfParent.children = [
+          ...(parentOfParent.children || []),
+          { ...newEntry, path: `${parentItem.path}/${newEntry.filename}` },
+        ];
       }
     } else {
-      parentItem.children = [...(parentItem.children || []), newEntry];
+      parentItem.children = [
+        ...(parentItem.children || []),
+        { ...newEntry, path: `${parentItem.path}/${newEntry.filename}` },
+      ];
     }
   } else {
     if (isDuplicate(data, filename, type)) {
       console.warn(`Item with name "${filename}" and type "${type}" already exists.`);
     } else {
-      data = [...data, newEntry];
+      data = [...data, { ...newEntry, path: `${newEntry.filename}` }];
     }
   }
 
