@@ -2,7 +2,6 @@
 
 import { Inter } from 'next/font/google';
 
-import { WebContainerProvider } from '@/context/webContainer';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -14,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <WebContainerProvider>{children}</WebContainerProvider>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

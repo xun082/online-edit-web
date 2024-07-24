@@ -7,6 +7,7 @@ import { GoRepoForked } from 'react-icons/go';
 import { Avatar } from '@/components/common/Avatar';
 import { Button } from '@/components/ui/button';
 import AvatarPopover from '@/components/avatarPopover';
+import WebContainerProvider from '@/components/webContainerProvider';
 
 interface ProjectData {
   [key: string]: any;
@@ -55,6 +56,7 @@ export const Header: React.FC<HeaderProps> = ({ project, userInfo }) => {
           <Avatar src={userInfo.imgurl} className=" flex h-[3.5vh] w-[3.5vh]" />
         </AvatarPopover>
       </div>
+      <WebContainerProvider></WebContainerProvider>
     </header>
   );
 };
