@@ -112,7 +112,6 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
         </div>
         <Editor
           className={'editor'}
-          language={'typescript'}
           theme={'vitesse-dark'}
           options={{
             minimap: { enabled: true },
