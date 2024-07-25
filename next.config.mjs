@@ -25,6 +25,19 @@ const nextConfig = {
           },
         ],
       },
+      {
+        "source": "/public/(.*)",
+        "headers": [
+          {
+            "key": "Cross-Origin-Embedder-Policy",
+            "value": ""
+          },
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": ""
+          }
+        ]
+      },
     ];
   },
 };
