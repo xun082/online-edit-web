@@ -5,7 +5,11 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   reactStrictMode: false,
-
+  experimental: {
+    optimizePackageImports: [
+     'shiki',
+    ],
+},
   async headers() {
     return [
       {

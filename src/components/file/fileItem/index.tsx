@@ -13,7 +13,7 @@ import {
 } from '@/store/editorStore';
 import { useDragIconStore } from '@/store/dragIconStore';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
-import { addNewModel } from '@/utils';
+import { addNewModel, getFileLanguage } from '@/utils';
 interface FileItemProps {
   file: any;
   onMouseupFn?: () => void;
@@ -77,7 +77,12 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
       mathModel[0].model && setActiveModel(mathModel[0].id, mathModel[0], willChangeEditorId);
       mathModel[0].model &&
         setModels(
-          { filename: mathModel[0].filename, value: '', language: 'typescript', id: file.id },
+          {
+            filename: mathModel[0].filename,
+            value: '',
+            language: getFileLanguage(mathModel[0].filename),
+            id: file.id,
+          },
           mathModel[0].model,
           willChangeEditorId,
           file.id,
@@ -86,7 +91,7 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
     } else {
       const monaco = monacos[willChangeEditorId];
       addNewModel(
-        { ...file, language: 'typescript' },
+        { ...file, language: getFileLanguage(file.filename) },
         monaco as any,
         willChangeEditor as editor.IStandaloneCodeEditor,
         setModels,

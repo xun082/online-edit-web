@@ -5,6 +5,8 @@ import Editor, { Monaco, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor';
 import { useDroppable } from '@dnd-kit/core';
+import { createHighlighter } from 'shiki';
+import { shikiToMonaco } from '@shikijs/monaco';
 
 import {
   useEditorStore,
@@ -42,7 +44,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   };
 
   const handleEditorDidMount = useCallback(
-    (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
+    async (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
       monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
         module: monaco.languages.typescript.ModuleKind.ESNext,
         moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
@@ -57,6 +59,20 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
       setEditor(editorId, editor);
       setMonaco(editorId, monaco);
+
+      const highlighter = await createHighlighter({
+        themes: ['vitesse-dark', 'vitesse-light'],
+        langs: ['javascript', 'typescript', 'vue', 'jsx'],
+      });
+
+      // Register the languageIds first. Only registered languages will be highlighted.
+      monaco.languages.register({ id: 'vue' });
+      monaco.languages.register({ id: 'typescript' });
+      monaco.languages.register({ id: 'javascript' });
+      monaco.languages.register({ id: 'jsx' });
+
+      // Register the themes from Shiki, and provide syntax highlighting for Monaco.
+      shikiToMonaco(highlighter, monaco);
 
       if (editorId !== 0) {
         const newModel = activeEditorId < 1 ? activeMap[0] : activeMap[1];
@@ -96,8 +112,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
         </div>
         <Editor
           className={'editor'}
-          theme="vs-dark"
-          language={'typescript'}
+          theme={'vitesse-dark'}
           options={{
             minimap: { enabled: true },
             fontSize: 16,
