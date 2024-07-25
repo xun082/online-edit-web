@@ -20,7 +20,7 @@
       ]
     },
     {
-      "source": "/public/(.*)",
+      "source": "/_next/static/(.*)",
       "headers": [
         {
           "key": "Cross-Origin-Embedder-Policy",
