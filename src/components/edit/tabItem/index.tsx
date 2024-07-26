@@ -1,10 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import Image from 'next/image';
 import { editor } from 'monaco-editor';
 import { useSortable } from '@dnd-kit/sortable';
 
-import { cn } from '@/utils';
-import jsIcon from '@/assets/image/fileIcon/JavaScript.svg';
+import { cn, getFileSpecificIcon } from '@/utils';
 
 interface TabProps {
   id: string;
@@ -95,7 +93,11 @@ const Tab: React.FC<TabProps> = ({
       )}
       onMouseUp={(e) => handleTabClick(e)}
     >
-      <Image className="absolute w-4 h-4 left-1" src={jsIcon} alt="" />
+      <img
+        className="absolute w-4 h-4 left-1"
+        src={`/images/fileIcon/${getFileSpecificIcon(filename)}.svg`}
+        alt=""
+      />
       <div ref={tabRef} className=" absolute left-0 top-0 w-full h-0 pointer-events-none"></div>
       <p>{filename}</p>
       <span onMouseUp={handleTabClose} className="hidden group-hover:block absolute right-3">
