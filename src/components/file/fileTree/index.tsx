@@ -28,7 +28,11 @@ export const TreeItem = ({ elements }: TreeItemProps) => {
       {elements.map((element) => (
         <li key={`${element.id}+${element.filename}`} className="w-full space-y-2">
           {element.status === 'pending' ? (
-            <PendingFileItem id={element.id} />
+            <PendingFileItem
+              path={(element as any).path}
+              kind={(element as any).kind}
+              id={element.id}
+            />
           ) : (element.children && element.children?.length > 0) || element.kind === 'directory' ? (
             <Folder
               element={element.filename}
