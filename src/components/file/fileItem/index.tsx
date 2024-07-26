@@ -13,7 +13,7 @@ import {
 } from '@/store/editorStore';
 import { useDragIconStore } from '@/store/dragIconStore';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
-import { addNewModel, getFileLanguage } from '@/utils';
+import { addNewModel, getFileLanguage, getFileSpecificIcon } from '@/utils';
 interface FileItemProps {
   file: any;
   onMouseupFn?: () => void;
@@ -109,19 +109,26 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
       }}
       className=" group relative flex justify-between items-center px-2 py-[0.2px] font-[250] text-[11.5px] w-full "
     >
-      <span
-        className=" cursor-pointer overflow-ellipsis whitespace-nowrap overflow-hidden"
-        ref={setNodeRef}
-        {...listeners}
-        onMouseDown={(e) => {
-          clickClient.current = {
-            x: e.clientX,
-            y: e.clientY,
-          };
-        }}
-      >
-        {file.filename}
-      </span>
+      <div className=" flex items-center gap-1">
+        <img
+          className=" w-[14px] h-[14px]"
+          src={`/images/fileIcon/${getFileSpecificIcon(file.filename)}.svg`}
+          alt=""
+        />
+        <span
+          className=" cursor-pointer overflow-ellipsis whitespace-nowrap overflow-hidden"
+          ref={setNodeRef}
+          {...listeners}
+          onMouseDown={(e) => {
+            clickClient.current = {
+              x: e.clientX,
+              y: e.clientY,
+            };
+          }}
+        >
+          {file.filename}
+        </span>
+      </div>
       <TiDocumentDelete
         onMouseUp={(e) => {
           e.stopPropagation();
