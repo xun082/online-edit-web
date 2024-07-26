@@ -6,10 +6,8 @@ const nextConfig = {
   },
   reactStrictMode: false,
   experimental: {
-    optimizePackageImports: [
-     'shiki',
-    ],
-},
+    optimizePackageImports: ['shiki'],
+  },
   async headers() {
     return [
       {
@@ -26,17 +24,17 @@ const nextConfig = {
         ],
       },
       {
-        "source": "/public/(.*)",
-        "headers": [
+        source: '/public/(.*)',
+        headers: [
           {
-            "key": "Cross-Origin-Embedder-Policy",
-            "value": ""
+            key: 'Cross-Origin-Embedder-Policy',
+            value: '',
           },
           {
-            "key": "Cross-Origin-Opener-Policy",
-            "value": ""
-          }
-        ]
+            key: 'Cross-Origin-Opener-Policy',
+            value: '',
+          },
+        ],
       },
     ];
   },

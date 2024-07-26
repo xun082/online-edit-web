@@ -11,9 +11,9 @@ export interface TerminalPanelRefInterface {
 export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
   function TerminalPanel(props, ref) {
     const terminalRef = useRef<HTMLDivElement>(null);
-    const { webContainerInstance } = useWebContainerStore();
+    const { webContainerInstance, setUrl } = useWebContainerStore();
 
-    let shell: any; // This should be of type WebContainerProcess from @webcontainer/api but we use 'any' for simplicity
+    let shell = useRef<any>(null); // This should be of type WebContainerProcess from @webcontainer/api but we use 'any' for simplicity
     let terminal: any;
     let fitAddon: any;
     let webLinksAddon: any;
@@ -21,11 +21,11 @@ export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
 
     useImperativeHandle(ref, () => ({
       terminalResize: () => {
-        if (fitAddon && shell) {
+        if (fitAddon && shell.current) {
           fitAddon.fit();
-          shell.resize({
-            cols: terminal.cols,
-            rows: terminal.rows,
+          shell.current.resize({
+            cols: terminal?.cols,
+            rows: terminal?.rows,
           });
         }
       },
@@ -59,34 +59,34 @@ export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
             terminal.open(terminalRef.current);
             fitAddon.fit();
 
-            shell = await webContainerInstance.spawn('jsh', {
+            shell.current = await webContainerInstance.spawn('jsh', {
               terminal: {
-                cols: terminal.cols,
-                rows: terminal.rows,
+                cols: terminal?.cols,
+                rows: terminal?.rows,
               },
             });
 
             window.addEventListener('resize', () => {
-              if (fitAddon && shell) {
+              if (fitAddon && shell.current) {
                 fitAddon.fit();
-                shell.resize({
-                  cols: terminal.cols,
-                  rows: terminal.rows,
+                shell.current.resize({
+                  cols: terminal?.cols,
+                  rows: terminal?.rows,
                 });
               }
             });
 
-            shell.output.pipeTo(
+            shell.current.output.pipeTo(
               new WritableStream({
                 write(data) {
-                  terminal.write(data);
+                  terminal?.write(data);
                 },
               }),
             );
 
-            const input = shell.input.getWriter();
+            const input = shell.current.input.getWriter();
 
-            terminal.onData((data: any) => {
+            terminal?.onData((data: any) => {
               input.write(data);
             });
           }
@@ -95,6 +95,8 @@ export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
 
       return () => {
         webContainerInstance?.fs.rm('/', { recursive: true });
+        shell.current?.kill();
+        setUrl('');
         terminal = null;
       };
     }, [webContainerInstance]);
