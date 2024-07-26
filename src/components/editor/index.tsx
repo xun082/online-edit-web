@@ -16,12 +16,15 @@ import {
   useModelsStore,
 } from '@/store/editorStore';
 import { TabBar } from '@/components/edit/tabbar';
+import { useWebContainerStore } from '@/store/webContainerStore';
+import { writeFile } from '@/utils';
 
 interface CodeEditorProps {
   editorId: number;
 }
 
 export default function CodeEditor({ editorId }: CodeEditorProps) {
+  const { webContainerInstance } = useWebContainerStore();
   const { getEditor, setEditor } = useEditorStore();
   const { setMonaco } = useMonacoStore();
   const { setModels } = useModelsStore();
@@ -31,6 +34,11 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const currentModel = activeMap[editorId];
   // console.log(thisEditor);
   // used for dnd
+  // console.log(activeMap, activeEditorId);
+  // 当前编辑model的path，用于与webContainer文件系统同步
+
+  const currentPath = (activeMap[editorId]?.model as any)?.path;
+  // console.log(currentPath);
 
   const { isOver, setNodeRef } = useDroppable({
     id: editorId,
@@ -102,6 +110,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
   const handleEditorChange = (value: string = ''): void => {
     console.log(value);
+    webContainerInstance && writeFile(currentPath, value, webContainerInstance);
   };
 
   return (

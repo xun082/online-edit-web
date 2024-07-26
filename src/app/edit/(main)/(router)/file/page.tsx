@@ -25,12 +25,12 @@ const PortsPage: React.FC = () => {
           <VscNewFolder
             className=" cursor-pointer z-[50] text-[14px] hover:text-[white]"
             onClick={() => {
-              addFileOrFolder('directory', '新建文件夹', selected, 'pending');
+              addFileOrFolder('directory', 'PENDING_DIRECTORY', selected, 'pending');
             }}
           />
           <VscNewFile
             onClick={() => {
-              addFileOrFolder('file', '新建文件.js', selected, 'pending');
+              addFileOrFolder('file', 'PENDING_FILE', selected, 'pending');
             }}
             className=" cursor-pointer z-[50] text-[15px] hover:text-[white]"
           />
