@@ -49,7 +49,7 @@ export const PendingFileItem: React.FC<PendingFileItemProps> = ({ id, path, kind
       onBlur={() => {
         handleChangeStatus();
       }}
-      className=" px-px pl-2 pr-1 border-[1px] border-[#3f85f5] focus:outline-none focus:ring-1 focus:ring-[#3f85f5] ring-opacity-50 bg-transparent/30 text-[12px] font-[300]"
+      className=" w-full pl-2 pr-1 border-[0.5px] border-[#3f85f5] focus:outline-none focus:ring-1  ring-opacity-50 bg-transparent/30 text-[12px] font-[300]"
     />
   );
 };

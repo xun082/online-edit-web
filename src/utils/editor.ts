@@ -43,4 +43,6 @@ export function addNewModel(
   setActiveModel(modelInfo.id, { ...modelInfo, model }, editorId);
   setModels(modelInfo, model, editorId, modelInfo.id);
   editor.setModel(model);
+
+  return model;
 }

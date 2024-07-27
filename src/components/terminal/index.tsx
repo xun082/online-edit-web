@@ -8,6 +8,29 @@ export interface TerminalPanelRefInterface {
   terminalResize: () => void;
 }
 
+const terminalTheme = {
+  foreground: '#ffffff', // 字体
+  background: '#1e1e1e', // 背景色
+  cursor: '#ffffff', // 设置光标
+  selection: 'rgba(255, 255, 255, 0.3)',
+  black: '#000000',
+  brightBlack: '#808080',
+  red: '#ce2f2b',
+  brightRed: '#f44a47',
+  green: '#00b976',
+  brightGreen: '#05d289',
+  yellow: '#e0d500',
+  brightYellow: '#f4f628',
+  magenta: '#bd37bc',
+  brightMagenta: '#d86cd8',
+  blue: '#1d6fca',
+  brightBlue: '#358bed',
+  cyan: '#00a8cf',
+  brightCyan: '#19b8dd',
+  white: '#e5e5e5',
+  brightWhite: '#ffffff',
+};
+
 export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
   function TerminalPanel(props, ref) {
     const terminalRef = useRef<HTMLDivElement>(null);
@@ -19,17 +42,21 @@ export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
     let webLinksAddon: any;
     let webglAddon: any;
 
-    useImperativeHandle(ref, () => ({
-      terminalResize: () => {
-        if (fitAddon && shell.current) {
-          fitAddon.fit();
-          shell.current.resize({
-            cols: terminal?.cols,
-            rows: terminal?.rows,
-          });
-        }
-      },
-    }));
+    useImperativeHandle(
+      ref,
+      () => ({
+        terminalResize: () => {
+          if (fitAddon && shell.current) {
+            fitAddon.fit();
+            shell.current.resize({
+              cols: terminal?.cols,
+              rows: terminal?.rows,
+            });
+          }
+        },
+      }),
+      [webContainerInstance],
+    );
 
     useEffect(() => {
       (async function init() {
@@ -45,11 +72,13 @@ export const TerminalPanel = forwardRef<TerminalPanelRefInterface, any>(
           if (terminalRef.current && !terminal) {
             terminal = new Terminal({
               fontFamily: '"Cascadia Code", Menlo, monospace',
+              fontSize: 13,
               convertEol: true,
               cursorBlink: true,
               scrollback: 20,
               scrollOnUserInput: true,
               drawBoldTextInBrightColors: true,
+              theme: terminalTheme,
             });
 
             terminal.loadAddon(fitAddon);
