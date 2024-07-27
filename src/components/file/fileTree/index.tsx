@@ -36,6 +36,7 @@ export const TreeItem = ({ elements }: TreeItemProps) => {
           ) : (element.children && element.children?.length > 0) || element.kind === 'directory' ? (
             <Folder
               element={element.filename}
+              path={(element as any).path}
               value={element.id}
               key={element.id}
               isSelectable={element.isSelectable}

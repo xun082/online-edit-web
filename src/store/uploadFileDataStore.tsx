@@ -8,6 +8,7 @@ interface DirectoryInterface {
   kind: 'directory' | 'file';
   children?: DirectoryInterface[];
   status?: string;
+  value?: string;
 }
 
 interface FileDataState {
@@ -159,8 +160,10 @@ export const useUploadFileDataStore = create<FileDataState & FileDataActions>((s
     set((state) => ({
       fileData: state.fileData ? addItem(state.fileData, type, filename, parentId, status) : null,
     })),
-  updateItem: (id, updatedProperties) =>
+  updateItem: (id, updatedProperties) => {
+    console.log(updatedProperties);
     set((state) => ({
       fileData: state.fileData ? updateItem(state.fileData, id, updatedProperties) : null,
-    })),
+    }));
+  },
 }));

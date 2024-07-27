@@ -15,8 +15,9 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/utils';
+import { cn, rm } from '@/utils';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
+import { useWebContainerStore } from '@/store/webContainerStore';
 
 type TreeViewElement = {
   id: string;
@@ -210,11 +211,12 @@ type FolderProps = {
   isSelectable?: boolean;
   isSelect?: boolean;
   empty?: boolean;
+  path: string;
 } & FolderComponentProps;
 
 const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTMLDivElement>>(
   (
-    { className, element, value, isSelectable = true, isSelect, children, empty, ...props },
+    { className, element, value, isSelectable = true, isSelect, children, path, empty, ...props },
     ref,
   ) => {
     const {
@@ -228,6 +230,7 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
       openIcon,
       closeIcon,
     } = useTree();
+    const { webContainerInstance } = useWebContainerStore();
     const { removeFileById } = useUploadFileDataStore();
     const Ele = empty ? 'div' : AccordionPrimitive.Item;
     const Trigger = empty ? 'div' : AccordionPrimitive.Trigger;
@@ -250,6 +253,7 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
           onClick={() => {
             handleExpand(value);
             selectItem(value);
+            webContainerInstance && rm(path, webContainerInstance);
           }}
         >
           <div className=" flex items-center justify-start gap-x-1">

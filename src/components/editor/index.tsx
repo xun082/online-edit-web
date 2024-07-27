@@ -17,6 +17,7 @@ import {
 } from '@/store/editorStore';
 import { TabBar } from '@/components/edit/tabbar';
 import { useWebContainerStore } from '@/store/webContainerStore';
+import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
 import { writeFile } from '@/utils';
 
 interface CodeEditorProps {
@@ -25,6 +26,7 @@ interface CodeEditorProps {
 
 export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { webContainerInstance } = useWebContainerStore();
+  const { updateItem } = useUploadFileDataStore();
   const { getEditor, setEditor } = useEditorStore();
   const { setMonaco } = useMonacoStore();
   const { setModels } = useModelsStore();
@@ -38,7 +40,9 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   // 当前编辑model的path，用于与webContainer文件系统同步
 
   const currentPath = (activeMap[editorId]?.model as any)?.path;
-  // console.log(currentPath);
+  const currentId = activeMap[editorId]?.model?.id;
+  // console.log(activeMap[0]?.model);
+  // console.log(fileData);
 
   const { isOver, setNodeRef } = useDroppable({
     id: editorId,
@@ -109,7 +113,8 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   );
 
   const handleEditorChange = (value: string = ''): void => {
-    console.log(value);
+    console.log(currentId, value);
+    currentId && updateItem(currentId, { value });
     webContainerInstance && writeFile(currentPath, value, webContainerInstance);
   };
 

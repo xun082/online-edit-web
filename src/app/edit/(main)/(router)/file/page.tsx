@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { VscNewFile } from 'react-icons/vsc';
 import { VscNewFolder } from 'react-icons/vsc';
@@ -16,6 +16,7 @@ const PortsPage: React.FC = () => {
 
   let data: TreeViewElement[] = fileData as unknown as TreeViewElement[];
   if (!Array.isArray(fileData)) data = [fileData];
+  useEffect(() => {}, [fileData]);
 
   return (
     <div className="w-full h-full flex flex-col bg-[#202327]">
