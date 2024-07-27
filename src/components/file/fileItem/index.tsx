@@ -13,7 +13,8 @@ import {
 } from '@/store/editorStore';
 import { useDragIconStore } from '@/store/dragIconStore';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
-import { addNewModel, getFileLanguage, getFileSpecificIcon } from '@/utils';
+import { useWebContainerStore } from '@/store/webContainerStore';
+import { addNewModel, getFileLanguage, getFileSpecificIcon, rm } from '@/utils';
 interface FileItemProps {
   file: any;
   onMouseupFn?: () => void;
@@ -21,6 +22,7 @@ interface FileItemProps {
 
 export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileItemProps) => {
   // used for editor
+  const { webContainerInstance } = useWebContainerStore();
   const { splitState, removeSplit } = useSplitStore();
   const { editors, removeEditor } = useEditorStore();
   const { activeEditor, activeEditorId } = useActiveEditorStore();
@@ -133,7 +135,7 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
         onMouseUp={(e) => {
           e.stopPropagation();
           removeFileById(file.id);
-
+          webContainerInstance && rm(file.path, webContainerInstance);
           editors.forEach((editor, editorId) => {
             const newModels = removeModel(file.id, editorId);
 
