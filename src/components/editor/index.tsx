@@ -16,6 +16,7 @@ import {
   useModelsStore,
 } from '@/store/editorStore';
 import { TabBar } from '@/components/edit/tabbar';
+import LoadingComponent from '@/components/edit/edit-loading';
 import { useWebContainerStore } from '@/store/webContainerStore';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
 import { writeFile } from '@/utils';
@@ -133,6 +134,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
             wordWrap: 'on', // 是否换行
             automaticLayout: true,
           }}
+          loading={<LoadingComponent></LoadingComponent>}
           onChange={handleEditorChange}
           onMount={handleEditorDidMount}
         />

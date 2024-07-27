@@ -159,7 +159,7 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ResizeHandle className=" w-[3px] bg-transparent" />
             <Panel className="flex-1 bg-gray-700" minSize={1} defaultSize={50}>
               <PanelGroup direction="vertical" className="h-full" onLayout={editPanelGroupResize}>
-                <Panel defaultSize={70} className="bg-gray-600" collapsible={true}>
+                <Panel defaultSize={70} className=" bg-[#15181e]" collapsible={true}>
                   <PanelGroup direction="horizontal" className=" flex relative h-full">
                     {renderSplitCodeEditor(splitState)}
                   </PanelGroup>
