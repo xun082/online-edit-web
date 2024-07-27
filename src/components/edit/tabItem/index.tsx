@@ -89,7 +89,7 @@ const Tab: React.FC<TabProps> = ({
         'group relative flex items-center w-max gap-2 cursor-pointer transition-all duration-100 h-full pl-6 pr-7 bg-[#26292e]/1 hover:bg-[#15181e]/50 border-[white]/20 border-[1px]',
         active
           ? 'bg-[#15181e] border-l border-r border-white/35 border-t-blue-500 border-t-[1.5px] border-b-0'
-          : '',
+          : ' border-t-[1.5px] ',
       )}
       onMouseUp={(e) => handleTabClick(e)}
     >

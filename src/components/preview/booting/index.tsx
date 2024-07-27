@@ -51,7 +51,7 @@ const BootingWebContainer: FC = () => {
   const [steps] = useState<Array<IStepQueue>>(stepQueue);
 
   return (
-    <div className="h-full w-full flex flex-col justify-center  items-center">
+    <div className="h-full w-full flex flex-col justify-center  items-center bg-[#202327]">
       <FaLightbulb className={`${true ? 'text-sky-400' : 'text-gray-400'} text-8xl my-4`} />
       <h2 className="mb-6">Installing dependencies</h2>
       <div className="steps">

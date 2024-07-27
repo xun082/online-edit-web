@@ -97,7 +97,7 @@ function addItem(
       if (parentOfParent) {
         parentOfParent.children = [
           ...(parentOfParent.children || []),
-          { ...newEntry, path: `${parentItem.path}/${newEntry.filename}` },
+          { ...newEntry, path: `${parentOfParent.path}/${newEntry.filename}` },
         ];
       }
     } else {
@@ -161,7 +161,6 @@ export const useUploadFileDataStore = create<FileDataState & FileDataActions>((s
       fileData: state.fileData ? addItem(state.fileData, type, filename, parentId, status) : null,
     })),
   updateItem: (id, updatedProperties) => {
-    console.log(updatedProperties);
     set((state) => ({
       fileData: state.fileData ? updateItem(state.fileData, id, updatedProperties) : null,
     }));

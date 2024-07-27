@@ -120,26 +120,26 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </div>
       <div className=" w-full flex flex-1 overflow-hidden">
         {/* 侧边栏 */}
-        <div className="bg-gray-900 text-gray-400 w-[2.9vw] flex flex-col justify-between items-center py-4">
-          <div className="flex flex-col items-center space-y-4">
+        <div className="bg-[#2e3138] text-gray-400 w-[2.9vw] flex flex-col justify-between items-center py-4">
+          <div className="flex flex-col items-center space-y-6">
             <Link href={PATHS.EDIT_FILE}>
-              <FaFileAlt size="24" className={pathname === PATHS.EDIT_FILE ? 'text-white' : ''} />
+              <FaFileAlt size="18" className={pathname === PATHS.EDIT_FILE ? 'text-white' : ''} />
             </Link>
             <Link href={PATHS.EDIT_SEARCH}>
-              <FaSearch size="24" className={pathname === PATHS.EDIT_SEARCH ? 'text-white' : ''} />
+              <FaSearch size="18" className={pathname === PATHS.EDIT_SEARCH ? 'text-white' : ''} />
             </Link>
             <Link href={PATHS.EDIT_PLUGINS}>
-              <FaPlug size="24" className={pathname === PATHS.EDIT_PLUGINS ? 'text-white' : ''} />
+              <FaPlug size="18" className={pathname === PATHS.EDIT_PLUGINS ? 'text-white' : ''} />
             </Link>
             <Link href={PATHS.EDIT_SETTINGS}>
-              <FaCog size="24" className={pathname === PATHS.EDIT_SETTINGS ? 'text-white' : ''} />
+              <FaCog size="18" className={pathname === PATHS.EDIT_SETTINGS ? 'text-white' : ''} />
             </Link>
             <Link href={PATHS.AI}>
-              <PiOpenAiLogo size="24" className={pathname === PATHS.AI ? 'text-white' : ''} />
+              <PiOpenAiLogo size="18" className={pathname === PATHS.AI ? 'text-white' : ''} />
             </Link>
           </div>
           <div className="flex flex-col items-center space-y-4">
-            <FaQuestionCircle size="24" />
+            <FaQuestionCircle size="20" />
           </div>
         </div>
         {/* 可调整大小的面板 */}
@@ -156,7 +156,7 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 {children}
               </motion.div>
             </Panel>
-            <ResizeHandle className=" w-[3px] bg-white/25" />
+            <ResizeHandle className=" w-[3px] bg-transparent" />
             <Panel className="flex-1 bg-gray-700" minSize={1} defaultSize={50}>
               <PanelGroup direction="vertical" className="h-full" onLayout={editPanelGroupResize}>
                 <Panel defaultSize={70} className="bg-gray-600" collapsible={true}>
@@ -164,7 +164,7 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     {renderSplitCodeEditor(splitState)}
                   </PanelGroup>
                 </Panel>
-                <ResizeHandle direction="vertical" />
+                <ResizeHandle className=" bg-transparent h-[3px]" direction="vertical" />
                 <Panel defaultSize={30} minSize={4} className="bg-black">
                   <div className=" text-green-500 h-full">
                     <TerminalPanel ref={terminalRef} />
@@ -172,8 +172,8 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 </Panel>
               </PanelGroup>
             </Panel>
-            <ResizeHandle />
-            <Panel className="bg-gray-900" minSize={1} defaultSize={35}>
+            <ResizeHandle className=" w-[3px] bg-transparent" />
+            <Panel className="bg-[#202327]" minSize={1} defaultSize={35}>
               <div className=" h-full">
                 <Preview />
               </div>

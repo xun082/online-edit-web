@@ -16,15 +16,15 @@ const CustomInput: FC<{
 }> = ({ value, onChange, placeholder }) => {
   return (
     <div
-      className="flex items-center bg-gray-900 text-white  px-2 py-1 rounded flex-1 box-border border
+      className="flex items-center bg-[#202327] border-white/40 text-white  px-2 py-1 rounded flex-1 box-border border
     hover:border-white hover:border-solid duration-300"
     >
       <Slot>
-        <FaLock className="mr-2" />
+        <FaLock className="mr-2 text-[14px]" />
       </Slot>
       <input
         type="text"
-        className="bg-transparent border-none flex-1 outline-none text-white "
+        className="bg-transparent border-none flex-1 outline-none text-white text-[13px] "
         value={value}
         onChange={onChange}
         placeholder={placeholder}
@@ -60,7 +60,7 @@ export const Preview: FC = memo(function Preview() {
 
   return (
     <main className="flex flex-col h-full">
-      <header className="flex items-center p-2 bg-gray-800 text-white">
+      <header className="flex items-center p-2 bg-[#202327]/60 text-white">
         <FaUndoAlt
           className="text-slate-400 hover:text-white transition-all duration-300 ease-in-out cursor-pointer mx-2"
           onClick={() => setId(uniqueKey())}
@@ -77,7 +77,13 @@ export const Preview: FC = memo(function Preview() {
       </header>
       <div className="bg-gray-800 flex-1 border-0">
         {loaded ? (
-          <iframe width="100%" height="100%" src={url} key={id}></iframe>
+          <iframe
+            style={{ backgroundColor: '#202327' }}
+            width="100%"
+            height="100%"
+            src={url}
+            key={id}
+          ></iframe>
         ) : (
           <BootingWebContainer />
         )}
