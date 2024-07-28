@@ -89,7 +89,6 @@ export const directoryDataFormatter = async (
     const value = await getFileContent(await fileHandler.getFile());
 
     return {
-      handler: fileHandler,
       filename: handler.name,
       kind: 'file',
       path: `/${path}/${handler.name}`,

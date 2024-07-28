@@ -2,7 +2,7 @@ import React, { FC, memo, useState, ChangeEvent, useEffect } from 'react';
 import { FaUndoAlt, FaLock } from 'react-icons/fa';
 import { RxPinRight, RxPinLeft, RxOpenInNewWindow } from 'react-icons/rx';
 import { Slot } from '@radix-ui/react-slot';
-import { v4 as uniqueKey } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import BootingWebContainer from './booting';
 
@@ -34,7 +34,7 @@ const CustomInput: FC<{
 };
 
 export const Preview: FC = memo(function Preview() {
-  const uuid = uniqueKey();
+  const uuid = uuidv4();
   const { url } = useWebContainerStore();
 
   const [iframeUrl, setIframeUrl] = useState<string>('');
@@ -63,7 +63,7 @@ export const Preview: FC = memo(function Preview() {
       <header className="flex items-center p-2 bg-[#202327]/60 text-white">
         <FaUndoAlt
           className="text-slate-400 hover:text-white transition-all duration-300 ease-in-out cursor-pointer mx-2"
-          onClick={() => setId(uniqueKey())}
+          onClick={() => setId(uuidv4())}
         />
         <div className="flex-1 ml-2 ">
           <CustomInput value={iframeUrl} onChange={handleInputChange} placeholder="Enter URL" />
