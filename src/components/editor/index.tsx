@@ -42,8 +42,6 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
   const currentPath = (activeMap[editorId]?.model as any)?.path;
   const currentId = activeMap[editorId]?.model?.id;
-  // console.log(activeMap[0]?.model);
-  // console.log(fileData);
 
   const { isOver, setNodeRef } = useDroppable({
     id: editorId,
@@ -114,7 +112,6 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   );
 
   const handleEditorChange = (value: string = ''): void => {
-    console.log(currentId, value);
     currentId && updateItem(currentId, { value });
     webContainerInstance && writeFile(currentPath, value, webContainerInstance);
   };

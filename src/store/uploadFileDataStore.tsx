@@ -145,11 +145,44 @@ interface FileDataActions {
     status?: string,
   ) => void;
   updateItem: (id: string, updatedProperties: Partial<DirectoryInterface>) => void;
+  initFileData: (projectId: string) => DirectoryInterface[] | null;
+  clearFileData: (resist?: boolean, projectId?: string) => void;
 }
 
-export const useUploadFileDataStore = create<FileDataState & FileDataActions>((set) => ({
+export const useUploadFileDataStore = create<FileDataState & FileDataActions>((set, get) => ({
   fileData: null,
   selected: '',
+  initFileData: (projectId: string) => {
+    console.log(projectId);
+
+    const storedData = localStorage.getItem(projectId);
+
+    if (storedData) {
+      const { projectFileData } = JSON.parse(storedData);
+      console.log(projectFileData);
+      set({ fileData: projectFileData });
+
+      return projectFileData;
+    } else {
+      return get().fileData;
+    }
+  },
+
+  clearFileData: (resist = false, projectId = '') => {
+    if (resist) {
+      const storedData = JSON.parse(localStorage.getItem(projectId) ?? '') ?? '';
+
+      if (storedData !== '') {
+        const newData = {
+          ...storedData,
+          projectFileData: get().fileData,
+        };
+        localStorage.setItem(projectId, JSON.stringify(newData));
+      }
+    }
+
+    set({ fileData: null });
+  },
   setSelected: (selected: string) => set({ selected }),
   setFileData: (fileData: DirectoryInterface[] | null) => set({ fileData }),
   removeFileById: (id: string) =>

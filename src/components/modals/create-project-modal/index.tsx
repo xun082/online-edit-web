@@ -65,11 +65,18 @@ export const CreateProjectModal = () => {
 
     try {
       const projectId = uuidv4();
-      console.log(projectId);
-      console.log(uploadFileState);
+      const projectInfo = {
+        projectFileData: uploadFileState,
+        name: fileNameState,
+        desc: fileDescState,
+        id: projectId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      localStorage.setItem(projectId, JSON.stringify(projectInfo));
       setFileData(uploadFileState);
       onClose();
-      router.push('edit/file');
+      router.push(`edit/${projectId}/file`);
     } catch (error) {
       console.error('Failed to create project:', error);
     } finally {

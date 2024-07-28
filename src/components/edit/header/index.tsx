@@ -18,9 +18,10 @@ interface UserInfo {
 interface HeaderProps {
   project: ProjectData;
   userInfo: UserInfo;
+  projectId: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({ project, userInfo }) => {
+export const Header: React.FC<HeaderProps> = ({ project, userInfo, projectId }) => {
   return (
     <header className=" relative flex flex-row items-center w-[100vw] justify-between bg-transparent py-4 z-[999]">
       <Link className=" text-white font-bold ml-3" href="/">
@@ -56,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({ project, userInfo }) => {
           <Avatar src={userInfo.imgurl} className=" flex h-[3.5vh] w-[3.5vh]" />
         </AvatarPopover>
       </div>
-      <WebContainerProvider></WebContainerProvider>
+      <WebContainerProvider projectId={projectId}></WebContainerProvider>
     </header>
   );
 };
