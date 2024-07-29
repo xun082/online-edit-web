@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
 import { FaGithub } from 'react-icons/fa';
 import { RiTwitterXFill, RiRocketLine } from 'react-icons/ri';
@@ -89,46 +90,56 @@ const Home: NextPage = () => {
   );
 
   return (
-    <div className="bg-[#111111]">
-      <div className="relative flex flex-col items-center justify-center gap-12 antialiased">
-        <Header title={PROJECT_Name} icons={socialIcons} router={router}></Header>
-        <BackgroundBeams />
-        <ContainerScroll
-          content={
-            <div
-              className="w-screen overflow-hidden rounded-lg sm:w-full"
-              style={{
-                boxShadow:
-                  '0 2px 15px -3px var(--next-devtools-widget-shadow), 0 4px 6px -4px var(--next-devtools-widget-shadow)',
-              }}
-            >
-              <img alt="preview" className="object-contain" src="/images/preview.png" />
-            </div>
-          }
-          titleComponent={
-            <div className="relative z-10 p-4 pt-20 mx-auto">
-              <h1 className="text-5xl font-bold text-center text-transparent bg-opacity-50 sm:text-6xl lg:text-7xl bg-clip-text bg-gradient-to-b from-neutral-50 to-neutral-400">
-                enjoy
-                <br />
-                your
-                <br />
-                online edit
-              </h1>
-              <div className="my-6">{getStartedButton}</div>
-            </div>
-          }
+    <>
+      <Head>
+        <title>{PROJECT_Name} - Home</title>
+        <meta
+          name="description"
+          content="Welcome to the home page of our project. Enjoy your online edit experience."
         />
-      </div>
+        <meta name="keywords" content="online edit, project name, home page" />
+      </Head>
+      <div className="bg-[#111111]">
+        <header className="relative flex flex-col items-center justify-center gap-12 antialiased">
+          <Header title={PROJECT_Name} icons={socialIcons} router={router} />
+          <BackgroundBeams />
+          <ContainerScroll
+            content={
+              <div
+                className="w-screen overflow-hidden rounded-lg sm:w-full"
+                style={{
+                  boxShadow:
+                    '0 2px 15px -3px var(--next-devtools-widget-shadow), 0 4px 6px -4px var(--next-devtools-widget-shadow)',
+                }}
+              >
+                <img alt="preview" className="object-contain" src="/images/preview.png" />
+              </div>
+            }
+            titleComponent={
+              <div className="relative z-10 p-4 pt-20 mx-auto">
+                <h1 className="text-5xl font-bold text-center text-transparent bg-opacity-50 sm:text-6xl lg:text-7xl bg-clip-text bg-gradient-to-b from-neutral-50 to-neutral-400">
+                  enjoy
+                  <br />
+                  your
+                  <br />
+                  online edit
+                </h1>
+                <div className="my-6">{getStartedButton}</div>
+              </div>
+            }
+          />
+        </header>
 
-      <div className="container mt-12 mx-auto bg-[#111111]">
-        <HoverEffect items={projects} />
-      </div>
+        <main className="container mt-12 mx-auto bg-[#111111]">
+          <HoverEffect items={projects} />
+        </main>
 
-      <div className="container mx-auto mt-20 mb-20 space-y-6">
-        <div className="text-center">{getStartedButton}</div>
+        <div className="container mx-auto mt-20 mb-20 space-y-6">
+          <div className="text-center">{getStartedButton}</div>
+        </div>
+        <Footer />
       </div>
-      <Footer></Footer>
-    </div>
+    </>
   );
 };
 
