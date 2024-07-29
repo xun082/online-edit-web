@@ -15,6 +15,8 @@ export type PathValues = (typeof PATHS)[PathKeys];
 
 export const PRETTIER_FORMAT_PATH: string = 'PRETTIER_FORMAT_PATH';
 
+export const UPLOAD_FILE_DATA: string = 'UPLOAD_FILE_DATA';
+
 export const DEFAULT_PRETTIER_CONFIG: string = `{
   "printWidth": 80,
   "tabWidth": 2,

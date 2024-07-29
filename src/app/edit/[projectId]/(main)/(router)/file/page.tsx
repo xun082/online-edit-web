@@ -12,10 +12,9 @@ const FileTree = dynamic(() => import('@/components/file/fileTree'), { ssr: fals
 
 const PortsPage: React.FC = () => {
   const { fileData, selected, addFileOrFolder } = useUploadFileDataStore();
-  if (fileData === null) return null;
-
   let data: TreeViewElement[] = fileData as unknown as TreeViewElement[];
-  if (!Array.isArray(fileData)) data = [fileData];
+
+  if (!Array.isArray(fileData)) data = fileData === null ? [] : [fileData];
   useEffect(() => {}, [fileData]);
 
   return (
@@ -38,7 +37,7 @@ const PortsPage: React.FC = () => {
         </div>
       </div>
       <div className=" px-0 flex flex-col w-full justify-start">
-        <FileTree data={data as unknown as TreeViewElement[]}></FileTree>
+        <FileTree data={data as unknown as TreeViewElement[]} />
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { WebContainer } from '@webcontainer/api';
 
-import { WebContainerFileSystemTreeSavePoint, curDirectory, writeDirByLocal } from '@/utils';
+import { curDirectory, writeDirByLocal } from '@/utils';
 
 interface WebContainerState {
   webContainerInstance: WebContainer | null;
@@ -10,7 +10,7 @@ interface WebContainerState {
 }
 
 interface WebContainerActions {
-  initWebContainer: () => Promise<void>;
+  initWebContainer: (projectId?: string) => Promise<void>;
   setUrl: (url: string) => void;
 }
 
@@ -20,16 +20,17 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
   webContainerInstance: null,
   isInitialized: false,
   url: '',
-  async initWebContainer() {
+  async initWebContainer(projectId = '') {
     const { webContainerInstance, isInitialized } = get();
-    const treeData = localStorage.getItem(WebContainerFileSystemTreeSavePoint);
+    const projectInfo = localStorage.getItem(projectId);
 
     if (!isInitialized && !webContainerInstance) {
       const newWebContainerInstance = await WebContainer.boot();
 
-      if (treeData) {
-        const fileSystemTree = JSON.parse(treeData);
-        await newWebContainerInstance.mount(fileSystemTree);
+      if (projectInfo) {
+        const { projectFileData } = JSON.parse(projectInfo);
+        console.log(projectFileData);
+        await writeDirByLocal(projectFileData, newWebContainerInstance);
       }
 
       if (curDirectory) {
@@ -43,9 +44,9 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
 
       set({ webContainerInstance: newWebContainerInstance, isInitialized: true });
     } else {
-      if (treeData) {
-        const fileSystemTree = JSON.parse(treeData);
-        await webContainerInstance!.mount(fileSystemTree);
+      if (projectInfo) {
+        const { projectFileData } = JSON.parse(projectInfo);
+        await writeDirByLocal(projectFileData, webContainerInstance as WebContainer);
       }
 
       if (curDirectory) {

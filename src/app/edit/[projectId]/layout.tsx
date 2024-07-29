@@ -19,6 +19,7 @@ import { DragIcon } from '@/components/file/dragIcon';
 import { TerminalPanel } from '@/components/terminal';
 import { useActiveModelStore, useModelsStore, useSplitStore } from '@/store/editorStore';
 import { useDragIconStore } from '@/store/dragIconStore';
+import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
 import { addNewModel } from '@/utils';
 
 const MockUserInfo = {
@@ -48,13 +49,40 @@ const renderSplitCodeEditor = (splitState: boolean[]): JSX.Element[] => {
     .filter((element): element is JSX.Element => element !== null); // 过滤掉 null 值
 };
 
-const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const Page: React.FC<{ children: React.ReactNode; params: any }> = ({ children, params }) => {
   const terminalRef = useRef<any>(null);
   const pathname = usePathname();
-  const { splitState } = useSplitStore();
+  const { splitState, removeSplit } = useSplitStore();
 
   const controls = useAnimation();
 
+  const { models, setModels, removeAllModel } = useModelsStore();
+
+  const { setActiveModel, clearActiveModel } = useActiveModelStore();
+
+  const { dragIconRef } = useDragIconStore();
+
+  const { initFileData, clearFileData } = useUploadFileDataStore();
+
+  useEffect(() => {
+    initFileData(params.projectId);
+    window.addEventListener('beforeunload', (event) => {
+      event?.preventDefault();
+      clearFileData(true, params.projectId);
+    });
+
+    return () => {
+      removeAllModel(0);
+      removeAllModel(1);
+      removeAllModel(2);
+      clearActiveModel(0);
+      clearActiveModel(1);
+      clearActiveModel(2);
+      removeSplit(1);
+      removeSplit(2);
+      clearFileData(true, params.projectId);
+    };
+  }, [params.projectId, initFileData]);
   useEffect(() => {
     controls.start({
       y: 0,
@@ -63,12 +91,6 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       transition: { ease: 'easeInOut', duration: 1 },
     });
   }, [pathname, controls]);
-
-  const { models, setModels } = useModelsStore();
-
-  const { setActiveModel } = useActiveModelStore();
-
-  const { dragIconRef } = useDragIconStore();
 
   const editPanelGroupResize = () => {
     terminalRef.current?.terminalResize();
@@ -116,7 +138,7 @@ const Page: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div className="flex flex-col justify-start items-center h-[100vh] overflow-hidden">
       {/* Header */}
       <div className=" w-full h-[5vh] flex items-center justify-around bg-[#24262b]">
-        <Header userInfo={MockUserInfo} project={MockProjectData} />
+        <Header projectId={params.projectId} userInfo={MockUserInfo} project={MockProjectData} />
       </div>
       <div className=" w-full flex flex-1 overflow-hidden">
         {/* 侧边栏 */}

@@ -1,63 +1,92 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { TemplateCardData, LinkCardData } from '@/utils';
+import { TemplateCardData, LinkCardData, UPLOAD_FILE_DATA, isoDateStringFormat } from '@/utils';
 
 export default function DashboardPage() {
+  const [showProjectList, setShowProjectList] = useState(false);
+  const [projectList, setProjectList] = useState([]);
+  useEffect(() => {
+    const projectData =
+      localStorage.getItem(UPLOAD_FILE_DATA) === null
+        ? []
+        : JSON.parse(localStorage.getItem(UPLOAD_FILE_DATA)!);
+
+    if (projectData.length > 1) {
+      setProjectList(projectData);
+      setShowProjectList(true);
+    }
+  }, []);
+
   return (
     <div className="bg-[#181a1f] w-full h-full flex justify-center items-center overflow-hidden">
       <div className="flex flex-col items-start justify-start gap-y-12 h-full w-[70%] overflow-auto pt-12">
-        <div className="flex flex-col gap-y-5">
-          <span className="text-[32px] font-[800] leading-[38.2px]">欢迎使用 Online Edit</span>
-          <span className="text-[14px] text-[#c7ccd6]">
-            一款集成 AI 能力的 Online IDE，提供开箱即用的开发环境，简化开发过程，提高效率
-          </span>
-        </div>
-
-        <div className="relative flex flex-col pt-6 px-6 w-full h-[40vh] rounded-lg overflow-hidden">
-          <img
-            src="https://lf-cdn.marscode.cn/obj/marscode-bucket-cn/A0_prod/static/image/create-from-template-bg.f1c04af1.png"
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-          />
-          <div className="absolute inset-0 w-full h-full bg-gray-800 opacity-20 pointer-events-none"></div>
-          <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none">
-            <div className="pointer-events-none bg-radial-[rgba(255,255,255,0.667)-rgba(233,242,255,0.25)] bg-center bg-no-repeat bg-contain w-full h-full"></div>
-          </div>
-          <div className="flex justify-start items-center h-[3.5vh] font-[800]">
-            <span className="text-[24px] ml-4">创建您的项目</span>
-            <div className="ml-auto flex gap-x-2 items-center">
-              <div className="cursor-pointer text-[14px] p-3 flex items-center justify-center rounded-md font-[500] w-[7vw] h-[3.2vh] hover:bg-white/20 hover:text-white">
-                导入Git项目
-              </div>
-              <span className="font-[600] text-[12px]">|</span>
-              <div className="cursor-pointer text-[14px] p-3 flex items-center justify-center rounded-md font-[500] w-[7vw] h-[3.2vh] hover:bg-white/20 hover:text-white">
-                选择更多模板
-              </div>
+        {showProjectList ? (
+          <div className=" flex flex-col gap-y-4">
+            <div className=" flex justify-between mb-3">
+              <div className=" text-[18px] font-[600] text-[#c7ccd6]">项目</div>
+              <div></div>
+            </div>
+            <div className=" flex flex-col gap-y-4 overflow-y-scroll h-[60vh] hide-scrollbar">
+              {projectList.map((item) => (
+                <ProjectCard projectData={item} key={(item as any).id} />
+              ))}
             </div>
           </div>
-          <p className="text-[#737780] leading-[17px] ml-4 mb-[12px] mt-[26px] text-[14px] px-[8px]">
-            使用模板快速开始
-          </p>
-          <div className="flex items-center justify-center mt-4 w-full gap-x-4 px-2">
-            {TemplateCardData.map((item) => (
-              <TemplateCard key={item.title} title={item.title} icon={item.icon} />
-            ))}
-          </div>
-        </div>
-
-        <p className="text-[#737780] text-[14px]">阅读文档了解如何使用</p>
-        <div className="flex gap-x-4 items-center justify-center w-full mt-[-3vh]">
-          {LinkCardData.map((item) => (
-            <LinkCard
-              key={item.linkText}
-              linkText={item.linkText}
-              linkUrl={item.linkUrl}
-              linkDesc={item.linkDesc}
-            />
-          ))}
-        </div>
+        ) : (
+          <>
+            <div className="flex flex-col gap-y-5">
+              <span className="text-[32px] font-[800] leading-[38.2px]">欢迎使用 Online Edit</span>
+              <span className="text-[14px] text-[#c7ccd6]">
+                一款集成 AI 能力的 Online IDE，提供开箱即用的开发环境，简化开发过程，提高效率
+              </span>
+            </div>
+            <div className="relative flex flex-col pt-6 px-6 w-full h-[40vh] rounded-lg overflow-hidden">
+              <img
+                src="https://lf-cdn.marscode.cn/obj/marscode-bucket-cn/A0_prod/static/image/create-from-template-bg.f1c04af1.png"
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+              />
+              <div className="absolute inset-0 w-full h-full bg-gray-800 opacity-20 pointer-events-none"></div>
+              <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none">
+                <div className="pointer-events-none bg-radial-[rgba(255,255,255,0.667)-rgba(233,242,255,0.25)] bg-center bg-no-repeat bg-contain w-full h-full"></div>
+              </div>
+              <div className="flex justify-start items-center h-[3.5vh] font-[800]">
+                <span className="text-[24px] ml-4">创建您的项目</span>
+                <div className="ml-auto flex gap-x-2 items-center">
+                  <div className="cursor-pointer text-[14px] p-3 flex items-center justify-center rounded-md font-[500] w-[7vw] h-[3.2vh] hover:bg-white/20 hover:text-white">
+                    导入Git项目
+                  </div>
+                  <span className="font-[600] text-[12px]">|</span>
+                  <div className="cursor-pointer text-[14px] p-3 flex items-center justify-center rounded-md font-[500] w-[7vw] h-[3.2vh] hover:bg-white/20 hover:text-white">
+                    选择更多模板
+                  </div>
+                </div>
+              </div>
+              <p className="text-[#737780] leading-[17px] ml-4 mb-[12px] mt-[26px] text-[14px] px-[8px]">
+                使用模板快速开始
+              </p>
+              <div className="flex items-center justify-center mt-4 w-full gap-x-4 px-2">
+                {TemplateCardData.map((item) => (
+                  <TemplateCard key={item.title} title={item.title} icon={item.icon} />
+                ))}
+              </div>
+            </div>
+            <p className="text-[#737780] text-[14px]">阅读文档了解如何使用</p>
+            <div className="flex gap-x-4 items-center justify-center w-full mt-[-3vh]">
+              {LinkCardData.map((item) => (
+                <LinkCard
+                  key={item.linkText}
+                  linkText={item.linkText}
+                  linkUrl={item.linkUrl}
+                  linkDesc={item.linkDesc}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -126,3 +155,46 @@ const LinkCard: React.FC<{ linkText: string; linkUrl: string; linkDesc: string }
     </div>
   </a>
 );
+const ProjectCard: React.FC<{ projectData: any }> = ({ projectData }) => {
+  const router = useRouter();
+  const handleDirectToEdit = () => {
+    const projectId = projectData.id;
+    router.push(`/edit/${projectId}/file`);
+  };
+
+  return (
+    <div
+      onClick={() => {
+        handleDirectToEdit();
+      }}
+      className=" flex justify-between py-4 px-5 rounded-[6px] cursor-pointer transition-all bg-[#24262b] hover:bg-[#33363d]"
+    >
+      <div className="flex gap-5 items-center">
+        <div className="flex items-center justify-center">
+          <img className="rounded-[6px] w-8 h-8" src="/qwen.png" />
+        </div>
+        <div className="w-[760px] flex flex-col justify-between space-y-[2px]">
+          <div className="project-name font-semibold text-[16px]">{projectData.name}</div>
+          <div className="flex text-[12px] text-[#6f737c] gap-[6px] items-center">
+            <div>{projectData.desc}</div>
+            <div>{isoDateStringFormat(projectData.createdAt)}</div>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-[8px]">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6.75872 13.5391C6.43329 13.8645 6.43329 14.3922 6.75872 14.7176L7.34797 15.3069C7.67342 15.6323 8.20106 15.6323 8.52649 15.3069L13.2405 10.5928C13.4041 10.4292 13.4855 10.2146 13.4846 10.0001C13.4855 9.78574 13.4041 9.57106 13.2405 9.40747L8.52649 4.69342C8.20106 4.36799 7.67342 4.36799 7.34797 4.69342L6.75872 5.28267C6.43329 5.60811 6.43329 6.13576 6.75872 6.46119L10.2977 10.0001L6.75872 13.5391Z"
+            fill="#737780"
+          ></path>
+        </svg>
+      </div>
+    </div>
+  );
+};
