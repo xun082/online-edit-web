@@ -35,6 +35,8 @@ export function createFile(path: string, webcontainerInstance: WebContainer) {
 }
 
 export async function writeDirByLocal(dir: any, webcontainerInstance: WebContainer) {
+  if (!dir) return;
+
   if (Array.isArray(dir)) {
     dir.forEach((item) => {
       writeDirByLocal(item, webcontainerInstance);
@@ -43,13 +45,13 @@ export async function writeDirByLocal(dir: any, webcontainerInstance: WebContain
     return;
   }
 
-  if (dir.kind === 'file') {
+  if (dir?.kind === 'file') {
     await writeFile(dir.path, dir.value ?? '', webcontainerInstance);
 
     return;
   }
 
-  await createDir(dir.path, webcontainerInstance);
+  await createDir(dir?.path, webcontainerInstance);
 
   for (const file of dir.children) {
     await writeDirByLocal(file, webcontainerInstance);

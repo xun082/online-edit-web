@@ -52,13 +52,13 @@ const renderSplitCodeEditor = (splitState: boolean[]): JSX.Element[] => {
 const Page: React.FC<{ children: React.ReactNode; params: any }> = ({ children, params }) => {
   const terminalRef = useRef<any>(null);
   const pathname = usePathname();
-  const { splitState } = useSplitStore();
+  const { splitState, removeSplit } = useSplitStore();
 
   const controls = useAnimation();
 
-  const { models, setModels } = useModelsStore();
+  const { models, setModels, removeAllModel } = useModelsStore();
 
-  const { setActiveModel } = useActiveModelStore();
+  const { setActiveModel, clearActiveModel } = useActiveModelStore();
 
   const { dragIconRef } = useDragIconStore();
 
@@ -70,6 +70,18 @@ const Page: React.FC<{ children: React.ReactNode; params: any }> = ({ children, 
       event?.preventDefault();
       clearFileData(true, params.projectId);
     });
+
+    return () => {
+      removeAllModel(0);
+      removeAllModel(1);
+      removeAllModel(2);
+      clearActiveModel(0);
+      clearActiveModel(1);
+      clearActiveModel(2);
+      removeSplit(1);
+      removeSplit(2);
+      clearFileData(true, params.projectId);
+    };
   }, [params.projectId, initFileData]);
   useEffect(() => {
     controls.start({

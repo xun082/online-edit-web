@@ -6,3 +6,4 @@ export * from './route';
 export * from './webcontainer';
 export * from './file';
 export * from './fileIconMap';
+export * from './time';

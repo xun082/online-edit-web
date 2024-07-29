@@ -28,7 +28,7 @@ import { Input } from '@/components/ui/input';
 import { getDirectory } from '@/utils/getLocalDirectory';
 import { useModal } from '@/hooks/useModal';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
-import { cn } from '@/utils';
+import { cn, UPLOAD_FILE_DATA } from '@/utils';
 
 export const CreateProjectModal = () => {
   const { setFileData } = useUploadFileDataStore();
@@ -65,6 +65,19 @@ export const CreateProjectModal = () => {
 
     try {
       const projectId = uuidv4();
+      const preUploadFileData =
+        localStorage.getItem(UPLOAD_FILE_DATA) !== null
+          ? JSON.parse(localStorage.getItem(UPLOAD_FILE_DATA) as string)
+          : [];
+      preUploadFileData.push({
+        name: fileNameState,
+        desc: fileDescState,
+        id: projectId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+      localStorage.setItem(UPLOAD_FILE_DATA, JSON.stringify(preUploadFileData));
+
       const projectInfo = {
         projectFileData: uploadFileState,
         name: fileNameState,
