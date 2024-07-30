@@ -11,7 +11,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/edit/(.*)',
         headers: [
           {
             key: 'Cross-Origin-Embedder-Policy',

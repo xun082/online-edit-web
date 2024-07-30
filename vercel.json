@@ -7,7 +7,7 @@
   },
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/edit/(.*)",
       "headers": [
         {
           "key": "Cross-Origin-Embedder-Policy",
