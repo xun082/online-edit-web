@@ -7,9 +7,13 @@ interface WebContainerProviderProps {
 }
 
 const WebContainerProvider: React.FC<WebContainerProviderProps> = ({ projectId }) => {
-  const { initWebContainer } = useWebContainerStore();
+  const { initWebContainer, setInitialized } = useWebContainerStore();
   useEffect(() => {
     initWebContainer(projectId);
+
+    return () => {
+      setInitialized(false);
+    };
   }, [projectId]);
 
   return <Fragment></Fragment>;

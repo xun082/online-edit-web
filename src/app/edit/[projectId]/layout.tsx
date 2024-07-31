@@ -26,10 +26,6 @@ const MockUserInfo = {
   name: 'xiaoming',
 };
 
-const MockProjectData = {
-  name: '这是一个project',
-};
-
 const renderSplitCodeEditor = (splitState: boolean[]): JSX.Element[] => {
   return splitState
     .map((state, index) => {
@@ -138,7 +134,7 @@ const Page: React.FC<{ children: React.ReactNode; params: any }> = ({ children, 
     <div className="flex flex-col justify-start items-center h-[100vh] overflow-hidden">
       {/* Header */}
       <div className=" w-full h-[5vh] flex items-center justify-around bg-[#24262b]">
-        <Header projectId={params.projectId} userInfo={MockUserInfo} project={MockProjectData} />
+        <Header projectId={params.projectId} userInfo={MockUserInfo} />
       </div>
       <div className=" w-full flex flex-1 overflow-hidden">
         {/* 侧边栏 */}
