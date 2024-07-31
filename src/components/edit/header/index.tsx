@@ -17,7 +17,7 @@ interface HeaderProps {
   projectId: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({ userInfo, projectId }) => {
+export const Header: React.FC<HeaderProps> = ({ projectId }) => {
   const [projectName, setProjectName] = useState('');
   useEffect(() => {
     const projectData = localStorage.getItem(projectId)
@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({ userInfo, projectId }) => {
       </div>
       <div className="mr-4">
         <AvatarPopover>
-          <Avatar src={userInfo.imgurl} className=" flex h-[3.5vh] w-[3.5vh]" />
+          <Avatar src="/kunkun.gif" className=" flex h-[3.6vh] w-[3.6vh]" />
         </AvatarPopover>
       </div>
       <WebContainerProvider projectId={projectId}></WebContainerProvider>
