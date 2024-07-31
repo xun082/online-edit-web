@@ -12,6 +12,7 @@ interface WebContainerState {
 interface WebContainerActions {
   initWebContainer: (projectId?: string) => Promise<void>;
   setUrl: (url: string) => void;
+  setInitialized: (isInitialized: boolean) => void;
 }
 
 type WebContainerStore = WebContainerState & WebContainerActions;
@@ -63,5 +64,8 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
   },
   setUrl(url: string) {
     set({ url });
+  },
+  setInitialized(isInitialized: boolean) {
+    set({ isInitialized });
   },
 }));

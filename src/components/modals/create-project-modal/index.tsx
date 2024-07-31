@@ -13,15 +13,15 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from '@/components/ui/command';
+// import {
+//   Command,
+//   CommandEmpty,
+//   CommandGroup,
+//   CommandInput,
+//   CommandItem,
+//   CommandList,
+//   CommandSeparator,
+// } from '@/components/ui/command';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -125,7 +125,7 @@ export const CreateProjectModal = () => {
                 <div className=" font-[300] text-[14px] text-[#676b74]">
                   <span className="text-red-500 mr-1">*</span>选择模板
                 </div>
-                <Command className=" bg-transparent shadow-md">
+                {/* <Command className=" bg-transparent shadow-md">
                   <CommandInput className=" text-[12px]" placeholder="搜索" />
                   <CommandList className=" h-[32vh] overscroll-y-scroll hide-scrollbar">
                     <CommandEmpty>No results found.</CommandEmpty>
@@ -153,68 +153,49 @@ export const CreateProjectModal = () => {
                       </CommandItem>
                     </CommandGroup>
                   </CommandList>
-                </Command>
+                </Command> */}
               </TabsContent>
               <TabsContent className=" flex flex-col gap-y-2 pt-1" value="importing files">
                 <div className=" font-[300] text-[14px] text-[#676b74]">
                   <span className="text-red-500 mr-1">*</span>选择仓库
                 </div>
-                <Tabs defaultValue="local" className=" w-full">
-                  <TabsList className="w-full inline-flex h-8 items-center justify-center rounded-[8px] bg-tr-2 bg-[#3c3e49] p-1 px-2 text-muted-foreground">
-                    <TabsTrigger
-                      className="  flex-1 h-6 rounded-[5px] data-[state=active]:font-[600] data-[state=active]:text-[#24262b] data-[state=active]:bg-[#ffffff] data-[state=active]:shadow"
-                      value="local"
-                    >
-                      本地导入
-                    </TabsTrigger>
-                    <TabsTrigger
-                      className=" flex-1 h-6 rounded-[5px] data-[state=active]:font-[600] data-[state=active]:text-[#24262b] data-[state=active]:bg-[#ffffff] data-[state=active]:shadow"
-                      value="github"
-                    >
-                      github导入
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent className=" flex flex-col gap-y-2 pt-1" value="local">
-                    <div
-                      onClick={handleUploadClick}
-                      className="flex justify-center flex-col items-center mt-2 gap-x-2 py-6 border-white/20 border-[1px] rounded-sm cursor-pointer"
-                    >
-                      {loading ? (
-                        <AiOutlineLoading3Quarters className="font-[600] animate-spin" />
-                      ) : (
-                        <>
-                          <svg
-                            className="w-8 h-8 mb-3 text-gray-500 dark:text-gray-400"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 20 16"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                            />
-                          </svg>
-                          <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
-                            <span className="font-semibold">Click to upload</span>
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400"></p>
-                        </>
-                      )}
-                    </div>
-                  </TabsContent>
-                  <TabsContent className=" flex flex-col gap-y-2 pt-1" value="github"></TabsContent>
-                </Tabs>
+                <div
+                  onClick={handleUploadClick}
+                  className="flex justify-center flex-col items-center mt-2 gap-x-2 py-6 border-white/20 border-[1px] rounded-sm cursor-pointer"
+                >
+                  {loading ? (
+                    <AiOutlineLoading3Quarters className="font-[600] animate-spin" />
+                  ) : (
+                    <>
+                      <svg
+                        className="w-8 h-8 mb-3 text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold">Click to upload</span>
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400"></p>
+                    </>
+                  )}
+                </div>
               </TabsContent>
             </Tabs>
           </div>
           <div className=" w-[1.5px] h-[48vh] bg-[rgba(194,202,242,.08)]"></div>
           <div className=" relative w-[45%] h-[50vh] flex flex-col gap-y-3">
             <div className=" text-[#6d717a]">模板</div>
-
+            {/*
             <div className="relative w-full h-[10vh] group py-[20px] px-[20px] border-[1px] border-white/20 rounded-[8px] hover:rounded-[16px] hover:bg-[#282A2E] bg-[#1F2124] overflow-hidden flex flex-col transition-all duration-200">
               <div className="flex items-center h-[16px] w-full place-content-between mb-[12px]">
                 <div className="font-[600] text-[16px] my-[12px] flex-1 leading-[20px] h-[20px]">
@@ -224,7 +205,7 @@ export const CreateProjectModal = () => {
               <div className="text-[12px] h-[36px] leading-[18px] overflow-hidden text-ellipsis text-[#dadde5]">
                 {'使用python快速开发'}
               </div>
-            </div>
+            </div> */}
             <div className=" font-[300] text-[14px] text-[#676b74]">
               <span className="text-red-500 mr-1">*</span>项目名称
             </div>

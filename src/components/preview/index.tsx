@@ -35,17 +35,11 @@ const CustomInput: FC<{
 
 export const Preview: FC = memo(function Preview() {
   const uuid = uuidv4();
-  const { url } = useWebContainerStore();
+  const { url, isInitialized } = useWebContainerStore();
 
   const [iframeUrl, setIframeUrl] = useState<string>('');
   const [id, setId] = useState<string>(uuid);
-  const [loaded, setLoaded] = useState<boolean>(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoaded(true); //测试，可删
-    }, 5000);
-  }, []);
   useEffect(() => {
     setIframeUrl(url);
 
@@ -76,7 +70,7 @@ export const Preview: FC = memo(function Preview() {
         )}
       </header>
       <div className="bg-gray-800 flex-1 border-0">
-        {loaded ? (
+        {isInitialized ? (
           <iframe
             style={{ backgroundColor: '#202327' }}
             width="100%"

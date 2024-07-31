@@ -14,7 +14,7 @@ export default function DashboardPage() {
         ? []
         : JSON.parse(localStorage.getItem(UPLOAD_FILE_DATA)!);
 
-    if (projectData.length > 1) {
+    if (projectData.length > 0) {
       setProjectList(projectData);
       setShowProjectList(true);
     }
@@ -171,7 +171,10 @@ const ProjectCard: React.FC<{ projectData: any }> = ({ projectData }) => {
     >
       <div className="flex gap-5 items-center">
         <div className="flex items-center justify-center">
-          <img className="rounded-[6px] w-8 h-8" src="/qwen.png" />
+          <img
+            className="rounded-[6px] w-8 h-8"
+            src="https://lf-cdn.marscode.com.cn/obj/eden-cn/ljhwz_lkpkbvsj/ljhwZthlaukjlkulzlp/project_template/prod/e886aea5cdea7c2c243bf38141acf909ab8c651b/images/blank/icon.svg?ver=5"
+          />
         </div>
         <div className="w-[760px] flex flex-col justify-between space-y-[2px]">
           <div className="project-name font-semibold text-[16px]">{projectData.name}</div>
