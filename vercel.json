@@ -7,7 +7,7 @@
   },
   "headers": [
     {
-      "source": "/edit/(.*)",
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Cross-Origin-Embedder-Policy",
@@ -16,19 +16,6 @@
         {
           "key": "Cross-Origin-Opener-Policy",
           "value": "same-origin"
-        }
-      ]
-    },
-    {
-      "source": "/_next/static/(.*)",
-      "headers": [
-        {
-          "key": "Cross-Origin-Embedder-Policy",
-          "value": ""
-        },
-        {
-          "key": "Cross-Origin-Opener-Policy",
-          "value": ""
         }
       ]
     }

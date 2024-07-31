@@ -122,6 +122,7 @@ export const CreateProjectModal = () => {
                   {Object.keys(templateList).map((item) => {
                     return (
                       <div
+                        key={item}
                         className=" flex w-full rounded-sm p-2 transition-all cursor-pointer hover:bg-black/80"
                         onClick={() => {
                           setUploadFileState(templateList[item].template);
