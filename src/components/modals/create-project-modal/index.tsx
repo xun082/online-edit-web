@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,22 +13,13 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-// import {
-//   Command,
-//   CommandEmpty,
-//   CommandGroup,
-//   CommandInput,
-//   CommandItem,
-//   CommandList,
-//   CommandSeparator,
-// } from '@/components/ui/command';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { getDirectory } from '@/utils/getLocalDirectory';
 import { useModal } from '@/hooks/useModal';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
-import { cn, UPLOAD_FILE_DATA } from '@/utils';
+import { cn, UPLOAD_FILE_DATA, templateList } from '@/utils';
 
 export const CreateProjectModal = () => {
   const { setFileData } = useUploadFileDataStore();
@@ -37,6 +28,8 @@ export const CreateProjectModal = () => {
   const [fileNameState, setFileNameState] = useState<string>('');
   const [fileDescState, setFileDescState] = useState<string>('');
   const [uploadFileState, setUploadFileState] = useState<any>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
   const disAllowCreate =
     loading || uploadFileState.length < 1 || fileDescState === '' || fileNameState === '';
@@ -125,35 +118,34 @@ export const CreateProjectModal = () => {
                 <div className=" font-[300] text-[14px] text-[#676b74]">
                   <span className="text-red-500 mr-1">*</span>选择模板
                 </div>
-                {/* <Command className=" bg-transparent shadow-md">
-                  <CommandInput className=" text-[12px]" placeholder="搜索" />
-                  <CommandList className=" h-[32vh] overscroll-y-scroll hide-scrollbar">
-                    <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandGroup className="" heading="Suggestions">
-                      <CommandItem>
-                        <span>Calendar</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Search Emoji</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Launch</span>
-                      </CommandItem>
-                    </CommandGroup>
-                    <CommandSeparator />
-                    <CommandGroup heading="Settings">
-                      <CommandItem>
-                        <span>Profile</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Mail</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Settings</span>
-                      </CommandItem>
-                    </CommandGroup>
-                  </CommandList>
-                </Command> */}
+                <div className=" flex items-center justify-center flex-wrap">
+                  {Object.keys(templateList).map((item) => {
+                    return (
+                      <div
+                        className=" flex w-full rounded-sm p-2 transition-all cursor-pointer hover:bg-black/80"
+                        onClick={() => {
+                          setUploadFileState(templateList[item].template);
+
+                          if (inputRef.current && textareaRef.current) {
+                            inputRef.current.value = item;
+                            textareaRef.current.value = templateList[item].desc;
+                            setFileNameState(item);
+                            setFileDescState(templateList[item].desc);
+                          }
+                        }}
+                      >
+                        <div className="flex items-center justify-center">
+                          <img className="rounded-[6px]" src={templateList[item].icon} />
+                        </div>
+                        <div className="flex flex-1 items-center" data-state="closed">
+                          <div className="ml-3 flex-1 ">
+                            <div className="title leading-5 text-[13px] font-semibold">{item}</div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </TabsContent>
               <TabsContent className=" flex flex-col gap-y-2 pt-1" value="importing files">
                 <div className=" font-[300] text-[14px] text-[#676b74]">
@@ -210,6 +202,7 @@ export const CreateProjectModal = () => {
               <span className="text-red-500 mr-1">*</span>项目名称
             </div>
             <Input
+              ref={inputRef}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setFileNameState(e.target.value);
               }}
@@ -220,6 +213,7 @@ export const CreateProjectModal = () => {
             </div>
 
             <Textarea
+              ref={textareaRef}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                 setFileDescState(e.target.value);
               }}

@@ -25,32 +25,32 @@ export const RouterDataList: RouterData[] = [
 export const TemplateCardData = [
   {
     title: 'Node',
-    icon: 'https://lf-cdn.marscode.com.cn/obj/eden-cn/ljhwz_lkpkbvsj/ljhwZthlaukjlkulzlp/project_template/prod/e78a9920fc913dcd1b339f0ee1493e429fb237c8/images/native_nodejs/icon.svg',
+    icon: '/node.svg',
   },
   {
     title: 'Vue3',
-    icon: 'https://lf-cdn.marscode.com.cn/obj/eden-cn/ljhwz_lkpkbvsj/ljhwZthlaukjlkulzlp/project_template/prod/e78a9920fc913dcd1b339f0ee1493e429fb237c8/images/native_nodejs/icon.svg',
+    icon: '/vue.svg',
   },
   {
     title: 'React',
-    icon: 'https://lf-cdn.marscode.com.cn/obj/eden-cn/ljhwz_lkpkbvsj/ljhwZthlaukjlkulzlp/project_template/prod/e78a9920fc913dcd1b339f0ee1493e429fb237c8/images/native_golang/icon.svg',
+    icon: '/react.svg',
   },
 ];
 
 export const LinkCardData = [
   {
-    linkText: 'Node1',
+    linkText: 'link1',
     linkUrl: 'https://www.baidu.com',
-    linkDesc: 'ai帮助你学习前端后端运维安全',
+    linkDesc: 'desc1',
   },
   {
-    linkText: 'Node2',
+    linkText: 'lin2',
     linkUrl: 'https://www.baidu.com',
-    linkDesc: 'ai帮助你学习前端后端运维安全',
+    linkDesc: 'desc1',
   },
   {
-    linkText: 'Node3',
+    linkText: 'lin3',
     linkUrl: 'https://www.baidu.com',
-    linkDesc: 'ai帮助你学习前端后端运维安全',
+    linkDesc: 'desc3',
   },
 ];

@@ -7,3 +7,5 @@ export * from './webcontainer';
 export * from './file';
 export * from './fileIconMap';
 export * from './time';
+export * from './zip';
+export * from './template';
