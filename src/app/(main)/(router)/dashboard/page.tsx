@@ -45,7 +45,7 @@ export default function DashboardPage() {
             </div>
             <div className="relative flex flex-col pt-6 px-6 w-full h-[40vh] rounded-lg overflow-hidden">
               <img
-                src="https://lf-cdn.marscode.cn/obj/marscode-bucket-cn/A0_prod/static/image/create-from-template-bg.f1c04af1.png"
+                src="/dashboard.png"
                 alt=""
                 className="absolute inset-0 w-full h-full object-cover pointer-events-none"
               />
@@ -171,10 +171,7 @@ const ProjectCard: React.FC<{ projectData: any }> = ({ projectData }) => {
     >
       <div className="flex gap-5 items-center">
         <div className="flex items-center justify-center">
-          <img
-            className="rounded-[6px] w-8 h-8"
-            src="https://lf-cdn.marscode.com.cn/obj/eden-cn/ljhwz_lkpkbvsj/ljhwZthlaukjlkulzlp/project_template/prod/e886aea5cdea7c2c243bf38141acf909ab8c651b/images/blank/icon.svg?ver=5"
-          />
+          <img className="rounded-[6px] w-8 h-8" src="/project.svg" />
         </div>
         <div className="w-[760px] flex flex-col justify-between space-y-[2px]">
           <div className="project-name font-semibold text-[16px]">{projectData.name}</div>
