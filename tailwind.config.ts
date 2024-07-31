@@ -88,6 +88,38 @@ const config: Config = {
           from: { opacity: '0', transform: 'translateX(2px)' },
           to: { opacity: '1', transform: 'translateX(0)' },
         },
+        snakeBorderTop: {
+          '0%': {
+            transform: `translateX(-100%)`,
+          },
+          '100%': {
+            transform: `translateX(100%)`,
+          },
+        },
+        snakeBorderLeft: {
+          '0%': {
+            transform: `translateY(-100%)`,
+          },
+          '100%': {
+            transform: `translateY(100%)`,
+          },
+        },
+        snakeBorderBottom: {
+          '0%': {
+            transform: `translateX(100%)`,
+          },
+          '100%': {
+            transform: `translateX(-100%)`,
+          },
+        },
+        snakeBorderRight: {
+          '0%': {
+            transform: `translateY(100%)`,
+          },
+          '100%': {
+            transform: `translateY(-100%)`,
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -97,6 +129,10 @@ const config: Config = {
         slideRightAndFade: 'slideRightAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
         slideDownAndFade: 'slideDownAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
         slideLeftAndFade: 'slideLeftAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+        snakeBorderTop: 'snakeBorderTop 2s linear infinite',
+        snakeBorderLeft: 'snakeBorderLeft 2s linear infinite',
+        snakeBorderBottom: 'snakeBorderBottom 2s linear infinite',
+        snakeBorderRight: 'snakeBorderRight 2s linear infinite',
       },
     },
   },
