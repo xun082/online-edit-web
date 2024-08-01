@@ -60,7 +60,7 @@ export default function DashboardPage() {
                     导入Git项目
                   </div>
                   <span className="font-[600] text-[12px]">|</span>
-                  <div className="cursor-pointer text-[14px] p-3 flex items-center justify-center rounded-md font-[500] w-[7vw] h-[3.2vh] hover:bg-white/20 hover:text-white">
+                  <div className="cursor-pointer text-[14px] p-3 flex items-center justify-center rounded-md font-[500] w-[8vw] h-[3.2vh] hover:bg-white/20 hover:text-white">
                     选择更多模板
                   </div>
                 </div>
