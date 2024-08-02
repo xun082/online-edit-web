@@ -19,7 +19,7 @@ import { TabBar } from '@/components/edit/tabbar';
 import LoadingComponent from '@/components/edit/edit-loading';
 import { useWebContainerStore } from '@/store/webContainerStore';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
-import { writeFile } from '@/utils';
+import { cn, writeFile } from '@/utils';
 
 interface CodeEditorProps {
   editorId: number;
@@ -30,7 +30,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { updateItem } = useUploadFileDataStore();
   const { getEditor, setEditor } = useEditorStore();
   const { setMonaco } = useMonacoStore();
-  const { setModels } = useModelsStore();
+  const { setModels, models } = useModelsStore();
   const { activeMap, setActiveModel } = useActiveModelStore();
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
   const thisEditor = getEditor(editorId);
@@ -98,6 +98,11 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
         editor.setModel(newModel.model?.model as editor.ITextModel);
       }
 
+      if (models.length === 0) {
+        const defaultModel = monaco.editor.createModel('', 'typescript');
+        editor.setModel(defaultModel);
+      }
+
       monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
         noSemanticValidation: false,
         noSyntaxValidation: false,
@@ -117,25 +122,30 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   };
 
   return (
-    (thisEditor === null || currentModel?.model) && (
-      <div ref={setNodeRef} className=" w-full h-full flex flex-col border-[1px]" style={style}>
-        <div className=" h-[3.5vh] w-full bg-[#202327]/80">
-          <TabBar editorId={editorId} />
-        </div>
-        <Editor
-          className={'editor'}
-          theme={'vitesse-dark'}
-          options={{
-            minimap: { enabled: true },
-            fontSize: 16,
-            wordWrap: 'on', // 是否换行
-            automaticLayout: true,
-          }}
-          loading={<LoadingComponent></LoadingComponent>}
-          onChange={handleEditorChange}
-          onMount={handleEditorDidMount}
-        />
+    <div
+      ref={setNodeRef}
+      className={cn(
+        ' w-full h-full flex-col border-[1px] hidden',
+        (thisEditor === null || currentModel?.model) && ' flex',
+      )}
+      style={style}
+    >
+      <div className=" h-[3.5vh] w-full bg-[#202327]/80">
+        <TabBar editorId={editorId} />
       </div>
-    )
+      <Editor
+        className={'editor'}
+        theme={'vitesse-dark'}
+        options={{
+          minimap: { enabled: true },
+          fontSize: 16,
+          wordWrap: 'on', // 是否换行
+          automaticLayout: true,
+        }}
+        loading={<LoadingComponent></LoadingComponent>}
+        onChange={handleEditorChange}
+        onMount={handleEditorDidMount}
+      />
+    </div>
   );
 }
