@@ -85,8 +85,6 @@ export const CreateProjectModal = () => {
       router.push(`edit/${projectId}/file`);
     } catch (error) {
       console.error('Failed to create project:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
