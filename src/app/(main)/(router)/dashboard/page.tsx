@@ -82,14 +82,16 @@ export default function DashboardPage() {
                 使用模板快速开始
               </p>
               <div className="flex items-center justify-center mt-4 w-full gap-x-4 px-2">
-                {Object.keys(templateList).map((item) => (
-                  <TemplateCard
-                    key={item}
-                    fileData={templateList[item].template}
-                    title={item}
-                    icon={templateList[item].icon}
-                  />
-                ))}
+                {Object.keys(templateList)
+                  .slice(0, 3)
+                  .map((item) => (
+                    <TemplateCard
+                      key={item}
+                      fileData={templateList[item].template}
+                      title={item}
+                      icon={templateList[item].icon}
+                    />
+                  ))}
               </div>
             </div>
             <p className="text-[#737780] text-[14px]">阅读文档了解如何使用</p>
@@ -119,8 +121,6 @@ const TemplateCard: React.FC<{ title: string; fileData: string; icon: string }> 
   const { setFileData } = useUploadFileDataStore();
 
   const quickStartProject = () => {
-    alert('32131');
-
     try {
       const projectId = uuidv4();
       const preUploadFileData =
