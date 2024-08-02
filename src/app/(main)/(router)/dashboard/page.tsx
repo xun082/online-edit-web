@@ -2,10 +2,20 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
-import { TemplateCardData, LinkCardData, UPLOAD_FILE_DATA, isoDateStringFormat } from '@/utils';
+import {
+  templateList,
+  LinkCardData,
+  UPLOAD_FILE_DATA,
+  isoDateStringFormat,
+  DirectoryInterface,
+} from '@/utils';
+import { useModal } from '@/hooks/useModal';
+import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
 
 export default function DashboardPage() {
+  const { onOpen } = useModal();
   const [showProjectList, setShowProjectList] = useState(false);
   const [projectList, setProjectList] = useState([]);
   useEffect(() => {
@@ -60,7 +70,10 @@ export default function DashboardPage() {
                     导入Git项目
                   </div>
                   <span className="font-[600] text-[12px]">|</span>
-                  <div className="cursor-pointer text-[14px] p-3 flex items-center justify-center rounded-md font-[500] w-[8vw] h-[3.2vh] hover:bg-white/20 hover:text-white">
+                  <div
+                    onClick={() => onOpen('createProject')}
+                    className="cursor-pointer text-[14px] p-3 flex items-center justify-center rounded-md font-[500] w-[8vw] h-[3.2vh] hover:bg-white/20 hover:text-white"
+                  >
                     选择更多模板
                   </div>
                 </div>
@@ -69,8 +82,13 @@ export default function DashboardPage() {
                 使用模板快速开始
               </p>
               <div className="flex items-center justify-center mt-4 w-full gap-x-4 px-2">
-                {TemplateCardData.map((item) => (
-                  <TemplateCard key={item.title} title={item.title} icon={item.icon} />
+                {Object.keys(templateList).map((item) => (
+                  <TemplateCard
+                    key={item}
+                    fileData={templateList[item].template}
+                    title={item}
+                    icon={templateList[item].icon}
+                  />
                 ))}
               </div>
             </div>
@@ -92,29 +110,75 @@ export default function DashboardPage() {
   );
 }
 
-const TemplateCard: React.FC<{ title: string; icon: string }> = ({ title, icon }) => (
-  <div
-    key={title}
-    className="group relative h-[20vh] py-[16px] px-[16px] duration-200 transition-all rounded-[8px] hover:rounded-[16px] hover:bg-black/50 bg-black/40 overflow-hidden flex flex-col w-1/3 cursor-pointer"
-  >
-    <div className="flex items-center h-[28px]">
-      <div className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center">
-        <img className="rounded-[6px]" width="28" height="28" src={icon} alt={title} />
+const TemplateCard: React.FC<{ title: string; fileData: string; icon: string }> = ({
+  title,
+  icon,
+  fileData,
+}) => {
+  const router = useRouter();
+  const { setFileData } = useUploadFileDataStore();
+
+  const quickStartProject = () => {
+    alert('32131');
+
+    try {
+      const projectId = uuidv4();
+      const preUploadFileData =
+        localStorage.getItem(UPLOAD_FILE_DATA) !== null
+          ? JSON.parse(localStorage.getItem(UPLOAD_FILE_DATA) as string)
+          : [];
+      preUploadFileData.push({
+        name: `${title}-${projectId}`,
+        desc: `一个快速开始的${title}项目`,
+        id: projectId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+      localStorage.setItem(UPLOAD_FILE_DATA, JSON.stringify(preUploadFileData));
+
+      const projectInfo = {
+        projectFileData: fileData,
+        name: `${title}-${projectId}`,
+        desc: `一个快速开始的${title}项目`,
+        id: projectId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      localStorage.setItem(projectId, JSON.stringify(projectInfo));
+      setFileData(fileData as unknown as DirectoryInterface[]);
+      router.push(`edit/${projectId}/file`);
+    } catch (error) {
+      console.error('Failed to create project:', error);
+    }
+  };
+
+  return (
+    <div
+      key={title}
+      className="group relative h-[20vh] py-[16px] px-[16px] duration-200 transition-all rounded-[8px] hover:rounded-[16px] hover:bg-black/50 bg-black/40 overflow-hidden flex flex-col w-1/3 cursor-pointer"
+    >
+      <div className="flex items-center h-[28px]">
+        <div className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center">
+          <img className="rounded-[6px]" width="28" height="28" src={icon} alt={title} />
+        </div>
+        <div className="font-[600] text-[16px] my-[12px] flex-1 leading-[20px] h-[20px] ml-[12px]">
+          {title}
+        </div>
       </div>
-      <div className="font-[600] text-[16px] my-[12px] flex-1 leading-[20px] h-[20px] ml-[12px]">
-        {title}
+      <div className="text-[12px] overflow-hidden flex-1 text-ellipsis mt-[16px] text-[var(--text-default)]">
+        快速开始 {title} 开发
+      </div>
+      <div className="mt-[16px]">
+        <div
+          onClick={() => quickStartProject()}
+          className="bg-tr-1 bg-white/5 text-[14px] group-hover:bg-white/15 w-full font-[600] rounded-[4px] py-[5px] px-[16px] text-center"
+        >
+          体验
+        </div>
       </div>
     </div>
-    <div className="text-[12px] overflow-hidden flex-1 text-ellipsis mt-[16px] text-[var(--text-default)]">
-      快速开始 {title} 开发
-    </div>
-    <div className="mt-[16px]">
-      <div className="bg-tr-1 bg-white/5 text-[14px] group-hover:bg-white/15 w-full font-[600] rounded-[4px] py-[5px] px-[16px] text-center">
-        体验
-      </div>
-    </div>
-  </div>
-);
+  );
+};
 
 const LinkCard: React.FC<{ linkText: string; linkUrl: string; linkDesc: string }> = ({
   linkText,
