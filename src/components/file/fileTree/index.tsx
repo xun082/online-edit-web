@@ -29,6 +29,7 @@ export const TreeItem = ({ elements }: TreeItemProps) => {
         <li key={`${element.id}+${element.filename}`} className="w-full space-y-2">
           {element.status === 'pending' ? (
             <PendingFileItem
+              filename={element.filename}
               path={(element as any).path}
               kind={(element as any).kind}
               id={element.id}

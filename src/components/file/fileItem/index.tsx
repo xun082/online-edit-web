@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { editor } from 'monaco-editor';
 import { useDraggable } from '@dnd-kit/core';
 import { TiDocumentDelete } from 'react-icons/ti';
+import { CiEdit } from 'react-icons/ci';
 
 import {
   useActiveEditorStore,
@@ -60,7 +61,7 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
   }
   //used for fileTree
 
-  const { removeFileById } = useUploadFileDataStore();
+  const { removeFileById, updateItem } = useUploadFileDataStore();
 
   function handleFileItemMouseUp() {
     clickClient.current = {
@@ -131,30 +132,42 @@ export const FileItem: React.FC<FileItemProps> = ({ file, onMouseupFn }: FileIte
           {file.filename}
         </span>
       </div>
-      <TiDocumentDelete
-        onMouseUp={(e) => {
-          e.stopPropagation();
-          removeFileById(file.id);
-          webContainerInstance && rm(file.path, webContainerInstance);
-          editors.forEach((editor, editorId) => {
-            const newModels = removeModel(file.id, editorId);
+      <div className=" flex gap-x-1">
+        <TiDocumentDelete
+          onMouseUp={(e) => {
+            e.stopPropagation();
+            removeFileById(file.id);
+            webContainerInstance && rm(file.path, webContainerInstance);
+            editors.forEach((editor, editorId) => {
+              const newModels = removeModel(file.id, editorId);
 
-            if (newModels && newModels.filename) {
-              setActiveModel(newModels.id, newModels.model, editorId);
-              editor && editor.setModel(newModels.model);
-            } else {
-              removeAllModel(editorId);
-              editor && editor.setModel(null);
+              if (newModels && newModels.filename) {
+                setActiveModel(newModels.id, newModels.model, editorId);
+                editor && editor.setModel(newModels.model);
+              } else {
+                removeAllModel(editorId);
+                editor && editor.setModel(null);
 
-              if (keepedEditorCount > 1) {
-                removeEditor(editorId);
-                removeSplit(editorId);
+                if (keepedEditorCount > 1) {
+                  removeEditor(editorId);
+                  removeSplit(editorId);
+                }
               }
-            }
-          });
-        }}
-        className=" w-[15px] pr-[-4px] h-[15px] text-white/70 hover:text-white hidden group-hover:block"
-      />
+            });
+          }}
+          className=" w-[15px] h-[15px] text-white/70 hover:text-white hidden group-hover:block"
+        />
+        <CiEdit
+          onMouseUp={(e) => {
+            e.stopPropagation();
+            updateItem(file.id, {
+              ...file,
+              status: 'pending',
+            });
+          }}
+          className=" w-[15px] pr-[-4px] h-[15px] text-white/70 hover:text-white hidden group-hover:block"
+        />
+      </div>
     </div>
   );
 };
