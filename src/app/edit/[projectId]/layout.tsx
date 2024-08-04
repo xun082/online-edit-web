@@ -48,7 +48,7 @@ const renderSplitCodeEditor = (splitState: boolean[]): JSX.Element[] => {
 const Page: React.FC<{ children: React.ReactNode; params: any }> = ({ children, params }) => {
   const terminalRef = useRef<any>(null);
   const pathname = usePathname();
-  const { splitState, removeSplit } = useSplitStore();
+  const { splitState, removeSplit, addSplit } = useSplitStore();
 
   const controls = useAnimation();
 
@@ -76,6 +76,8 @@ const Page: React.FC<{ children: React.ReactNode; params: any }> = ({ children, 
       clearActiveModel(2);
       removeSplit(1);
       removeSplit(2);
+      removeSplit(0);
+      addSplit();
       clearFileData(true, params.projectId);
     };
   }, [params.projectId, initFileData]);

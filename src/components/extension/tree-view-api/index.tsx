@@ -12,6 +12,7 @@ import React, {
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { FolderIcon, FolderOpenIcon } from 'lucide-react';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { CiEdit } from 'react-icons/ci';
 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -231,7 +232,7 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
       closeIcon,
     } = useTree();
     const { webContainerInstance } = useWebContainerStore();
-    const { removeFileById } = useUploadFileDataStore();
+    const { removeFileById, updateItem } = useUploadFileDataStore();
     const Ele = empty ? 'div' : AccordionPrimitive.Item;
     const Trigger = empty ? 'div' : AccordionPrimitive.Trigger;
     const Content = empty ? 'div' : AccordionPrimitive.Content;
@@ -261,14 +262,25 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
               : (closeIcon ?? <FolderIcon className="h-3 w-3" />)}
             <span>{element}</span>
           </div>
-          <RiDeleteBin6Line
-            onMouseUp={(e) => {
-              e.stopPropagation();
-              removeFileById(value);
-              webContainerInstance && rm(path, webContainerInstance);
-            }}
-            className=" pr-2 w-5 h-5 text-white/70 hover:text-white hidden group-hover:block"
-          />
+          <div className=" flex gap-x-1 items-center mr-1">
+            <RiDeleteBin6Line
+              onMouseUp={(e) => {
+                e.stopPropagation();
+                removeFileById(value);
+                webContainerInstance && rm(path, webContainerInstance);
+              }}
+              className=" w-[13px] h-[13px] text-white/70 hover:text-white hidden group-hover:block"
+            />
+            <CiEdit
+              onClick={(e) => {
+                e.stopPropagation();
+                updateItem(value, {
+                  status: 'pending',
+                });
+              }}
+              className=" w-[15px] h-[15px] text-white/70 hover:text-white hidden group-hover:block"
+            />
+          </div>
         </Trigger>
         <Content className="text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down relative overflow-hidden h-full">
           {element && indicator && <TreeIndicator aria-hidden="true" />}
