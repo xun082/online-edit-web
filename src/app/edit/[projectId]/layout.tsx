@@ -11,7 +11,6 @@ import { editor } from 'monaco-editor';
 import { motion, useAnimation } from 'framer-motion';
 
 import ResizeHandle from '@/components/resize-handle';
-import { PATHS } from '@/utils';
 import { Preview } from '@/components/preview';
 import { Header } from '@/components/edit/header';
 import CodeEditor from '@/components/editor';
@@ -142,20 +141,35 @@ const Page: React.FC<{ children: React.ReactNode; params: any }> = ({ children, 
         {/* 侧边栏 */}
         <div className="bg-[#2e3138] text-gray-400 w-[2.9vw] flex flex-col justify-between items-center py-4">
           <div className="flex flex-col items-center space-y-6">
-            <Link href={PATHS.EDIT_FILE}>
-              <FaFileAlt size="18" className={pathname === PATHS.EDIT_FILE ? 'text-white' : ''} />
+            <Link href={`/edit/${params.projectId}/file`}>
+              <FaFileAlt
+                size="18"
+                className={pathname === `/edit/${params.projectId}/file` ? 'text-white' : ''}
+              />
             </Link>
-            <Link href={PATHS.EDIT_SEARCH}>
-              <FaSearch size="18" className={pathname === PATHS.EDIT_SEARCH ? 'text-white' : ''} />
+            <Link href={`/edit/${params.projectId}/search`}>
+              <FaSearch
+                size="18"
+                className={pathname === `/edit/${params.projectId}/search` ? 'text-white' : ''}
+              />
             </Link>
-            <Link href={PATHS.EDIT_PLUGINS}>
-              <FaPlug size="18" className={pathname === PATHS.EDIT_PLUGINS ? 'text-white' : ''} />
+            <Link href={`/edit/${params.projectId}/plugins`}>
+              <FaPlug
+                size="18"
+                className={pathname === `/edit/${params.projectId}/plugins` ? 'text-white' : ''}
+              />
             </Link>
-            <Link href={PATHS.EDIT_SETTINGS}>
-              <FaCog size="18" className={pathname === PATHS.EDIT_SETTINGS ? 'text-white' : ''} />
+            <Link href={`/edit/${params.projectId}/settings`}>
+              <FaCog
+                size="18"
+                className={pathname === `/edit/${params.projectId}/settings` ? 'text-white' : ''}
+              />
             </Link>
-            <Link href={PATHS.AI}>
-              <PiOpenAiLogo size="18" className={pathname === PATHS.AI ? 'text-white' : ''} />
+            <Link href={`/edit/${params.projectId}/ai`}>
+              <PiOpenAiLogo
+                size="18"
+                className={pathname === `/edit/${params.projectId}/ai` ? 'text-white' : ''}
+              />
             </Link>
           </div>
           <div className="flex flex-col items-center space-y-4">
