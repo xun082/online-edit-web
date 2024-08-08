@@ -75,7 +75,7 @@ export const Preview: FC = memo(function Preview() {
             style={{ backgroundColor: '#202327' }}
             width="100%"
             height="100%"
-            src={url}
+            src={iframeUrl}
             key={id}
           ></iframe>
         ) : (

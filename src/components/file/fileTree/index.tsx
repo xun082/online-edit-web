@@ -1,5 +1,7 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { Tree, TreeViewElement, File, Folder } from '@/components/extension/tree-view-api';
 import { PendingFileItem } from '@/components/file/pendingFileItem';
 import { FileItem } from '@/components/file/fileItem';
@@ -8,10 +10,38 @@ type TOCProps = {
   toc: TreeViewElement[];
 };
 
+function sortToc(toc: TreeViewElement[]): TreeViewElement[] {
+  const tempToc = [...toc];
+
+  tempToc
+    .filter((element) => element.kind === 'directory' && element.children?.length)
+    .map((element) => sortToc(element.children || []));
+
+  return tempToc.sort((a, b) => {
+    if (a.kind === 'directory' && b.kind === 'file') {
+      return -1;
+    }
+
+    if (a.kind === 'file' && b.kind === 'directory') {
+      return 1;
+    }
+
+    if (a.filename < b.filename) {
+      return -1;
+    }
+
+    return 0;
+  });
+}
+
 const TOC = ({ toc }: TOCProps) => {
+  const sortedToc = useMemo(() => {
+    return sortToc(toc);
+  }, [toc]);
+
   return (
     <Tree className="w-full h-full bg-transparent p-2 rounded-md" indicator={true}>
-      {toc.map((element) => (
+      {sortedToc.map((element) => (
         <TreeItem key={element.id} elements={[element]} />
       ))}
     </Tree>
