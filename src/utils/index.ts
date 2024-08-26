@@ -9,3 +9,5 @@ export * from './fileIconMap';
 export * from './time';
 export * from './zip';
 export * from './template';
+export * from './match';
+export * from './matchHelper';
