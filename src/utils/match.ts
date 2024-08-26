@@ -363,17 +363,20 @@ function searchLines(
           matches.forEach((match) => {
             if (match) {
               const matchIndex = match.index;
-              const before = line.substring(0, matchIndex);
-              const matchStr = match[0];
-              const after = line.substring(matchIndex + matchStr.length);
-              matchesInFile.push({
-                line: index + 1,
-                content: line,
-                match: matchStr,
-                before,
-                after,
-                rawFileObj: element,
-              });
+
+              if (matchIndex) {
+                const before = line.substring(0, matchIndex);
+                const matchStr = match[0];
+                const after = line.substring(matchIndex + matchStr.length);
+                matchesInFile.push({
+                  line: index + 1,
+                  content: line,
+                  match: matchStr,
+                  before,
+                  after,
+                  rawFileObj: element,
+                });
+              }
             }
           });
         }

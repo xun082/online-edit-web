@@ -1,3 +1,5 @@
+'use client';
+
 import { ChangeEvent, FC, ReactNode, useEffect, useRef } from 'react';
 
 import { cn } from '@/utils';
