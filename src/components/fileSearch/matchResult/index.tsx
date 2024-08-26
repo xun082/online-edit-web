@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, useEffect, useState, MouseEventHandler } from 'react';
 import { editor } from 'monaco-editor';
 // import { v4 as uuidv4 } from 'uuid';

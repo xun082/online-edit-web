@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, MouseEventHandler, ReactNode, useMemo } from 'react';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';

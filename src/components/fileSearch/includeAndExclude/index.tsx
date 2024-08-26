@@ -1,3 +1,5 @@
+'use client';
+
 import { ChangeEvent, FC } from 'react';
 import { VscBook, VscEllipsis, VscExclude } from 'react-icons/vsc';
 

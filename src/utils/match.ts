@@ -291,26 +291,37 @@ function searchLines(
 ): MatchDetail[] {
   const matchesInFile: MatchDetail[] = [];
 
-  lines.forEach((line, index) => {
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
     let searchLine = line;
     let searchKey = key;
 
     if (isRegex) {
-      const regex = new RegExp(searchKey, isCaseSensitive ? 'g' : 'gi');
-      let match = regex.exec(searchLine);
+      try {
+        const escapedKey = escapeRegExp(searchKey);
+        const regex = new RegExp(escapedKey, isCaseSensitive ? 'g' : 'gi');
+        let match = regex.exec(searchLine);
 
-      while (match !== null) {
-        const [found] = match;
-        const { before, after } = getBeforeAfter(line, found);
-        matchesInFile.push({
-          line: index + 1,
-          content: line,
-          match: found,
-          before,
-          after,
-          rawFileObj: element,
-        });
-        match = regex.exec(searchLine);
+        while (match !== null) {
+          const [found] = match;
+          const { before, after } = getBeforeAfter(line, found);
+          matchesInFile.push({
+            line: index + 1,
+            content: line,
+            match: found,
+            before,
+            after,
+            rawFileObj: element,
+          });
+          match = regex.exec(searchLine);
+        }
+      } catch (e) {
+        if (e instanceof SyntaxError) {
+          console.error(`Invalid regex: ${searchKey}`);
+          continue;
+        } else {
+          throw e;
+        }
       }
     } else {
       const words = isWholeWord ? searchLine.split(/\s+/) : [searchLine];
@@ -332,27 +343,47 @@ function searchLines(
             });
           }
         } else {
-          const regex = new RegExp(`(${searchKey})`, `${!isCaseSensitive ? 'i' : ''}g`);
-          const matches = [...line.matchAll(regex)];
+          const escapedKey = escapeRegExp(searchKey);
+          let regex;
 
+          try {
+            //防止字符串输入不规范导致正则创建失败报错
+            regex = new RegExp(`(${escapedKey})`, `${!isCaseSensitive ? 'i' : ''}g`);
+          } catch (e) {
+            if (e instanceof SyntaxError) {
+              console.error(`Invalid regex: ${searchKey}`);
+
+              return [];
+            } else {
+              throw e;
+            }
+          }
+
+          const matches = regex ? [...line.matchAll(regex)] : [];
           matches.forEach((match) => {
-            const matchIndex = match.index;
-            const before = line.substring(0, matchIndex);
-            const matchStr = match[0];
-            const after = line.substring(matchIndex + matchStr.length);
-            matchesInFile.push({
-              line: index + 1,
-              content: line,
-              match: matchStr,
-              before,
-              after,
-              rawFileObj: element,
-            });
+            if (match) {
+              const matchIndex = match.index;
+              const before = line.substring(0, matchIndex);
+              const matchStr = match[0];
+              const after = line.substring(matchIndex + matchStr.length);
+              matchesInFile.push({
+                line: index + 1,
+                content: line,
+                match: matchStr,
+                before,
+                after,
+                rawFileObj: element,
+              });
+            }
           });
         }
       });
     }
-  });
+  }
 
   return matchesInFile;
+}
+
+function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& 表示整个被匹配的字符串
 }

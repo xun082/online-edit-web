@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, useEffect, useState } from 'react';
 import { VscChevronDown } from 'react-icons/vsc';
 import { editor } from 'monaco-editor';

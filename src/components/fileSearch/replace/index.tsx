@@ -1,3 +1,5 @@
+'use client';
+
 import { ChangeEvent, FC } from 'react';
 import { VscPreserveCase, VscReplaceAll } from 'react-icons/vsc';
 import * as monaco from 'monaco-editor';

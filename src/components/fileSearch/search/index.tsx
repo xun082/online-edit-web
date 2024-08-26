@@ -1,3 +1,5 @@
+'use client';
+
 import { ChangeEvent, FC } from 'react';
 import { VscCaseSensitive, VscRegex, VscWholeWord } from 'react-icons/vsc';
 
