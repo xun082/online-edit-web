@@ -15,7 +15,9 @@ function sortToc(toc: TreeViewElement[]): TreeViewElement[] {
 
   tempToc
     .filter((element) => element.kind === 'directory' && element.children?.length)
-    .map((element) => sortToc(element.children || []));
+    .forEach((element) => {
+      element.children = sortToc(element.children || []);
+    });
 
   return tempToc.sort((a, b) => {
     if (a.kind === 'directory' && b.kind === 'file') {
