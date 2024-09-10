@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { WebContainer } from '@webcontainer/api';
+import localforage from 'localforage';
 
 import { curDirectory, writeDirByLocal } from '@/utils';
 
@@ -23,13 +24,13 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
   url: '',
   async initWebContainer(projectId = '') {
     const { webContainerInstance, isInitialized } = get();
-    const projectInfo = localStorage.getItem(projectId);
+    const projectInfo = await localforage.getItem(projectId);
 
     if (!isInitialized && !webContainerInstance) {
       const newWebContainerInstance = await WebContainer.boot();
 
       if (projectInfo) {
-        const { projectFileData } = JSON.parse(projectInfo);
+        const { projectFileData } = JSON.parse(projectInfo as string);
         // console.log(projectFileData);
         await writeDirByLocal(projectFileData, newWebContainerInstance);
       }
@@ -46,7 +47,7 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
       set({ webContainerInstance: newWebContainerInstance, isInitialized: true });
     } else {
       if (projectInfo) {
-        const { projectFileData } = JSON.parse(projectInfo);
+        const { projectFileData } = JSON.parse(projectInfo as any);
         await writeDirByLocal(projectFileData, webContainerInstance as WebContainer);
       }
 

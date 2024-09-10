@@ -44,6 +44,7 @@
     "cmdk": "^1.0.0",
     "framer-motion": "10.17.9",
     "jszip": "^3.10.1",
+    "localforage": "^1.10.0",
     "lucide-react": "^0.403.0",
     "minimatch": "^10.0.1",
     "monaco-editor": "^0.50.0",
