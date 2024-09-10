@@ -3,6 +3,7 @@
 import { FC } from 'react';
 import { PiWarningCircleBold } from 'react-icons/pi';
 import { VscPreview } from 'react-icons/vsc';
+import { editor } from 'monaco-editor';
 
 import { useEditorStore } from '@/store/editorStore';
 import {
@@ -86,7 +87,7 @@ const ThemeSelector: FC = () => {
       defaultValue={localStorage.getItem('localTheme') || 'dark-plus'}
       onValueChange={(value) => {
         localStorage.setItem('localTheme', value);
-        editor?.updateOptions({ theme: value });
+        (editor as editor.IStandaloneCodeEditor)?.updateOptions({ theme: value });
       }}
     >
       <SelectTrigger className="w-[180px]">
