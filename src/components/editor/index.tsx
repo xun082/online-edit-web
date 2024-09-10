@@ -19,11 +19,12 @@ import { TabBar } from '@/components/edit/tabbar';
 import LoadingComponent from '@/components/edit/edit-loading';
 import { useWebContainerStore } from '@/store/webContainerStore';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
-import { cn, writeFile } from '@/utils';
+import { cn, writeFile, MONACO_THEME_ARRAY } from '@/utils';
 
 interface CodeEditorProps {
   editorId: number;
 }
+export type EditorWithThemeService = monaco.editor.IStandaloneCodeEditor & { _themeService: any };
 
 export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { webContainerInstance } = useWebContainerStore();
@@ -72,7 +73,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
       setMonaco(editorId, monaco);
 
       const highlighter = await createHighlighter({
-        themes: ['vitesse-dark', 'vitesse-light'],
+        themes: MONACO_THEME_ARRAY,
         langs: ['javascript', 'typescript', 'vue', 'jsx'],
       });
 
@@ -84,6 +85,17 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
       // Register the themes from Shiki, and provide syntax highlighting for Monaco.
       shikiToMonaco(highlighter, monaco);
+
+      const localTheme = localStorage.getItem('localTheme');
+
+      if (localTheme && MONACO_THEME_ARRAY.includes(localTheme)) {
+        editor?.updateOptions({ theme: localTheme });
+      }
+
+      localStorage.setItem(
+        'localTheme',
+        (editor as EditorWithThemeService)._themeService._theme.themeName,
+      );
 
       if (editorId !== 0) {
         const newModel = activeEditorId < 1 ? activeMap[0] : activeMap[1];
@@ -135,7 +147,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
       </div>
       <Editor
         className={'editor'}
-        theme={'vitesse-dark'}
+        theme="dark-plus"
         options={{
           minimap: { enabled: true },
           fontSize: 16,

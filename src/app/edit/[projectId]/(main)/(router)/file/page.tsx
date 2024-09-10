@@ -22,7 +22,6 @@ const PortsPage: React.FC = () => {
   const handleDownload = async () => {
     const file: any = fileData;
     const zip = new Zip();
-    console.log(file[0]);
     zip.addDirectory(file[0]);
 
     const url = await zip.downloadZip();

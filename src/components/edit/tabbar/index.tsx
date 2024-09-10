@@ -89,7 +89,7 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd} onDragStart={() => console.log('drag start')}>
+    <DndContext onDragEnd={handleDragEnd}>
       <div className="flex items-center w-full h-full justify-start bg-transparent z-[999] font-[300] text-[12px]">
         <ScrollArea className="w-[80%] h-full scrollbar-thin scrollbar-thumb-red">
           <div className="w-full h-[3.5vh] flex">

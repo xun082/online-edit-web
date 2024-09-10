@@ -153,14 +153,14 @@ export const useUploadFileDataStore = create<FileDataState & FileDataActions>((s
   fileData: null,
   selected: '',
   initFileData: (projectId: string) => {
-    console.log(projectId);
+    // console.log(projectId);
 
     const storedData = localStorage.getItem(projectId);
 
     if (storedData) {
       const { projectFileData } = JSON.parse(storedData);
-      console.log(storedData);
-      console.log(projectFileData);
+      // console.log(storedData);
+      // console.log(projectFileData);
       set({ fileData: projectFileData });
 
       return projectFileData;
@@ -172,7 +172,7 @@ export const useUploadFileDataStore = create<FileDataState & FileDataActions>((s
   clearFileData: (resist = false, projectId = '') => {
     if (resist) {
       const storedData = JSON.parse(localStorage.getItem(projectId) ?? '') ?? '';
-      console.log(storedData);
+      // console.log(storedData);
 
       if (storedData !== '') {
         const newData = {
