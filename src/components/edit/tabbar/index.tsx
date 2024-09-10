@@ -36,6 +36,7 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
 
   const editor = getEditor(editorId);
+
   const activeModelId = activeMap[editorId]?.modelId ?? 0;
 
   const keepedEditorCount = splitState.filter((item) => item).length;
@@ -124,7 +125,7 @@ export const TabBar: React.FC<TabBarProps> = ({ editorId }) => {
                   <span
                     className="w-full h-full"
                     onClick={() => {
-                      editor && editor.setModel(null);
+                      editor && (editor as editor.IStandaloneCodeEditor).setModel(null);
 
                       removeAllModel(editorId);
 

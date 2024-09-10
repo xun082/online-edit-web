@@ -4,7 +4,9 @@ import monacoForTypes, { editor } from 'monaco-editor';
 interface EditorAction {
   setEditor: (index: number, editor: editor.IStandaloneCodeEditor) => void;
   removeEditor: (index: number) => void;
-  getEditor: (index: number) => editor.IStandaloneCodeEditor | null;
+  getEditor: (
+    index: number | null,
+  ) => editor.IStandaloneCodeEditor | (editor.IStandaloneCodeEditor | null)[] | null;
 }
 
 interface EditorState {
@@ -25,8 +27,8 @@ export const useEditorStore = create<EditorState & EditorAction>((set, get) => (
     });
   },
 
-  getEditor: (index: number) => {
-    if (!index) return get().editors[index];
+  getEditor: (index: number | null) => {
+    if (index === null) return get().editors;
 
     return get().editors[index] || null;
   },
@@ -229,7 +231,7 @@ interface splitAction {
 }
 
 export const useSplitStore = create<splitState & splitAction>((set) => ({
-  splitState: [true, false, false],
+  splitState: [false, false, false],
 
   addSplit: () => {
     set((state) => {
