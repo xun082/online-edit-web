@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { VscLiveShare } from 'react-icons/vsc';
 import { FaRegSave } from 'react-icons/fa';
 import { GoRepoForked } from 'react-icons/go';
+import localforage from 'localforage';
 
 import { Avatar } from '@/components/common/Avatar';
 import { Button } from '@/components/ui/button';
@@ -20,13 +21,16 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ projectId }) => {
   const [projectName, setProjectName] = useState('');
   useEffect(() => {
-    const projectData = localStorage.getItem(projectId)
-      ? JSON.parse(localStorage.getItem(projectId) as string)
-      : null;
+    const fetchProjectData = async () => {
+      const projectData = await localforage.getItem(projectId);
 
-    if (projectData) {
-      setProjectName(projectData.name);
-    }
+      if (projectData) {
+        const parsedData = JSON.parse(projectData as string);
+        setProjectName(parsedData.name);
+      }
+    };
+
+    fetchProjectData();
   }, []);
 
   return (
