@@ -26,6 +26,8 @@ export const useEditorStore = create<EditorState & EditorAction>((set, get) => (
   },
 
   getEditor: (index: number) => {
+    if (!index) return get().editors[index];
+
     return get().editors[index] || null;
   },
   removeEditor(index: number) {

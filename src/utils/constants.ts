@@ -23,3 +23,26 @@ export const DEFAULT_PRETTIER_CONFIG: string = `{
   "bracketSpacing": true
 }
 `;
+
+export const MONACO_THEME_ARRAY = [
+  'slack-dark',
+  'solarized-dark',
+  'vitesse-dark',
+  'rose-pine-moon',
+  'one-dark-pro',
+  'night-owl',
+  'material-theme-darker',
+  'ayu-dark',
+  'dark-plus',
+];
+export const MONACO_THEME_MAP: Record<string, string> = {
+  'Dark Plus': 'dark-plus',
+  'Ayu Dark': 'ayu-dark',
+  'Material Theme Darker': 'material-theme-darker',
+  'One Dark Pro': 'one-dark-pro',
+  'Night Owl': 'night-owl',
+  'Rose Pine Moon': 'rose-pine-moon',
+  'Vitesse Dark': 'vitesse-dark',
+  'Slack Dark': 'slack-dark',
+  'Solarized Dark': 'solarized-dark',
+};

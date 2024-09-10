@@ -30,7 +30,7 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
 
       if (projectInfo) {
         const { projectFileData } = JSON.parse(projectInfo);
-        console.log(projectFileData);
+        // console.log(projectFileData);
         await writeDirByLocal(projectFileData, newWebContainerInstance);
       }
 
@@ -39,7 +39,7 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
       }
 
       newWebContainerInstance?.on('server-ready', (port, url) => {
-        console.log('server-ready', port, url);
+        // console.log('server-ready', port, url);
         set({ url });
       });
 
@@ -55,7 +55,7 @@ export const useWebContainerStore = create<WebContainerStore>((set, get) => ({
       }
 
       webContainerInstance?.on('server-ready', (port, url) => {
-        console.log('server-ready', port, url);
+        // console.log('server-ready', port, url);
         set({ url });
       });
 
