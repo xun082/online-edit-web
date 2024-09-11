@@ -46,8 +46,6 @@ const SearchPage: FC = () => {
     setSearchResultTree,
     ClearResultAndSearchInpval,
   } = useFileSearch();
-  // console.log('viewMode', viewMode);
-  // console.log('searchResult', searchResult);
 
   const { replaceOptions } = useFileReplace();
   const { filterSearchOptions, getFilters, includeFileInpVal, excludeFileInpVal } = useFileFilter();
@@ -90,7 +88,6 @@ const SearchPage: FC = () => {
 
   const { fileData } = useUploadFileDataStore();
   let data: TreeViewElement[] = fileData as unknown as TreeViewElement[];
-  // console.log('search-page-data', data);
 
   useEffect(() => {
     refreshResult();
@@ -157,6 +154,10 @@ const SearchPage: FC = () => {
     };
   }, [searchResult, searchResultTree, viewMode]);
 
+  const isShowResult = useMemo(() => {
+    return viewMode === 'list' ? !!searchResult.length : !!searchResultTree.length;
+  }, [viewMode, searchResult, searchResultTree]);
+
   return (
     <div className="size-full flex flex-col bg-[#202327]">
       <div className="flex mt-1 items-center relative">
@@ -210,14 +211,23 @@ const SearchPage: FC = () => {
         <IncludeAndExclude />
       </div>
       <div className="mx-7 text-[12px] select-none text-gray-500">
-        {searchInpVal ? (
-          searchResult && searchResult.length ? (
-            <div>{`${resultCount.fileCount} 文件中 ${resultCount.matchCount} 个结果`}</div>
+        {data ? (
+          searchInpVal ? (
+            isShowResult ? (
+              <div>{`${resultCount.fileCount} 文件中 ${resultCount.matchCount} 个结果`}</div>
+            ) : (
+              <div>未找到结果</div>
+            )
           ) : (
-            <div>未找到结果</div>
+            ''
           )
         ) : (
-          ''
+          <div className="selected-none">
+            尚未打开或指定文件夹。当前仅搜索打开的文件 -
+            <a href="#" className="text-blue-400">
+              打开文件夹
+            </a>
+          </div>
         )}
       </div>
       <div className="flex-1">

@@ -41,6 +41,7 @@ export function matchFilesByKey(
   viewMode: ViewMode,
 ): MatchResult[] | TreeMatchResult[] {
   if (!key) return [];
+  console.log('--match--', data, key);
 
   let result: MatchResult[] | TreeMatchResult[];
 
@@ -53,6 +54,7 @@ export function matchFilesByKey(
 
   // 将文件模式转换为正则表达式
   const { includePatterns, excludePatterns } = combinePatterns(data, filters, useGitignoreFile);
+  console.log('includePatterns, excludePatterns', includePatterns, excludePatterns);
 
   //开始递归
   if (viewMode === 'tree') {
