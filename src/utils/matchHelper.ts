@@ -2,7 +2,11 @@ import * as minimatch from 'minimatch';
 
 import { TreeViewElement } from '@/components/extension/tree-view-api';
 import { modelsType } from '@/store/editorStore';
-import { FilterFiles } from '@/utils/match';
+import { FilterFiles, MatchDetail, MatchResult } from '@/utils/match';
+
+export interface RenderedListItem extends Required<MatchResult & MatchDetail> {
+  kind: TreeViewElement['kind'] | 'match';
+}
 
 /**
  * 获取字符串中匹配关键字前后的子字符串,用作高光。

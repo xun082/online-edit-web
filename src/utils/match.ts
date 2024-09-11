@@ -9,7 +9,7 @@ export type MatchDetail = {
   match: string; // 匹配的关键字
   before: string; // 关键字前的字符串
   after: string; // 关键字后的字符串
-  rawFileObj: TreeViewElement; //对应的文件对象
+  rawFileObj: TreeViewElement | null; //对应的文件对象
 };
 
 export type MatchResult = {
@@ -17,6 +17,7 @@ export type MatchResult = {
   filename: string;
   fileId: string;
   rawValue: string;
+  kind: string;
   matches: MatchDetail[]; // 包含所有匹配项的细节
 };
 
@@ -41,7 +42,6 @@ export function matchFilesByKey(
   viewMode: ViewMode,
 ): MatchResult[] | TreeMatchResult[] {
   if (!key) return [];
-  console.log('--match--', data, key);
 
   let result: MatchResult[] | TreeMatchResult[];
 
@@ -54,7 +54,6 @@ export function matchFilesByKey(
 
   // 将文件模式转换为正则表达式
   const { includePatterns, excludePatterns } = combinePatterns(data, filters, useGitignoreFile);
-  console.log('includePatterns, excludePatterns', includePatterns, excludePatterns);
 
   //开始递归
   if (viewMode === 'tree') {
@@ -152,6 +151,7 @@ function searchElements(
           fileId: element.id,
           rawValue: element.value,
           matches: matchesInFile,
+          kind: element.kind,
         });
       }
     } else if (element.kind === 'directory' && element.children) {
@@ -329,7 +329,10 @@ function searchLines(
       const words = isWholeWord ? searchLine.split(/\s+/) : [searchLine];
       words.forEach((word) => {
         if (isWholeWord) {
-          const regex = new RegExp(`\\b${searchKey}\\b`, isCaseSensitive ? '' : 'i');
+          const regex = new RegExp(
+            `(^${searchKey}\\b|\\b${searchKey}\\b)`,
+            isCaseSensitive ? '' : 'i',
+          );
           const match = regex.exec(word);
 
           if (match) {
@@ -366,7 +369,7 @@ function searchLines(
             if (match) {
               const matchIndex = match.index;
 
-              if (matchIndex) {
+              if (matchIndex && matchIndex !== -1) {
                 const before = line.substring(0, matchIndex);
                 const matchStr = match[0];
                 const after = line.substring(matchIndex + matchStr.length);
