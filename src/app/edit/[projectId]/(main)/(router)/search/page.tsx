@@ -218,9 +218,7 @@ const SearchPage: FC = () => {
             ) : (
               <div>未找到结果</div>
             )
-          ) : (
-            ''
-          )
+          ) : null
         ) : (
           <div className="selected-none">
             尚未打开或指定文件夹。当前仅搜索打开的文件 -
