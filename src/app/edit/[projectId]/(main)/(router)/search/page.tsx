@@ -117,7 +117,7 @@ const SearchPage: FC = () => {
       fileCount,
       matchCount,
     };
-  }, [searchResult]);
+  }, [searchResult, searchResultTree]);
 
   // 树结构遍历函数
   function traverseTree(nodes: TreeMatchResult[]): { fileCount: number; matchCount: number } {
