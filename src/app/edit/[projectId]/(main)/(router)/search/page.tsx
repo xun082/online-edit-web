@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useState, useEffect, useMemo } from 'react';
+import { FC, useState, useEffect, useMemo, useRef } from 'react';
 import {
   VscRefresh,
   VscClearAll,
@@ -13,6 +13,7 @@ import {
   VscListTree,
 } from 'react-icons/vsc';
 
+// import { ScrollArea } from '@/components/ui/scroll-area';
 import { TreeViewElement } from '@/components/extension/tree-view-api';
 import MatchResultComp from '@/components/fileSearch/matchResult';
 import MatchResultTree from '@/components/fileSearch/matchResultTree';
@@ -158,11 +159,13 @@ const SearchPage: FC = () => {
     return viewMode === 'list' ? !!searchResult.length : !!searchResultTree.length;
   }, [viewMode, searchResult, searchResultTree]);
 
+  const resultBlockRef = useRef<HTMLDivElement | null>(null);
+
   return (
     <div className="size-full flex flex-col bg-[#202327]">
       <div className="flex mt-1 items-center relative">
         <div className="text-[11px] select-none ml-5 truncate">搜索</div>
-        <div className="flex items-center pt-2 ml-auto mr-2 mb-4 gap-x-2 ">
+        <div className="flex items-center pt-2 ml-auto mr-2 mb-4 gap-x-2">
           <ToolBtn tip="刷新" disable={buttonDisabled.refreshBtnDis} onClick={refreshResult}>
             <VscRefresh />
           </ToolBtn>
@@ -228,7 +231,7 @@ const SearchPage: FC = () => {
           </div>
         )}
       </div>
-      <div className="flex-1">
+      <div id="result-block" className="flex-1" ref={resultBlockRef}>
         {viewMode === 'list' ? (
           <MatchResultComp expandAll={matchResultExpand} />
         ) : viewMode === 'tree' ? (

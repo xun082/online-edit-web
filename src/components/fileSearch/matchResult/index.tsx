@@ -1,10 +1,11 @@
 'use client';
 
-import { FC, useEffect, useState, MouseEventHandler } from 'react';
+import { FC, useEffect, useState, MouseEventHandler, useCallback, useMemo, useRef } from 'react';
 import { editor } from 'monaco-editor';
-// import { v4 as uuidv4 } from 'uuid';
+import { VscChevronDown, VscChevronRight } from 'react-icons/vsc';
+import { FixedSizeList, ListChildComponentProps } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
-import { MatchResult } from '@/utils/match';
 import {
   useActiveEditorStore,
   useActiveModelStore,
@@ -14,29 +15,26 @@ import {
   useSplitStore,
 } from '@/store/editorStore';
 import { useFileSearch } from '@/store/fileSearchStore';
-import { cn, getFileLanguage, getFileSpecificIcon, addNewModel } from '@/utils';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+import { cn, getFileLanguage, getFileSpecificIcon, addNewModel, RenderedListItem } from '@/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-// import { ScrollArea } from '@/components/ui/scroll-area';
 
 type ClickEventHandler = MouseEventHandler<HTMLDivElement>;
+interface AutoSizerProps {
+  height: number;
+  width: number;
+}
 
 const MatchResultItem: FC<{
-  data: MatchResult;
+  data: RenderedListItem;
   value: string;
   className?: string;
+  expanded?: boolean;
   onClick?: ClickEventHandler;
-}> = ({ data, value, className, onClick }) => {
+}> = ({ data, className, onClick, expanded }) => {
   const tipContentClasses = `bg-gray-700 text-while py-1 px-2 border-gray-500 border-[1px]`;
 
-  const { filename, filepath, matches, fileId, rawValue } = data;
-
-  const [open, setOpen] = useState<boolean>(false); //expand
+  const { filename, filepath, matches, fileId, rawValue, kind, before, after, match, content } =
+    data;
 
   const { models, setModels } = useModelsStore();
   const { activeEditor, activeEditorId } = useActiveEditorStore();
@@ -56,20 +54,20 @@ const MatchResultItem: FC<{
       mathModel[0].model &&
         setModels(
           {
-            id: fileId,
+            id: fileId!,
             filename: mathModel[0].filename,
             value: '',
             language: getFileLanguage(mathModel[0].filename),
           },
           mathModel[0].model,
           willChangeEditorId,
-          fileId,
+          fileId!,
         );
       willChangeEditor?.setModel(mathModel[0].model);
     } else {
       const monaco = monacos[willChangeEditorId];
       addNewModel(
-        { id: fileId, filename, value: rawValue, language: getFileLanguage(filename) },
+        { id: fileId!, filename: filename!, value: rawValue!, language: getFileLanguage(filename) },
         monaco as any,
         willChangeEditor as editor.IStandaloneCodeEditor,
         setModels,
@@ -79,112 +77,148 @@ const MatchResultItem: FC<{
     }
   }
 
+  const fileClick: ClickEventHandler = (e) => {
+    onClick && onClick(e);
+  };
+
   return (
-    <AccordionItem
-      value={value}
-      className={cn(className, '')}
-      data-state={'open'}
-      onClick={onClick}
-    >
-      <TooltipProvider>
-        <Tooltip open={open}>
-          <AccordionTrigger className="text-[14px] hover:bg-gray-600 pr-2 pl-6">
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger
+          className={cn(className, 'block pr-2 pl-2 w-full text-left hover:bg-gray-600')}
+        >
+          {kind === 'match' ? (
             <div
-              className="flex items-center relative w-full"
-              onMouseMove={() => setOpen(true)}
-              onMouseLeave={() => setOpen(false)}
+              className="text-[14px] cursor-pointer truncate w-full pl-6 ml-[5px]"
+              onMouseUp={findFileAtMatchedSelection}
             >
-              <img src={`/images/fileIcon/${getFileSpecificIcon(filename)}.svg`} className="mr-1" />
+              <span>{before}</span>
+              <span className="bg-green-500/[.4]">{match}</span>
+              <span>{after}</span>
+            </div>
+          ) : (
+            <div className="flex items-center relative w-full" onClick={fileClick}>
+              <span className="mr-[5px]">
+                {expanded ? <VscChevronRight /> : <VscChevronDown />}
+              </span>
+              <img
+                src={`/images/fileIcon/${getFileSpecificIcon(filename!)}.svg`}
+                className="mr-1"
+              />
               {filename}
               <span className="absolute right-1 rounded-full bg-gray-600 text-[10px] text-white px-2">
-                {matches.length}
+                {matches!.length}
               </span>
             </div>
-          </AccordionTrigger>
-          <TooltipContent className={tipContentClasses}>
-            <p>{filepath}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-      {matches.map((match, index) => {
-        const { after, before, match: matchKey, content } = match;
-
-        return (
-          <TooltipProvider key={index}>
-            <Tooltip>
-              <TooltipTrigger className="block pr-2 pl-8 w-full text-left hover:bg-gray-600">
-                <AccordionContent
-                  key={index}
-                  className="text-[14px] cursor-pointer truncate w-full p-0"
-                  onMouseUp={() => findFileAtMatchedSelection()}
-                >
-                  <span>{before}</span>
-                  <span className="bg-green-500/[.4]">{matchKey}</span>
-                  <span>{after}</span>
-                </AccordionContent>
-              </TooltipTrigger>
-              <TooltipContent className={cn(tipContentClasses, 'max-w-[200px]')}>
-                <p>{content}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        );
-      })}
-    </AccordionItem>
+          )}
+        </TooltipTrigger>
+        <TooltipContent className={cn(tipContentClasses, '')}>
+          <p className="max-w-96">{kind === 'file' ? filepath : content}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 
-const MatchResultComp: FC<{ className?: string; expandAll?: boolean }> = ({ expandAll = true }) => {
-  const { searchResult } = useFileSearch();
+const MatchResultComp: FC<{
+  className?: string;
+  expandAll?: boolean;
+}> = ({ expandAll = true }) => {
+  const { searchResult, searchInpVal } = useFileSearch();
 
-  const createDefaultValues = (): Set<string> => {
-    //保证结果都默认打开
-    return new Set(Array.from({ length: searchResult.length }, (_, i) => `item-${i}`));
+  const createDefaultExpanded = useCallback((): Set<string> => {
+    const ids = new Set<string>();
+    searchResult.forEach((file) => {
+      ids.add(file.fileId);
+    });
+
+    return ids;
+  }, [searchResult]);
+
+  const [expandIds, setExpandIds] = useState<Set<string>>(
+    expandAll ? createDefaultExpanded() : new Set(),
+  );
+
+  useEffect(() => {
+    setExpandIds(expandAll ? createDefaultExpanded() : new Set());
+  }, [expandAll, searchResult]);
+
+  const expandOrCollapeItem = (id: string) => {
+    const newExpandIds = new Set(expandIds);
+
+    if (newExpandIds.has(id)) {
+      newExpandIds.delete(id);
+    } else {
+      newExpandIds.add(id);
+    }
+
+    setExpandIds(newExpandIds);
   };
 
-  const [values, setValues] = useState<Set<string>>(expandAll ? createDefaultValues() : new Set());
-  useEffect(() => {
-    setValues(expandAll ? createDefaultValues() : new Set());
-  }, [expandAll, searchResult]);
-  // console.log('values', values.values());
+  const renderedList = useMemo((): RenderedListItem[] => {
+    if (!searchInpVal) return [];
 
-  const expandOrCollapeItem = (index: number) => {
-    const targetValue = `item-${index}`;
+    const list: RenderedListItem[] = [];
+    searchResult.forEach((item) => {
+      if (item.kind === 'file') {
+        list.push({
+          ...item,
+          before: '',
+          after: '',
+          content: '',
+          match: '',
+          line: -1,
+          rawFileObj: null,
+        });
 
-    setValues((prev) => {
-      const newValues = new Set(prev);
-
-      if (prev.has(targetValue)) {
-        newValues.delete(targetValue);
-      } else {
-        newValues.add(targetValue);
+        if (expandIds.has(item.fileId) && item.matches && item.matches.length) {
+          item.matches.forEach((match, index) => {
+            list.push({
+              ...match,
+              ...item,
+              fileId: `${item.fileId}-child${index}`,
+              kind: 'match',
+            });
+          });
+        }
       }
-
-      return newValues;
     });
+
+    return list;
+  }, [searchInpVal, searchResult, expandIds]);
+
+  const Item: FC<ListChildComponentProps> = ({ index, style }: ListChildComponentProps) => {
+    const item: RenderedListItem = renderedList[index];
+    const itemRef = useRef<HTMLDivElement | null>(null);
+
+    return (
+      <div className="size-full" style={style} ref={itemRef}>
+        <MatchResultItem
+          data={item}
+          key={item.fileId}
+          value={item.fileId!}
+          onClick={() => expandOrCollapeItem(item.fileId!)}
+          expanded={expandIds.has(item.fileId!)}
+        />
+      </div>
+    );
   };
 
   return (
-    <div className="size-full">
-      {/* <ScrollArea className="size-full scrollbar-thin scrollbar-thumb-red}"> */}
-      <Accordion
-        type="multiple"
-        value={Array.from(values)}
-        // onValueChange={(e) => console.log('onValueChange', e)}
-        // onClick={(e) => console.log('onClick-parent', e.target)}
-      >
-        {searchResult &&
-          searchResult.map((item, index) => (
-            <MatchResultItem
-              className="size-full"
-              data={item}
-              key={index}
-              value={`item-${index}`}
-              onClick={() => expandOrCollapeItem(index)}
-            />
-          ))}
-      </Accordion>
-      {/* </ScrollArea> */}
+    <div className="h-full w-full flex-1">
+      <AutoSizer>
+        {({ height, width }: AutoSizerProps) => (
+          <FixedSizeList
+            height={height}
+            width={width}
+            itemSize={25}
+            itemCount={renderedList.length}
+            className={cn('')}
+          >
+            {Item}
+          </FixedSizeList>
+        )}
+      </AutoSizer>
     </div>
   );
 };
