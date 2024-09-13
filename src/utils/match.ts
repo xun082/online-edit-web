@@ -291,101 +291,48 @@ function searchLines(
   isRegex: boolean,
   element: TreeViewElement,
 ): MatchDetail[] {
+  let regex;
+  const flags = isCaseSensitive ? 'g' : 'gi';
+  const escapedKey = escapeRegExp(key);
+
+  try {
+    let pattern = '';
+
+    if (isWholeWord) {
+      pattern = `(?:^|\\b)(${escapedKey})\\b`;
+    } else {
+      pattern = `(${escapedKey})`;
+    }
+
+    regex = new RegExp(pattern, flags);
+  } catch (e) {
+    if (e instanceof SyntaxError) {
+      console.error(`Invalid regex: ${key}`);
+
+      return [];
+    } else {
+      throw e;
+    }
+  }
+
   const matchesInFile: MatchDetail[] = [];
 
   for (let index = 0; index < lines.length; index++) {
     const line = lines[index];
-    let searchLine = line;
-    let searchKey = key;
+    let match = regex.exec(line);
 
-    if (isRegex) {
-      try {
-        const escapedKey = escapeRegExp(searchKey);
-        const regex = new RegExp(escapedKey, isCaseSensitive ? 'g' : 'gi');
-        let match = regex.exec(searchLine);
-
-        while (match !== null) {
-          const [found] = match;
-          const { before, after } = getBeforeAfter(line, found);
-          matchesInFile.push({
-            line: index + 1,
-            content: line,
-            match: found,
-            before,
-            after,
-            rawFileObj: element,
-          });
-          match = regex.exec(searchLine);
-        }
-      } catch (e) {
-        if (e instanceof SyntaxError) {
-          console.error(`Invalid regex: ${searchKey}`);
-          continue;
-        } else {
-          throw e;
-        }
-      }
-    } else {
-      const words = isWholeWord ? searchLine.split(/\s+/) : [searchLine];
-      words.forEach((word) => {
-        if (isWholeWord) {
-          const regex = new RegExp(
-            `(^${searchKey}\\b|\\b${searchKey}\\b)`,
-            isCaseSensitive ? '' : 'i',
-          );
-          const match = regex.exec(word);
-
-          if (match) {
-            const found = match[0];
-            const { before, after } = getBeforeAfter(line, found);
-            matchesInFile.push({
-              line: index + 1,
-              content: line,
-              match: found,
-              before,
-              after,
-              rawFileObj: element,
-            });
-          }
-        } else {
-          const escapedKey = escapeRegExp(searchKey);
-          let regex;
-
-          try {
-            //防止字符串输入不规范导致正则创建失败报错
-            regex = new RegExp(`(${escapedKey})`, `${!isCaseSensitive ? 'i' : ''}g`);
-          } catch (e) {
-            if (e instanceof SyntaxError) {
-              console.error(`Invalid regex: ${searchKey}`);
-
-              return [];
-            } else {
-              throw e;
-            }
-          }
-
-          const matches = regex ? [...line.matchAll(regex)] : [];
-          matches.forEach((match) => {
-            if (match) {
-              const matchIndex = match.index;
-
-              if (matchIndex && matchIndex !== -1) {
-                const before = line.substring(0, matchIndex);
-                const matchStr = match[0];
-                const after = line.substring(matchIndex + matchStr.length);
-                matchesInFile.push({
-                  line: index + 1,
-                  content: line,
-                  match: matchStr,
-                  before,
-                  after,
-                  rawFileObj: element,
-                });
-              }
-            }
-          });
-        }
+    while (match !== null) {
+      const [found] = match;
+      const { before, after } = getBeforeAfter(line, found);
+      matchesInFile.push({
+        line: index + 1,
+        content: line,
+        match: found,
+        before,
+        after,
+        rawFileObj: element,
       });
+      match = regex.exec(line);
     }
   }
 
