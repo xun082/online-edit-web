@@ -2,9 +2,14 @@ import * as minimatch from 'minimatch';
 
 import { TreeViewElement } from '@/components/extension/tree-view-api';
 import { modelsType } from '@/store/editorStore';
-import { FilterFiles, MatchDetail, MatchResult } from '@/utils/match';
+import { FilterFiles, MatchDetail, MatchResult, TreeMatchResult } from '@/utils/match';
 
-export interface RenderedListItem extends Required<MatchResult & MatchDetail> {
+export interface RenderedListItem extends Partial<MatchResult & MatchDetail> {
+  kind: TreeViewElement['kind'] | 'match';
+}
+
+export interface RenderedTreeItem extends Partial<TreeMatchResult & MatchDetail> {
+  level: number;
   kind: TreeViewElement['kind'] | 'match';
 }
 

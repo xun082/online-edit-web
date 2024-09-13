@@ -55,7 +55,6 @@ const SearchPage: FC = () => {
   const openedIds = openedFileIds(models);
 
   useEffect(() => {
-    // console.log('蔡徐坤');
     refreshResult();
   }, [
     searchInpVal,
@@ -202,7 +201,7 @@ const SearchPage: FC = () => {
           className="cursor-pointer h-full px-[1px] mr-[1px] rounded-[2px] hover:bg-gray-600 duration-75 flex items-center"
           onClick={() => handleExpandReplace((prevState) => !prevState)}
         >
-          {expandReplace ? <VscChevronRight /> : <VscChevronDown />}
+          {expandReplace ? <VscChevronDown /> : <VscChevronRight />}
         </span>
 
         <div className="ml-1 flex-1">

@@ -99,7 +99,7 @@ const MatchResultItem: FC<{
           ) : (
             <div className="flex items-center relative w-full" onClick={fileClick}>
               <span className="mr-[5px]">
-                {expanded ? <VscChevronRight /> : <VscChevronDown />}
+                {expanded ? <VscChevronDown /> : <VscChevronRight />}
               </span>
               <img
                 src={`/images/fileIcon/${getFileSpecificIcon(filename!)}.svg`}
@@ -176,7 +176,7 @@ const MatchResultComp: FC<{
             list.push({
               ...match,
               ...item,
-              fileId: `${item.fileId}-child${index}`,
+              fileId: `${item.fileId}-match${index}`,
               kind: 'match',
             });
           });
