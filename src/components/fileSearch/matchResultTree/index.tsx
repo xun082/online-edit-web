@@ -139,18 +139,6 @@ const MatchResultTree: FC<{ expandAll: boolean }> = ({ expandAll }) => {
           </FixedSizeList>
         )}
       </AutoSizer>
-      {/* {renderedTree?.map((data) => {
-        return (
-          <div key={data.id}>
-            <TreeItem
-              data={data}
-              className="text-[14px]"
-              expandHandle={() => expandOrCollapeItem(data.id!)}
-              expand={expandedIds?.has(data.id!)}
-            />
-          </div>
-        );
-      })} */}
     </div>
   );
 };
