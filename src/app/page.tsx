@@ -75,7 +75,7 @@ const router = [
 
 const Home: NextPage = () => {
   const getStartedButton = (
-    <Link href={PATHS.MAIN_DASHBOARD}>
+    <Link href={PATHS.LOGIN}>
       <button className="relative inline-block p-px text-base font-semibold leading-6 text-white no-underline rounded-full shadow-2xl cursor-pointer bg-slate-800 group shadow-zinc-900 overflow-hidden">
         <span className="absolute top-0 left-0 w-full h-1 bg-[image:linear-gradient(to_right,#0c002b,#1779ff)] animate-snakeBorderTop delay-1000"></span>
         <span className="absolute top-0 right-0 w-1 h-full bg-[image:linear-gradient(to_bottom,#0c002b,#1779ff)] animate-snakeBorderLeft "></span>

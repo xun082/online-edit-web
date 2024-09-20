@@ -25,6 +25,11 @@ export default function MainLayout({
     });
   }, [pathname, controls]);
 
+  // 登录页不需要layout
+  if (pathname === '/login') {
+    return children;
+  }
+
   return (
     <div className=" flex flex-col w-[100vw] h-[100vh] overflow-hidden">
       <div className=" w-[100vw] h-[5vh] bg-[#24262B] flex items-center">
