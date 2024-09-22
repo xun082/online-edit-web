@@ -36,13 +36,15 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
   const thisEditor = getEditor(editorId);
   const currentModel = activeMap[editorId];
-  // console.log(thisEditor);
+  console.log(thisEditor);
   // used for dnd
   // console.log(activeMap, activeEditorId);
   // 当前编辑model的path，用于与webContainer文件系统同步
 
   const currentPath = (activeMap[editorId]?.model as any)?.path;
   const currentId = activeMap[editorId]?.model?.id;
+
+  // const [prettierConfig, setPrettierConfig] = useState<any>(null);
 
   const { isOver, setNodeRef } = useDroppable({
     id: editorId,
@@ -53,6 +55,63 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
   const style = {
     border: isOver ? '1px #3b82f6 solid' : undefined,
+  };
+
+  // useEffect(() => {
+  //   const loadPrettierConfig = async () => {
+  //     if (webContainerInstance) {
+  //       try {
+  //         const configFile = await webContainerInstance.fs.readFile('.prettierrc.js', 'utf-8');
+  //         console.log('加载的 Prettier 配置:', configFile); // 添加这行日志
+
+  //         const configFunction = new Function(`return ${configFile}`)();
+  //         console.log('.prettierrc.js文件内容', configFunction);
+  //         setPrettierConfig(configFunction);
+  //       } catch (error) {
+  //         console.log('.prettierrc.js 文件不存在，使用默认配置');
+  //         setPrettierConfig({
+  //           semi: true,
+  //           singleQuote: true,
+  //           tabWidth: 2,
+  //           trailingComma: 'es5',
+  //           printWidth: 100,
+  //         });
+  //       }
+  //     }
+  //   };
+
+  //   loadPrettierConfig();
+  // }, [webContainerInstance]);
+
+  const formatWithPrettier = async () => {
+    if (!thisEditor) return;
+
+    try {
+      const model = (thisEditor as editor.IStandaloneCodeEditor).getModel();
+      if (!model) return;
+
+      const unformattedCode = model.getValue();
+      const prettier = await import('prettier/standalone');
+      const formattedCode = await prettier.format(unformattedCode, {
+        parser: 'babel',
+        semi: true,
+        singleQuote: true,
+      });
+
+      // 应用格式化后的代码
+      model.pushEditOperations(
+        [],
+        [
+          {
+            range: model.getFullModelRange(),
+            text: formattedCode,
+          },
+        ],
+        () => null,
+      );
+    } catch (error) {
+      console.error('格式化代码时出错:', error);
+    }
   };
 
   const handleEditorDidMount = useCallback(
@@ -121,6 +180,11 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
       });
       editor.onDidFocusEditorText(() => {
         setActiveEditor(editor, editorId);
+      });
+
+      // 添加键盘事件监听器
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+        formatWithPrettier();
       });
 
       loader.init().then(/* ... */);
