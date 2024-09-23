@@ -1,12 +1,15 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import Editor, { Monaco, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor';
 import { useDroppable } from '@dnd-kit/core';
 import { createHighlighter } from 'shiki';
 import { shikiToMonaco } from '@shikijs/monaco';
+import parserBabel from 'prettier/plugins/babel';
+import parserEstree from 'prettier/plugins/estree';
+// import parserTypescript from 'prettier/plugins/typescript';
 
 import {
   useEditorStore,
@@ -14,6 +17,7 @@ import {
   useActiveModelStore,
   useActiveEditorStore,
   useModelsStore,
+  usePrettierStore,
 } from '@/store/editorStore';
 import { TabBar } from '@/components/edit/tabbar';
 import LoadingComponent from '@/components/edit/edit-loading';
@@ -36,15 +40,15 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
   const thisEditor = getEditor(editorId);
   const currentModel = activeMap[editorId];
-  console.log(thisEditor);
+
+  const { fileData } = useUploadFileDataStore();
+  const { prettierConfig, setPrettierConfig } = usePrettierStore();
   // used for dnd
   // console.log(activeMap, activeEditorId);
   // 当前编辑model的path，用于与webContainer文件系统同步
 
   const currentPath = (activeMap[editorId]?.model as any)?.path;
   const currentId = activeMap[editorId]?.model?.id;
-
-  // const [prettierConfig, setPrettierConfig] = useState<any>(null);
 
   const { isOver, setNodeRef } = useDroppable({
     id: editorId,
@@ -57,45 +61,81 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
     border: isOver ? '1px #3b82f6 solid' : undefined,
   };
 
-  // useEffect(() => {
-  //   const loadPrettierConfig = async () => {
-  //     if (webContainerInstance) {
-  //       try {
-  //         const configFile = await webContainerInstance.fs.readFile('.prettierrc.js', 'utf-8');
-  //         console.log('加载的 Prettier 配置:', configFile); // 添加这行日志
+  useEffect(() => {
+    if (fileData) {
+      const prettierConfigValue = findPrettierConfig(fileData[0].children || []);
 
-  //         const configFunction = new Function(`return ${configFile}`)();
-  //         console.log('.prettierrc.js文件内容', configFunction);
-  //         setPrettierConfig(configFunction);
-  //       } catch (error) {
-  //         console.log('.prettierrc.js 文件不存在，使用默认配置');
-  //         setPrettierConfig({
-  //           semi: true,
-  //           singleQuote: true,
-  //           tabWidth: 2,
-  //           trailingComma: 'es5',
-  //           printWidth: 100,
-  //         });
-  //       }
-  //     }
-  //   };
+      //处理返回的内容
+      if (prettierConfigValue) {
+        console.log('找到 .prettierrc.js 的内容：', prettierConfigValue);
+        setPrettierConfig(convertToObject(prettierConfigValue));
+      } else {
+        console.error('.prettierrc.js 文件未找到,使用默认配置');
+        setPrettierConfig({
+          tabWidth: 4,
+          useTabs: false,
+          semi: true,
+          singleQuote: false,
+          printWidth: 100,
+          trailingComma: 'es5' as const,
+          arrowParens: 'always' as const,
+        });
+      }
+    }
+  }, [fileData]);
 
-  //   loadPrettierConfig();
-  // }, [webContainerInstance]);
+  // 获取.prettierrc.js文件
+  function findPrettierConfig(list: any[]): any | null {
+    const findItem = list.find(
+      (item) => item.filename === '.prettierrc.js' || item.filename === '.prettierrc.json',
+    );
 
-  const formatWithPrettier = async () => {
-    if (!thisEditor) return;
+    return findItem ? findItem.value : null;
+  }
+
+  //处理文件返回的数据
+  const convertToObject = (str: string) => {
+    const match = str.match(/\{([\s\S]*)\}/);
+
+    if (match) {
+      str = `{${match[1]}}`;
+    } else {
+      console.error('未找到有效的对象内容');
+
+      return null;
+    }
+
+    str = str.replace(/\/\/.*$/gm, '');
+    str = str.replace(/'/g, '"');
+    str = str.replace(/(\w+):/g, '"$1":');
+    str = str.replace(/;$/, '');
 
     try {
-      const model = (thisEditor as editor.IStandaloneCodeEditor).getModel();
+      const obj = new Function(`return ${str};`)();
+
+      return obj;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  // 格式化代码
+  const formatWithPrettier = async (item: editor.IStandaloneCodeEditor) => {
+    if (!item) return;
+
+    try {
+      const model = item.getModel();
       if (!model) return;
 
       const unformattedCode = model.getValue();
       const prettier = await import('prettier/standalone');
+      console.log('格式化配置文件 is ', prettierConfig);
+
+      // 使用找到的 Prettier 配置
       const formattedCode = await prettier.format(unformattedCode, {
         parser: 'babel',
-        semi: true,
-        singleQuote: true,
+        plugins: [parserBabel, parserEstree],
+        ...prettierConfig,
       });
 
       // 应用格式化后的代码
@@ -184,7 +224,8 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
       // 添加键盘事件监听器
       editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-        formatWithPrettier();
+        console.log('格式化配置文件 is ', prettierConfig);
+        formatWithPrettier(editor);
       });
 
       loader.init().then(/* ... */);
