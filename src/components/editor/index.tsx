@@ -68,7 +68,10 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
     });
 
   // 格式化代码
-  const formatWithPrettier = async (item: editor.IStandaloneCodeEditor, prettierConfig: object) => {
+  const formatWithPrettier = async (
+    item: editor.IStandaloneCodeEditor,
+    prettierConfig: Record<string, any>,
+  ) => {
     if (!item) return;
 
     try {

@@ -283,19 +283,3 @@ export const useActiveEditorStore = create<ActiveEditorState & ActiveEditorActio
     });
   },
 }));
-
-interface PrettierConfigState {
-  prettierConfig: object | null;
-}
-interface PrettierConfigAction {
-  setPrettierConfig: (value: object) => void;
-}
-//存储prettier
-export const usePrettierStore = create<PrettierConfigState & PrettierConfigAction>((set) => ({
-  prettierConfig: null,
-  setPrettierConfig(value) {
-    set({
-      prettierConfig: value,
-    });
-  },
-}));
