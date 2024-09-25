@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import Editor, { Monaco, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor';
@@ -17,13 +17,13 @@ import {
   useActiveModelStore,
   useActiveEditorStore,
   useModelsStore,
-  usePrettierStore,
 } from '@/store/editorStore';
 import { TabBar } from '@/components/edit/tabbar';
 import LoadingComponent from '@/components/edit/edit-loading';
 import { useWebContainerStore } from '@/store/webContainerStore';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
 import { cn, writeFile, MONACO_THEME_ARRAY } from '@/utils';
+import { getPrettierConfig } from '@/utils/file';
 
 interface CodeEditorProps {
   editorId: number;
@@ -32,7 +32,7 @@ export type EditorWithThemeService = monaco.editor.IStandaloneCodeEditor & { _th
 
 export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { webContainerInstance } = useWebContainerStore();
-  const { updateItem } = useUploadFileDataStore();
+  const { updateItem, fileData } = useUploadFileDataStore();
   const { getEditor, setEditor } = useEditorStore();
   const { setMonaco } = useMonacoStore();
   const { setModels, models } = useModelsStore();
@@ -41,8 +41,8 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const thisEditor = getEditor(editorId);
   const currentModel = activeMap[editorId];
 
-  const { fileData } = useUploadFileDataStore();
-  const { prettierConfig, setPrettierConfig } = usePrettierStore();
+  const [_editor, _setEditor] = useState<monaco.editor.IStandaloneCodeEditor | undefined>();
+
   // used for dnd
   // console.log(activeMap, activeEditorId);
   // 当前编辑model的path，用于与webContainer文件系统同步
@@ -61,66 +61,14 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
     border: isOver ? '1px #3b82f6 solid' : undefined,
   };
 
-  useEffect(() => {
-    if (fileData) {
-      const prettierConfigValue = findPrettierConfig(fileData[0].children || []);
-
-      //处理返回的内容
-      if (prettierConfigValue) {
-        console.log('找到 .prettierrc.js 的内容：', prettierConfigValue);
-        setPrettierConfig(convertToObject(prettierConfigValue));
-      } else {
-        console.error('.prettierrc.js 文件未找到,使用默认配置');
-        setPrettierConfig({
-          tabWidth: 4,
-          useTabs: false,
-          semi: true,
-          singleQuote: false,
-          printWidth: 100,
-          trailingComma: 'es5' as const,
-          arrowParens: 'always' as const,
-        });
-      }
-    }
-  }, [fileData]);
-
-  // 获取.prettierrc.js文件
-  function findPrettierConfig(list: any[]): any | null {
-    const findItem = list.find(
-      (item) => item.filename === '.prettierrc.js' || item.filename === '.prettierrc.json',
-    );
-
-    return findItem ? findItem.value : null;
-  }
-
-  //处理文件返回的数据
-  const convertToObject = (str: string) => {
-    const match = str.match(/\{([\s\S]*)\}/);
-
-    if (match) {
-      str = `{${match[1]}}`;
-    } else {
-      console.error('未找到有效的对象内容');
-
-      return null;
-    }
-
-    str = str.replace(/\/\/.*$/gm, '');
-    str = str.replace(/'/g, '"');
-    str = str.replace(/(\w+):/g, '"$1":');
-    str = str.replace(/;$/, '');
-
-    try {
-      const obj = new Function(`return ${str};`)();
-
-      return obj;
-    } catch (error) {
-      return null;
-    }
-  };
+  _editor &&
+    _editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+      const prettierValue = getPrettierConfig(fileData);
+      formatWithPrettier(_editor, prettierValue);
+    });
 
   // 格式化代码
-  const formatWithPrettier = async (item: editor.IStandaloneCodeEditor) => {
+  const formatWithPrettier = async (item: editor.IStandaloneCodeEditor, prettierConfig: object) => {
     if (!item) return;
 
     try {
@@ -129,7 +77,6 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
       const unformattedCode = model.getValue();
       const prettier = await import('prettier/standalone');
-      console.log('格式化配置文件 is ', prettierConfig);
 
       // 使用找到的 Prettier 配置
       const formattedCode = await prettier.format(unformattedCode, {
@@ -222,11 +169,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
         setActiveEditor(editor, editorId);
       });
 
-      // 添加键盘事件监听器
-      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-        console.log('格式化配置文件 is ', prettierConfig);
-        formatWithPrettier(editor);
-      });
+      _setEditor(editor);
 
       loader.init().then(/* ... */);
     },
@@ -250,6 +193,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
       <div className=" h-[3.5vh] w-full bg-[#202327]/80">
         <TabBar editorId={editorId} />
       </div>
+
       <Editor
         className={'editor'}
         theme="dark-plus"
