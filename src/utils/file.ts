@@ -4,6 +4,8 @@ interface PrettierConfigResult {
   name: string;
 }
 
+type ConfigParser = (str: string) => Record<string, any>;
+
 const languageMap: Record<string, string> = {
   js: 'javascript',
   mjs: 'javascript',
@@ -198,7 +200,7 @@ const convertTOMLToObject = (str: string) => {
   return result;
 };
 
-const prettierMap: { [key: string]: Array<(str: string) => { [key: string]: any }> } = {
+const prettierMap: Record<string, ConfigParser[]> = {
   prettier: [convertJSONToObject, convertYAMLToObject],
   _prettierrc: [convertJSONToObject, convertYAMLToObject],
   _prettierrc_json: [convertJSONToObject],
@@ -212,17 +214,18 @@ const prettierMap: { [key: string]: Array<(str: string) => { [key: string]: any 
   _prettierrc_toml: [convertTOMLToObject],
 };
 
-export const getPrettierConfig = (file: DirectoryInterface[] | null): object => {
+export const getPrettierConfig = (file: DirectoryInterface[] | null): Record<string, any> => {
   if (!file) return basePrettierConfig;
 
   const fileData = findPrettierConfig(file[0].children || []);
   if (!fileData.value) return basePrettierConfig;
 
-  let config = {};
+  let config: Record<string, any> = {};
 
-  prettierMap[fileData.name].some((item) => {
-    config = item(fileData.value as string);
-    if (config && Object.keys(config).length > 0) return true;
+  prettierMap[fileData.name].some((parser) => {
+    config = parser(fileData.value as string);
+
+    return config && Object.keys(config).length > 0;
   });
 
   return config;
