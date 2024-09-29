@@ -53,13 +53,13 @@ const projects = [
     icon: '/node.svg',
     title: 'Vanilla',
     description: 'JavaScript',
-    link: '/f',
+    link: '/g',
   },
   {
     icon: '/node.svg',
     title: 'Vanilla',
     description: 'TypeScript',
-    link: '/f',
+    link: '/h',
   },
 ];
 
@@ -77,7 +77,7 @@ const socialIcons = [
 const router = [
   {
     title: 'Docs',
-    link: '/a',
+    link: '/a1',
   },
   {
     title: 'Blog',
