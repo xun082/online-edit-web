@@ -258,8 +258,8 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
         >
           <div className=" flex items-center justify-start gap-x-1">
             {expendedItems?.includes(value)
-              ? openIcon ?? <FolderOpenIcon className="h-3 w-3" />
-              : closeIcon ?? <FolderIcon className="h-3 w-3" />}
+              ? (openIcon ?? <FolderOpenIcon className="h-3 w-3" />)
+              : (closeIcon ?? <FolderIcon className="h-3 w-3" />)}
             <span>{element}</span>
           </div>
           <div className=" flex gap-x-1 items-center mr-1">
