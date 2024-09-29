@@ -93,10 +93,10 @@ const renderLink = (products: LinkProps[]) =>
   ));
 
 const renderIcon = (icons: Icon[]) =>
-  icons.map((icon) => (
+  icons.map((icon, idx) => (
     <a
       href={icon.link}
-      key={icon.link}
+      key={icon.link + idx}
       className="p-2 rounded-md text-white border border-white/30 hover:bg-white/10 transition-colors"
     >
       {icon.icon}
