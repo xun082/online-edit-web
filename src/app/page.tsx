@@ -77,7 +77,7 @@ const socialIcons = [
 const router = [
   {
     title: 'Docs',
-    link: '/a',
+    link: '/a1',
   },
   {
     title: 'Blog',
