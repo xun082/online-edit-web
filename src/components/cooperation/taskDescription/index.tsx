@@ -37,6 +37,7 @@ export const TaskDescription: React.FC<TaskDescriptionProps> = ({}) => {
             wordWrap: 'on',
             automaticLayout: true,
             readOnly: true,
+            scrollBeyondLastLine: false,
             scrollbar: {
               horizontal: 'hidden',
               horizontalHasArrows: false,

@@ -91,6 +91,7 @@ export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId }) 
             fontSize: 14,
             wordWrap: 'on',
             automaticLayout: true,
+            scrollBeyondLastLine: false,
           }}
           loading={<LoadingComponent />}
           onChange={handleEditorChange}
