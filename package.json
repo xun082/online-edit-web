@@ -65,6 +65,9 @@
     "xterm-addon-fit": "^0.8.0",
     "xterm-addon-web-links": "^0.9.0",
     "xterm-addon-webgl": "^0.16.0",
+    "y-monaco": "^0.1.6",
+    "y-websocket": "^2.0.4",
+    "yjs": "^13.6.19",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
@@ -107,6 +110,7 @@
     "lint-staged": "^15.2.7",
     "postcss": "^8.4.39",
     "storybook": "^8.1.11",
+    "tailwind-scrollbar": "^3.1.0",
     "tailwindcss": "^3.4.4",
     "typescript": "^4.9.5",
     "vitest": "^1.6.0"
