@@ -134,6 +134,9 @@ const config: Config = {
         snakeBorderBottom: 'snakeBorderBottom 2s linear infinite',
         snakeBorderRight: 'snakeBorderRight 2s linear infinite',
       },
+      fontFamily: {
+        bmjua: ['bmjua', 'sans-serif'],
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],
