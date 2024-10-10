@@ -13,13 +13,13 @@ enum LoginType {
 }
 
 interface LoginInfoReducerAction {
-  type: 'changePassword' | 'changePhone' | 'changeVerifyCode' | 'validate' | 'validateVerifyCode';
+  type: 'changePassword' | 'changeEmail' | 'changeVerifyCode' | 'validate' | 'validateVerifyCode';
   payload?: string;
 }
 
 interface LoginInfo {
-  phone: string;
-  phoneErrMsg?: string;
+  email: string;
+  emailErrMsg?: string;
   verifyCode?: string;
   verifyCodeErrMsg?: string;
   password?: string;
@@ -27,15 +27,15 @@ interface LoginInfo {
 }
 
 const defaultVerifyCodeState = {
-  phone: '',
-  phoneErrMsg: '',
+  email: '',
+  emailErrMsg: '',
   verifyCode: '',
   verifyCodeErrMsg: '',
 };
 
 const defaultPasswordState = {
-  phone: '',
-  phoneErrMsg: '',
+  email: '',
+  emailErrMsg: '',
   password: '',
   passwordErrMsg: '',
 };
@@ -52,13 +52,13 @@ const loginInfoReducer: LoginInfoReducer = (state: LoginInfo, action: LoginInfoR
         password: payload,
         passwordErrMsg: payload ? '' : '请输入密码',
       };
-    case 'changePhone':
-      const phoneValid = /^1[3-9]\d{9}$/.test(payload);
+    case 'changeEmail':
+      const emailValid = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(payload);
 
       return {
         ...state,
-        phone: payload,
-        phoneErrMsg: phoneValid ? '' : '请输入正确的手机号',
+        email: payload,
+        emailErrMsg: emailValid ? '' : '请输入正确的邮箱',
       };
     case 'changeVerifyCode':
       return {
@@ -67,8 +67,8 @@ const loginInfoReducer: LoginInfoReducer = (state: LoginInfo, action: LoginInfoR
         verifyCodeErrMsg: payload ? '' : '请输入验证码',
       };
     case 'validate':
-      const errMsg: Pick<LoginInfo, 'phoneErrMsg' | 'passwordErrMsg' | 'verifyCodeErrMsg'> = {
-        phoneErrMsg: state.phone ? '' : '请输入正确的手机号',
+      const errMsg: Pick<LoginInfo, 'emailErrMsg' | 'passwordErrMsg' | 'verifyCodeErrMsg'> = {
+        emailErrMsg: state.email ? '' : '请输入正确的邮箱',
       };
 
       if (state.password === '') {
@@ -158,15 +158,15 @@ const VerifyCodeLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
     () => ({ ...defaultVerifyCodeState }),
   );
 
-  const phoneValid: boolean = !!loginInfo.phone && !loginInfo.phoneErrMsg;
-  const valid: boolean = phoneValid && !!loginInfo.verifyCode && !loginInfo.verifyCodeErrMsg;
+  const emailValid: boolean = !!loginInfo.email && !loginInfo.emailErrMsg;
+  const valid: boolean = emailValid && !!loginInfo.verifyCode && !loginInfo.verifyCodeErrMsg;
 
   const submit = (e: MouseEvent) => {
     e.preventDefault();
 
     if (valid) {
       login({
-        phone: loginInfo.phone,
+        email: loginInfo.email,
         verifyCode: loginInfo.verifyCode,
       });
     } else {
@@ -180,16 +180,16 @@ const VerifyCodeLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
         <input
           className={cn(
             'w-full h-10 pl-3 pr-1 py-2 rounded-lg bg-[#e5e5e5]/15 text-white/60 border-2 hidden sm:block outline-none focus:text-white focus:border-2',
-            loginInfo.phoneErrMsg ? 'border-rose-400' : 'focus:border-neutral-400',
+            loginInfo.emailErrMsg ? 'border-rose-400' : 'focus:border-neutral-400',
           )}
           type="text"
-          placeholder="手机号"
-          onChange={(e) => loginInfoDispatch({ type: 'changePhone', payload: e.target.value })}
+          placeholder="邮箱"
+          onChange={(e) => loginInfoDispatch({ type: 'changeEmail', payload: e.target.value })}
         />
 
-        {loginInfo.phoneErrMsg ? (
+        {loginInfo.emailErrMsg ? (
           <div className="absolute left-0 top-11 text-rose-400 text-xs">
-            {loginInfo.phoneErrMsg}
+            {loginInfo.emailErrMsg}
           </div>
         ) : null}
       </div>
@@ -204,7 +204,7 @@ const VerifyCodeLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
           onChange={(e) => loginInfoDispatch({ type: 'changeVerifyCode', payload: e.target.value })}
         />
 
-        <VerifyCodeTimer disabled={!phoneValid} />
+        <VerifyCodeTimer disabled={!emailValid} />
 
         {loginInfo.verifyCodeErrMsg ? (
           <div className="absolute left-0 top-11 text-rose-400 text-xs">
@@ -235,9 +235,9 @@ const PasswordLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
   );
 
   const valid: boolean =
-    !!loginInfo.phone &&
+    !!loginInfo.email &&
     !!loginInfo.password &&
-    !loginInfo.phoneErrMsg &&
+    !loginInfo.emailErrMsg &&
     !loginInfo.passwordErrMsg;
 
   const submit = useCallback((e: MouseEvent) => {
@@ -245,7 +245,7 @@ const PasswordLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
 
     if (valid) {
       login({
-        phone: loginInfo.phone,
+        email: loginInfo.email,
         verifyCode: loginInfo.password,
       });
     } else {
@@ -259,16 +259,16 @@ const PasswordLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
         <input
           className={cn(
             'w-full h-10 pl-3 pr-1 py-2 rounded-lg bg-[#e5e5e5]/15 text-white/60 border-2 hidden sm:block outline-none focus:text-white focus:border-2',
-            loginInfo.phoneErrMsg ? 'border-rose-400' : 'focus:border-neutral-400',
+            loginInfo.emailErrMsg ? 'border-rose-400' : 'focus:border-neutral-400',
           )}
           type="text"
-          placeholder="手机号"
-          onChange={(e) => loginInfoDispatch({ type: 'changePhone', payload: e.target.value })}
+          placeholder="邮箱"
+          onChange={(e) => loginInfoDispatch({ type: 'changeEmail', payload: e.target.value })}
         />
 
-        {loginInfo.phoneErrMsg ? (
+        {loginInfo.emailErrMsg ? (
           <div className="absolute left-0 top-11 text-rose-400 text-xs">
-            {loginInfo.phoneErrMsg}
+            {loginInfo.emailErrMsg}
           </div>
         ) : null}
       </div>
