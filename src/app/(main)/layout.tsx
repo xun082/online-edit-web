@@ -6,15 +6,15 @@ import { motion, useAnimation } from 'framer-motion';
 
 import { Header } from '@/components/main/header';
 import Sider from '@/components/main/sider';
+import { PATHS } from '@/utils';
 
 export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-
   const controls = useAnimation();
+  const pathname = usePathname();
 
   useEffect(() => {
     controls.start({
@@ -24,6 +24,11 @@ export default function MainLayout({
       transition: { ease: 'easeInOut', duration: 1 },
     });
   }, [pathname, controls]);
+
+  if (pathname === PATHS.LOGIN) {
+    // 登录页不需要layout
+    return children;
+  }
 
   return (
     <div className=" flex flex-col w-[100vw] h-[100vh] overflow-hidden">
