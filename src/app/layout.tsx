@@ -41,7 +41,7 @@ export default function RootLayout({
 
     if (!PATHS_SKIPPED_AUTH.includes(pathname) && !auth.access_token) {
       // 当前路由需登录但未登录时，跳转到登录页
-      // BUG 跳转时，会短暂显示目标页，再跳转到登录页
+      // FIXME: 跳转时，会短暂显示目标页，再跳转到登录页
       router.push(`${PATHS.LOGIN}?redirect=${pathname}`);
     }
   }, [pathname]);

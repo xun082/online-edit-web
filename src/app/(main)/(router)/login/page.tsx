@@ -1,6 +1,15 @@
 'use client';
 
-import { FC, MouseEvent, useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import {
+  FC,
+  MouseEvent,
+  Suspense,
+  useCallback,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { PROJECT_Name } from '@/utils/constants';
@@ -448,4 +457,10 @@ const LoginPage: FC = () => {
   );
 };
 
-export default LoginPage;
+export default () => {
+  return (
+    <Suspense fallback={null}>
+      <LoginPage />
+    </Suspense>
+  );
+};

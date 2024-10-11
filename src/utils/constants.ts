@@ -6,7 +6,7 @@ export const PATHS = {
   AI: '/edit/ai',
 } as const;
 
-export const PATHS_SKIPPED_AUTH: string[] = [PATHS.HOME, PATHS.LOGIN] as const;
+export const PATHS_SKIPPED_AUTH: string[] = [PATHS.HOME, PATHS.LOGIN];
 
 export const PROJECT_Name = 'online-edit';
 export type PathKeys = keyof typeof PATHS;
