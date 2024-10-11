@@ -6,6 +6,8 @@ export const PATHS = {
   AI: '/edit/ai',
 } as const;
 
+export const PATHS_SKIPPED_AUTH: string[] = [PATHS.HOME, PATHS.LOGIN] as const;
+
 export const PROJECT_Name = 'online-edit';
 export type PathKeys = keyof typeof PATHS;
 export type PathValues = (typeof PATHS)[PathKeys];
@@ -13,6 +15,8 @@ export type PathValues = (typeof PATHS)[PathKeys];
 export const PRETTIER_FORMAT_PATH: string = 'PRETTIER_FORMAT_PATH';
 
 export const UPLOAD_FILE_DATA: string = 'UPLOAD_FILE_DATA';
+
+export const STORAGE_KEY_AUTH = 'ONLINE_EDIT_AUTH';
 
 export const DEFAULT_PRETTIER_CONFIG: string = `{
   "printWidth": 80,

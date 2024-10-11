@@ -13,9 +13,8 @@ export default function MainLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-
   const controls = useAnimation();
+  const pathname = usePathname();
 
   useEffect(() => {
     controls.start({
@@ -26,8 +25,8 @@ export default function MainLayout({
     });
   }, [pathname, controls]);
 
-  // 登录页不需要layout
   if (pathname === PATHS.LOGIN) {
+    // 登录页不需要layout
     return children;
   }
 

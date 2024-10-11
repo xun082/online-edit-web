@@ -1,23 +1,23 @@
 'use client';
 
 import { FC, MouseEvent, useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { PROJECT_Name } from '@/utils/constants';
 import { cn } from '@/utils';
 import { BackgroundBeams } from '@/components/home/background-beams';
 import { Header } from '@/components/home/header';
-import { sendCaptchaApi } from '@/utils/apis';
+import { loginEmailApi, sendCaptchaApi } from '@/utils/apis';
+import { useAuthStore } from '@/store/authStore';
 
 enum LoginType {
   CAPTCHA,
   PASSWORD,
 }
 
-interface LoginInfoReducerAction {
-  type: 'changePassword' | 'changeEmail' | 'changeCaptcha' | 'validate' | 'validateCaptcha';
-  payload?: string;
-}
-
+/**
+ * 登录信息
+ */
 interface LoginInfo {
   email: string;
   emailErrMsg?: string;
@@ -27,6 +27,9 @@ interface LoginInfo {
   passwordErrMsg?: string;
 }
 
+/**
+ * 默认验证码登录状态
+ */
 const defaultCaptchaState = {
   email: '',
   emailErrMsg: '',
@@ -34,6 +37,9 @@ const defaultCaptchaState = {
   captchaErrMsg: '',
 };
 
+/**
+ * 默认密码登录状态
+ */
 const defaultPasswordState = {
   email: '',
   emailErrMsg: '',
@@ -41,8 +47,22 @@ const defaultPasswordState = {
   passwordErrMsg: '',
 };
 
+/**
+ * 登录信息reducer动作
+ */
+interface LoginInfoReducerAction {
+  type: 'changePassword' | 'changeEmail' | 'changeCaptcha' | 'validate' | 'validateCaptcha';
+  payload?: string;
+}
+
+/**
+ * 登录信息reducer
+ */
 type LoginInfoReducer = (state: LoginInfo, action: LoginInfoReducerAction) => LoginInfo;
 
+/**
+ * 登录信息reducer实现
+ */
 const loginInfoReducer: LoginInfoReducer = (state: LoginInfo, action: LoginInfoReducerAction) => {
   const { payload = '', type } = action;
 
@@ -99,6 +119,11 @@ const loginInfoReducer: LoginInfoReducer = (state: LoginInfo, action: LoginInfoR
 };
 
 /**
+ * 验证码倒计时最大值
+ */
+const maxCountdown = 60;
+
+/**
  * 获取验证码
  * @returns
  */
@@ -115,7 +140,7 @@ const CaptchaTimer = ({ disabled, email }: { disabled: boolean; email: string })
       }
 
       setCountdown(null!);
-    } else if (countdown === 60 && !interval.current) {
+    } else if (countdown === maxCountdown && !interval.current) {
       // 启动定时器
       interval.current = setInterval(() => {
         setCountdown((n) => n - 1);
@@ -134,17 +159,17 @@ const CaptchaTimer = ({ disabled, email }: { disabled: boolean; email: string })
   }, []);
 
   const sendCaptcha = () => {
-    setCountdown(60);
+    setCountdown(maxCountdown);
 
     sendCaptchaApi(email).then(
       async (resp) => {
-        console.log('shaw resp', resp);
+        console.log('shaw sendCaptchaApi resp', resp);
 
         const res = await resp.json();
-        console.log('shaw res', res);
+        console.log('shaw sendCaptchaApi res', res);
       },
       (err) => {
-        console.log('shaw err', err);
+        console.log('shaw sendCaptchaApi err', err);
       },
     );
   };
@@ -164,12 +189,14 @@ const CaptchaTimer = ({ disabled, email }: { disabled: boolean; email: string })
  * 验证码登录
  * @returns
  */
-const CaptchaLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
+const CaptchaLogin = ({ login }: { login: (state: LoginInfo) => Promise<void> }) => {
   const [loginInfo, loginInfoDispatch] = useReducer<LoginInfoReducer, LoginInfo>(
     loginInfoReducer,
     { ...defaultCaptchaState },
     () => ({ ...defaultCaptchaState }),
   );
+
+  const [processing, setProcessing] = useState<boolean>(false);
 
   const emailValid: boolean = !!loginInfo.email && !loginInfo.emailErrMsg;
   const valid: boolean = emailValid && !!loginInfo.captcha && !loginInfo.captchaErrMsg;
@@ -178,9 +205,13 @@ const CaptchaLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
     e.preventDefault();
 
     if (valid) {
+      setProcessing(true);
+
       login({
         email: loginInfo.email,
         captcha: loginInfo.captcha,
+      }).finally(() => {
+        setProcessing(false);
       });
     } else {
       loginInfoDispatch({ type: 'validate' });
@@ -227,7 +258,7 @@ const CaptchaLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
       </div>
       <button
         className="w-full h-10 flex justify-center items-center text-sm border-2 rounded-lg disabled:cursor-not-allowed"
-        disabled={!valid}
+        disabled={!valid || processing}
         onClick={submit}
       >
         立即登录
@@ -240,12 +271,14 @@ const CaptchaLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
  * 密码登录
  * @returns
  */
-const PasswordLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
+const PasswordLogin = ({ login }: { login: (state: LoginInfo) => Promise<void> }) => {
   const [loginInfo, loginInfoDispatch] = useReducer<LoginInfoReducer, LoginInfo>(
     loginInfoReducer,
     { ...defaultPasswordState },
     () => ({ ...defaultPasswordState }),
   );
+
+  const [processing, setProcessing] = useState<boolean>(false);
 
   const valid: boolean =
     !!loginInfo.email &&
@@ -257,9 +290,13 @@ const PasswordLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
     e.preventDefault();
 
     if (valid) {
+      setProcessing(true);
+
       login({
         email: loginInfo.email,
         captcha: loginInfo.password,
+      }).finally(() => {
+        setProcessing(false);
       });
     } else {
       loginInfoDispatch({ type: 'validate' });
@@ -304,7 +341,7 @@ const PasswordLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
       </div>
       <button
         className="w-full h-10 flex justify-center items-center text-sm border-2 rounded-lg disabled:cursor-not-allowed"
-        disabled={!valid}
+        disabled={!valid || processing}
         onClick={submit}
       >
         立即登录
@@ -314,10 +351,43 @@ const PasswordLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
 };
 
 const LoginPage: FC = () => {
+  const { getAuth, setAuth } = useAuthStore();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [loginType, setLoginType] = useState<LoginType>(LoginType.CAPTCHA);
 
-  const login = (state: LoginInfo) => {
-    console.log('state', state);
+  // 如果已经登录，则跳转到首页或redirect地址
+  useEffect(() => {
+    const auth = getAuth();
+
+    if (auth.access_token) {
+      router.push(searchParams.get('redirect') ?? '/');
+    }
+  }, []);
+
+  const login = async (state: LoginInfo): Promise<void> => {
+    if (loginType === LoginType.CAPTCHA) {
+      await loginEmailApi(state.email, state.captcha!).then(
+        async (resp) => {
+          console.log('shaw loginEmailApi resp', resp);
+
+          const res = await resp.json();
+          console.log('shaw loginEmailApi res', res);
+
+          if (res.code === 200) {
+            // 登录成功
+            setAuth(res.data);
+            router.push(searchParams.get('redirect') ?? '/');
+          } else {
+            // 登录失败
+            console.log('shaw loginEmailApi err', res.message);
+          }
+        },
+        (err) => {
+          console.log('shaw loginEmailApi err', err);
+        },
+      );
+    }
   };
 
   return (
