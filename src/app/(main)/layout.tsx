@@ -6,6 +6,7 @@ import { motion, useAnimation } from 'framer-motion';
 
 import { Header } from '@/components/main/header';
 import Sider from '@/components/main/sider';
+import { PATHS } from '@/utils';
 
 export default function MainLayout({
   children,
@@ -26,7 +27,7 @@ export default function MainLayout({
   }, [pathname, controls]);
 
   // 登录页不需要layout
-  if (pathname === '/login') {
+  if (pathname === PATHS.LOGIN) {
     return children;
   }
 

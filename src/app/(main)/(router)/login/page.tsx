@@ -6,31 +6,32 @@ import { PROJECT_Name } from '@/utils/constants';
 import { cn } from '@/utils';
 import { BackgroundBeams } from '@/components/home/background-beams';
 import { Header } from '@/components/home/header';
+import { sendCaptchaApi } from '@/utils/apis';
 
 enum LoginType {
-  VERIFY_CODE,
+  CAPTCHA,
   PASSWORD,
 }
 
 interface LoginInfoReducerAction {
-  type: 'changePassword' | 'changeEmail' | 'changeVerifyCode' | 'validate' | 'validateVerifyCode';
+  type: 'changePassword' | 'changeEmail' | 'changeCaptcha' | 'validate' | 'validateCaptcha';
   payload?: string;
 }
 
 interface LoginInfo {
   email: string;
   emailErrMsg?: string;
-  verifyCode?: string;
-  verifyCodeErrMsg?: string;
+  captcha?: string;
+  captchaErrMsg?: string;
   password?: string;
   passwordErrMsg?: string;
 }
 
-const defaultVerifyCodeState = {
+const defaultCaptchaState = {
   email: '',
   emailErrMsg: '',
-  verifyCode: '',
-  verifyCodeErrMsg: '',
+  captcha: '',
+  captchaErrMsg: '',
 };
 
 const defaultPasswordState = {
@@ -60,14 +61,14 @@ const loginInfoReducer: LoginInfoReducer = (state: LoginInfo, action: LoginInfoR
         email: payload,
         emailErrMsg: emailValid ? '' : '请输入正确的邮箱',
       };
-    case 'changeVerifyCode':
+    case 'changeCaptcha':
       return {
         ...state,
-        verifyCode: payload,
-        verifyCodeErrMsg: payload ? '' : '请输入验证码',
+        captcha: payload,
+        captchaErrMsg: payload ? '' : '请输入验证码',
       };
     case 'validate':
-      const errMsg: Pick<LoginInfo, 'emailErrMsg' | 'passwordErrMsg' | 'verifyCodeErrMsg'> = {
+      const errMsg: Pick<LoginInfo, 'emailErrMsg' | 'passwordErrMsg' | 'captchaErrMsg'> = {
         emailErrMsg: state.email ? '' : '请输入正确的邮箱',
       };
 
@@ -75,20 +76,20 @@ const loginInfoReducer: LoginInfoReducer = (state: LoginInfo, action: LoginInfoR
         errMsg.passwordErrMsg = '请输入密码';
       }
 
-      if (state.verifyCode === '') {
-        errMsg.verifyCodeErrMsg = '请输入验证码';
+      if (state.captcha === '') {
+        errMsg.captchaErrMsg = '请输入验证码';
       }
 
       return {
         ...state,
         ...errMsg,
       };
-    case 'validateVerifyCode':
-      const verifyCodeValid = state.verifyCode === payload;
+    case 'validateCaptcha':
+      const captchaValid = state.captcha === payload;
 
       return {
         ...state,
-        verifyCodeErrMsg: verifyCodeValid ? '' : '验证码错误',
+        captchaErrMsg: captchaValid ? '' : '验证码错误',
       };
     default:
       return {
@@ -101,7 +102,7 @@ const loginInfoReducer: LoginInfoReducer = (state: LoginInfo, action: LoginInfoR
  * 获取验证码
  * @returns
  */
-const VerifyCodeTimer = ({ disabled }: { disabled: boolean }) => {
+const CaptchaTimer = ({ disabled, email }: { disabled: boolean; email: string }) => {
   const [countdown, setCountdown] = useState<number>(null!);
   const interval = useRef<any>(null);
 
@@ -132,15 +133,27 @@ const VerifyCodeTimer = ({ disabled }: { disabled: boolean }) => {
     };
   }, []);
 
-  const sendVerifyCode = () => {
+  const sendCaptcha = () => {
     setCountdown(60);
+
+    sendCaptchaApi(email).then(
+      async (resp) => {
+        console.log('shaw resp', resp);
+
+        const res = await resp.json();
+        console.log('shaw res', res);
+      },
+      (err) => {
+        console.log('shaw err', err);
+      },
+    );
   };
 
   return (
     <button
       className="w-28 h-10 ml-4 px-3 flex-none border-2 rounded-lg disabled:cursor-not-allowed"
       disabled={disabled || !!countdown}
-      onClick={sendVerifyCode}
+      onClick={sendCaptcha}
     >
       {!countdown ? '获取验证码' : countdown + 's'}
     </button>
@@ -151,15 +164,15 @@ const VerifyCodeTimer = ({ disabled }: { disabled: boolean }) => {
  * 验证码登录
  * @returns
  */
-const VerifyCodeLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
+const CaptchaLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
   const [loginInfo, loginInfoDispatch] = useReducer<LoginInfoReducer, LoginInfo>(
     loginInfoReducer,
-    { ...defaultVerifyCodeState },
-    () => ({ ...defaultVerifyCodeState }),
+    { ...defaultCaptchaState },
+    () => ({ ...defaultCaptchaState }),
   );
 
   const emailValid: boolean = !!loginInfo.email && !loginInfo.emailErrMsg;
-  const valid: boolean = emailValid && !!loginInfo.verifyCode && !loginInfo.verifyCodeErrMsg;
+  const valid: boolean = emailValid && !!loginInfo.captcha && !loginInfo.captchaErrMsg;
 
   const submit = (e: MouseEvent) => {
     e.preventDefault();
@@ -167,7 +180,7 @@ const VerifyCodeLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
     if (valid) {
       login({
         email: loginInfo.email,
-        verifyCode: loginInfo.verifyCode,
+        captcha: loginInfo.captcha,
       });
     } else {
       loginInfoDispatch({ type: 'validate' });
@@ -197,18 +210,18 @@ const VerifyCodeLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
         <input
           className={cn(
             'w-full h-10 pl-3 pr-1 py-2 rounded-lg bg-[#e5e5e5]/15 text-white/60 border-2 hidden sm:block outline-none focus:text-white focus:border-2',
-            loginInfo.verifyCodeErrMsg ? 'border-rose-400' : 'focus:border-neutral-400',
+            loginInfo.captchaErrMsg ? 'border-rose-400' : 'focus:border-neutral-400',
           )}
           type="text"
           placeholder="验证码"
-          onChange={(e) => loginInfoDispatch({ type: 'changeVerifyCode', payload: e.target.value })}
+          onChange={(e) => loginInfoDispatch({ type: 'changeCaptcha', payload: e.target.value })}
         />
 
-        <VerifyCodeTimer disabled={!emailValid} />
+        <CaptchaTimer disabled={!emailValid} email={loginInfo.email} />
 
-        {loginInfo.verifyCodeErrMsg ? (
+        {loginInfo.captchaErrMsg ? (
           <div className="absolute left-0 top-11 text-rose-400 text-xs">
-            {loginInfo.verifyCodeErrMsg}
+            {loginInfo.captchaErrMsg}
           </div>
         ) : null}
       </div>
@@ -246,7 +259,7 @@ const PasswordLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
     if (valid) {
       login({
         email: loginInfo.email,
-        verifyCode: loginInfo.password,
+        captcha: loginInfo.password,
       });
     } else {
       loginInfoDispatch({ type: 'validate' });
@@ -301,7 +314,7 @@ const PasswordLogin = ({ login }: { login: (state: LoginInfo) => void }) => {
 };
 
 const LoginPage: FC = () => {
-  const [loginType, setLoginType] = useState<LoginType>(LoginType.VERIFY_CODE);
+  const [loginType, setLoginType] = useState<LoginType>(LoginType.CAPTCHA);
 
   const login = (state: LoginInfo) => {
     console.log('state', state);
@@ -326,9 +339,9 @@ const LoginPage: FC = () => {
                   <span
                     className={cn(
                       'px-2 leading-6 rounded-sm transition-colors cursor-pointer',
-                      loginType === LoginType.VERIFY_CODE ? 'bg-gray-600' : '',
+                      loginType === LoginType.CAPTCHA ? 'bg-gray-600' : '',
                     )}
-                    onClick={() => setLoginType(LoginType.VERIFY_CODE)}
+                    onClick={() => setLoginType(LoginType.CAPTCHA)}
                   >
                     验证码
                   </span>
@@ -345,8 +358,8 @@ const LoginPage: FC = () => {
               </div>
 
               {/* 登录信息 */}
-              {loginType === LoginType.VERIFY_CODE ? (
-                <VerifyCodeLogin login={login} />
+              {loginType === LoginType.CAPTCHA ? (
+                <CaptchaLogin login={login} />
               ) : (
                 <PasswordLogin login={login} />
               )}
