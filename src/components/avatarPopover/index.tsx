@@ -9,14 +9,26 @@ import {
   AiOutlineSetting,
   AiOutlinePoweroff,
 } from 'react-icons/ai';
+import { useRouter } from 'next/navigation';
 
 import { Avatar } from '@/components/common/Avatar';
 import { Menu, MenuItem } from '@/components/menu';
+import { useAuthStore } from '@/store/authStore';
+import { PATHS } from '@/utils/constants';
 
 const AvatarPopoverContent: FC = () => {
+  const { logout } = useAuthStore();
+  const router = useRouter();
+
   const menuItemTwStyle = `flex items-center`;
   const testHandle = () => {
     console.log('Your dashboard');
+  };
+
+  const signoutHandle = () => {
+    logout(() => {
+      router.push(PATHS.LOGIN);
+    });
   };
 
   return (
@@ -43,7 +55,7 @@ const AvatarPopoverContent: FC = () => {
         </MenuItem>
       </Menu>
       <Menu topLine>
-        <MenuItem className={menuItemTwStyle}>
+        <MenuItem className={menuItemTwStyle} onClick={signoutHandle}>
           <AiOutlinePoweroff className="mx-2" />
           Sign out
         </MenuItem>

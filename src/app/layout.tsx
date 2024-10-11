@@ -26,6 +26,7 @@ export default function RootLayout({
     // 首先，从zustand获取登录信息
     let auth = getAuth();
 
+    // TODO 使用localstorage存放登录信息不合适
     // 如果zustand中没有登录信息，则从localStorage中读取
     if (!auth.access_token) {
       const storagedAuth = localStorage.getItem(STORAGE_KEY_AUTH);
@@ -39,8 +40,8 @@ export default function RootLayout({
     }
 
     if (!PATHS_SKIPPED_AUTH.includes(pathname) && !auth.access_token) {
-      console.log('shaw pathname', pathname);
       // 当前路由需登录但未登录时，跳转到登录页
+      // BUG 跳转时，会短暂显示目标页，再跳转到登录页
       router.push(`${PATHS.LOGIN}?redirect=${pathname}`);
     }
   }, [pathname]);

@@ -163,13 +163,14 @@ const CaptchaTimer = ({ disabled, email }: { disabled: boolean; email: string })
 
     sendCaptchaApi(email).then(
       async (resp) => {
-        console.log('shaw sendCaptchaApi resp', resp);
-
         const res = await resp.json();
-        console.log('shaw sendCaptchaApi res', res);
+        console.log('sendCaptchaApi res', res);
+
+        // TODO 发送成功提示
       },
       (err) => {
-        console.log('shaw sendCaptchaApi err', err);
+        console.error('sendCaptchaApi err', err);
+        // TODO 发送失败提示
       },
     );
   };
@@ -369,22 +370,23 @@ const LoginPage: FC = () => {
     if (loginType === LoginType.CAPTCHA) {
       await loginEmailApi(state.email, state.captcha!).then(
         async (resp) => {
-          console.log('shaw loginEmailApi resp', resp);
-
           const res = await resp.json();
-          console.log('shaw loginEmailApi res', res);
+          console.log('loginEmailApi res', res);
 
           if (res.code === 200) {
             // 登录成功
+            // TODO 成功提示
             setAuth(res.data);
             router.push(searchParams.get('redirect') ?? '/');
           } else {
             // 登录失败
-            console.log('shaw loginEmailApi err', res.message);
+            // TODO 失败提示
+            console.error('loginEmailApi err', res.message);
           }
         },
         (err) => {
-          console.log('shaw loginEmailApi err', err);
+          console.error('loginEmailApi err', err);
+          // TODO 失败提示
         },
       );
     }
@@ -396,7 +398,7 @@ const LoginPage: FC = () => {
         <Header title={PROJECT_Name} icons={[]} router={[]} />
 
         <main className="LoginPageMain w-full h-full flex-1 flex">
-          <div className="LoginPageBanner w-4/6 h-full px-96 flex justify-center items-center">
+          <div className="LoginPageBanner w-4/6 h-full px-60 flex justify-center items-center">
             <img alt="preview" className="object-contain" src="/images/preview.png"></img>
           </div>
           <div className="LoginPageForm w-2/6 min-w-[375px] h-full px-[4px] flex items-center">
