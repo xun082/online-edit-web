@@ -139,6 +139,8 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const ydoc = useMemo(() => new Y.Doc(), []);
 
   useEffect(() => {
+    if (!ydoc) return;
+
     //先用monaco官方的
     const provider = new WebsocketProvider('wss://demos.yjs.dev/ws', 'monaco-react-2', ydoc);
     setProvider(provider);
@@ -174,7 +176,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   }, [ydoc]);
 
   useEffect(() => {
-    if (provider === null || thisEditor === null) {
+    if (provider === null || thisEditor === null || thisEditor.getModel() === null) {
       return;
     }
 
