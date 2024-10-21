@@ -50,7 +50,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { setModels, models } = useModelsStore();
   const { activeMap, setActiveModel } = useActiveModelStore();
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
-  const thisEditor = getEditor(editorId);
+  const thisEditor = getEditor(editorId) as EditorWithThemeService;
   const currentModel = activeMap[editorId];
 
   const [_editor, _setEditor] = useState<monaco.editor.IStandaloneCodeEditor | undefined>();
