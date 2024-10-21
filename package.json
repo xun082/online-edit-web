@@ -63,7 +63,7 @@
     "xterm-addon-webgl": "^0.16.0",
     "y-monaco": "^0.1.6",
     "y-websocket": "^2.0.4",
-    "yjs": "^13.6.20",
+    "yjs": "^13.6.19",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
