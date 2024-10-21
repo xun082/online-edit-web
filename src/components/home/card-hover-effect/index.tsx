@@ -16,7 +16,7 @@ export function Card({ className, children }: { className?: string; children: Re
       )}
     >
       <div className="relative z-50">
-        <div className="p-4">{children}</div>
+        <div className="p-4 flex space-x-4">{children}</div>
       </div>
     </div>
   );
@@ -29,9 +29,7 @@ export function CardTitle({
   className?: string;
   children: React.ReactNode;
 }) {
-  return (
-    <h4 className={cn('text-zinc-100 font-bold tracking-wide mt-4', className)}>{children}</h4>
-  );
+  return <h4 className={cn('text-zinc-100 font-bold tracking-wide', className)}>{children}</h4>;
 }
 
 export function CardDescription({
@@ -55,7 +53,7 @@ export function HoverEffect({
   items: {
     title: ReactNode;
     description: ReactNode;
-    icon: ReactNode;
+    icon: string;
     link: string;
   }[];
   className?: string;
@@ -63,10 +61,10 @@ export function HoverEffect({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div className={cn('grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3  py-10', className)}>
+    <div className={cn('grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4  py-10', className)}>
       {items.map((item, idx) => (
         <Link
-          key={item?.link}
+          key={item?.link + idx}
           className="relative block w-full h-full p-2 group"
           href={item?.link}
           onMouseEnter={() => setHoveredIndex(idx)}
@@ -90,11 +88,11 @@ export function HoverEffect({
             )}
           </AnimatePresence>
           <Card>
-            <CardTitle className="flex flex-col space-y-4">
-              {item.icon}
-              <span>{item.title}</span>
-            </CardTitle>
-            <CardDescription>{item.description}</CardDescription>
+            <img className="rounded-[6px] w-1/4" src={item.icon} />
+            <div className="flex flex-col justify-center w-3/4">
+              <CardTitle>{item.title}</CardTitle>
+              <CardDescription>{item.description}</CardDescription>
+            </div>
           </Card>
         </Link>
       ))}

@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
+import localforage from 'localforage';
 
-interface DirectoryInterface {
+export interface DirectoryInterface {
   id: string;
   filename: string;
   path: string;
@@ -145,22 +146,22 @@ interface FileDataActions {
     status?: string,
   ) => void;
   updateItem: (id: string, updatedProperties: Partial<DirectoryInterface>) => void;
-  initFileData: (projectId: string) => DirectoryInterface[] | null;
+  initFileData: (projectId: string) => Promise<DirectoryInterface[] | null>;
   clearFileData: (resist?: boolean, projectId?: string) => void;
 }
 
 export const useUploadFileDataStore = create<FileDataState & FileDataActions>((set, get) => ({
   fileData: null,
   selected: '',
-  initFileData: (projectId: string) => {
-    console.log(projectId);
+  initFileData: async (projectId: string) => {
+    // console.log(projectId);
 
-    const storedData = localStorage.getItem(projectId);
+    const storedData = await localforage.getItem(projectId);
 
     if (storedData) {
-      const { projectFileData } = JSON.parse(storedData);
-      console.log(storedData);
-      console.log(projectFileData);
+      const { projectFileData } = JSON.parse(storedData as string);
+      // console.log(storedData);
+      // console.log(projectFileData);
       set({ fileData: projectFileData });
 
       return projectFileData;
@@ -169,17 +170,17 @@ export const useUploadFileDataStore = create<FileDataState & FileDataActions>((s
     }
   },
 
-  clearFileData: (resist = false, projectId = '') => {
+  clearFileData: async (resist = false, projectId = '') => {
     if (resist) {
-      const storedData = JSON.parse(localStorage.getItem(projectId) ?? '') ?? '';
-      console.log(storedData);
+      const storedData = JSON.parse((await localforage.getItem(projectId)) ?? '') ?? '';
+      // console.log(storedData);
 
       if (storedData !== '') {
         const newData = {
           ...storedData,
           projectFileData: get().fileData,
         };
-        localStorage.setItem(projectId, JSON.stringify(newData));
+        await localforage.setItem(projectId, JSON.stringify(newData));
       }
     }
   },

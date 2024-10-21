@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import localforage from 'localforage';
 
 import {
   templateList,
@@ -144,9 +145,10 @@ const TemplateCard: React.FC<{ title: string; fileData: string; icon: string }> 
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      localStorage.setItem(projectId, JSON.stringify(projectInfo));
-      setFileData(fileData as unknown as DirectoryInterface[]);
-      router.push(`edit/${projectId}/file`);
+      localforage.setItem(projectId, JSON.stringify(projectInfo)).then(() => {
+        setFileData(fileData as unknown as DirectoryInterface[]);
+        router.push(`edit/${projectId}/file`);
+      });
     } catch (error) {
       console.error('Failed to create project:', error);
     }

@@ -10,6 +10,9 @@ import { shikiToMonaco } from '@shikijs/monaco';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { MonacoBinding } from 'y-monaco';
+import parserBabel from 'prettier/plugins/babel';
+import parserEstree from 'prettier/plugins/estree';
+// import parserTypescript from 'prettier/plugins/typescript';
 
 import {
   useEditorStore,
@@ -22,11 +25,13 @@ import { TabBar } from '@/components/edit/tabbar';
 import LoadingComponent from '@/components/edit/edit-loading';
 import { useWebContainerStore } from '@/store/webContainerStore';
 import { useUploadFileDataStore } from '@/store/uploadFileDataStore';
-import { cn, writeFile } from '@/utils';
+import { cn, writeFile, MONACO_THEME_ARRAY } from '@/utils';
+import { getPrettierConfig } from '@/utils/file';
 
 interface CodeEditorProps {
   editorId: number;
 }
+export type EditorWithThemeService = monaco.editor.IStandaloneCodeEditor & { _themeService: any };
 
 interface CollaborateUser {
   name: string;
@@ -39,7 +44,7 @@ interface CollaborateUser {
 
 export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { webContainerInstance } = useWebContainerStore();
-  const { updateItem } = useUploadFileDataStore();
+  const { updateItem, fileData } = useUploadFileDataStore();
   const { getEditor, setEditor } = useEditorStore();
   const { setMonaco } = useMonacoStore();
   const { setModels, models } = useModelsStore();
@@ -47,7 +52,9 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
   const thisEditor = getEditor(editorId);
   const currentModel = activeMap[editorId];
-  // console.log(thisEditor);
+
+  const [_editor, _setEditor] = useState<monaco.editor.IStandaloneCodeEditor | undefined>();
+
   // used for dnd
   // console.log(activeMap, activeEditorId);
   // 当前编辑model的path，用于与webContainer文件系统同步
@@ -69,6 +76,49 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
     border: isOver ? '1px #3b82f6 solid' : undefined,
   };
 
+  _editor &&
+    _editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+      const prettierValue = getPrettierConfig(fileData);
+      formatWithPrettier(_editor, prettierValue);
+    });
+
+  // 格式化代码
+  const formatWithPrettier = async (
+    item: editor.IStandaloneCodeEditor,
+    prettierConfig: Record<string, any>,
+  ) => {
+    if (!item) return;
+
+    try {
+      const model = item.getModel();
+      if (!model) return;
+
+      const unformattedCode = model.getValue();
+      const prettier = await import('prettier/standalone');
+
+      // 使用找到的 Prettier 配置
+      const formattedCode = await prettier.format(unformattedCode, {
+        parser: 'babel',
+        plugins: [parserBabel, parserEstree],
+        ...prettierConfig,
+      });
+
+      // 应用格式化后的代码
+      model.pushEditOperations(
+        [],
+        [
+          {
+            range: model.getFullModelRange(),
+            text: formattedCode,
+          },
+        ],
+        () => null,
+      );
+    } catch (error) {
+      console.error('格式化代码时出错:', error);
+    }
+  };
+
   const handleEditorDidMount = useCallback(
     async (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
       monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -87,7 +137,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
       setMonaco(editorId, monaco);
 
       const highlighter = await createHighlighter({
-        themes: ['vitesse-dark', 'vitesse-light'],
+        themes: MONACO_THEME_ARRAY,
         langs: ['javascript', 'typescript', 'vue', 'jsx'],
       });
 
@@ -99,6 +149,17 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
       // Register the themes from Shiki, and provide syntax highlighting for Monaco.
       shikiToMonaco(highlighter, monaco);
+
+      const localTheme = localStorage.getItem('localTheme');
+
+      if (localTheme && MONACO_THEME_ARRAY.includes(localTheme)) {
+        editor?.updateOptions({ theme: localTheme });
+      }
+
+      localStorage.setItem(
+        'localTheme',
+        (editor as EditorWithThemeService)._themeService._theme.themeName,
+      );
 
       if (editorId !== 0) {
         const newModel = activeEditorId < 1 ? activeMap[0] : activeMap[1];
@@ -125,6 +186,8 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
       editor.onDidFocusEditorText(() => {
         setActiveEditor(editor, editorId);
       });
+
+      _setEditor(editor);
 
       loader.init().then(/* ... */);
     },
@@ -206,9 +269,10 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
       <div className=" h-[3.5vh] w-full bg-[#202327]/80">
         <TabBar editorId={editorId} />
       </div>
+
       <Editor
         className={'editor'}
-        theme={'vitesse-dark'}
+        theme="dark-plus"
         options={{
           minimap: { enabled: true },
           fontSize: 16,

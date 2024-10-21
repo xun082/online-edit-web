@@ -52,6 +52,8 @@ const config: Config = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'hashed-text':
+          'repeating-linear-gradient(45deg,#fafafa,#fafafa 1px,transparent 0,transparent 6px)',
       },
       keyframes: {
         spotlight: {
@@ -134,8 +136,11 @@ const config: Config = {
         snakeBorderBottom: 'snakeBorderBottom 2s linear infinite',
         snakeBorderRight: 'snakeBorderRight 2s linear infinite',
       },
+      fontFamily: {
+        bmjua: ['bmjua', 'sans-serif'],
+      },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar')],
 };
 export default config;

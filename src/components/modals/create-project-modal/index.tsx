@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { v4 as uuidv4 } from 'uuid';
+import localforage from 'localforage';
 
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -53,7 +54,7 @@ export const CreateProjectModal = () => {
     }
   };
 
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     if (disAllowCreate) return;
 
     try {
@@ -79,7 +80,7 @@ export const CreateProjectModal = () => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      localStorage.setItem(projectId, JSON.stringify(projectInfo));
+      await localforage.setItem(projectId, JSON.stringify(projectInfo));
       setFileData(uploadFileState);
       onClose();
       router.push(`edit/${projectId}/file`);

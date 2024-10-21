@@ -3,51 +3,63 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { FaGithub } from 'react-icons/fa';
 import { RiTwitterXFill, RiRocketLine } from 'react-icons/ri';
-import { PiAcorn } from 'react-icons/pi';
 
 import { Header } from '@/components/home/header';
 import { HoverEffect } from '@/components/home/card-hover-effect';
 import { ContainerScroll } from '@/components/home/container-scroll-animation';
 import { BackgroundBeams } from '@/components/home/background-beams';
 import { Footer } from '@/components/home/footer';
+import { UseSteps } from '@/components/home/useSteps';
 import { PROJECT_Name, PATHS } from '@/utils';
 
 const projects = [
   {
-    icon: <PiAcorn className="w-8 h-8" />,
-    title: 'title1',
-    description: 'desc1!',
+    icon: '/react.svg',
+    title: 'React',
+    description: 'JavaScript',
     link: '/a',
   },
   {
-    icon: <PiAcorn className="w-8 h-8" />,
-    title: 'title2',
-    description: 'desc2',
+    icon: '/react.svg',
+    title: 'React',
+    description: 'TypeScript',
     link: '/b',
   },
   {
-    icon: <PiAcorn className="w-8 h-8" />,
-    title: 'title3',
-    description: 'desc3',
+    icon: '/vue.svg',
+    title: 'Vue',
+    description: 'JavaScript',
     link: '/c',
   },
   {
-    icon: <PiAcorn className="w-8 h-8" />,
-    title: 'title4',
-    description: 'desc4',
+    icon: '/vue.svg',
+    title: 'Vue',
+    description: 'TypeScript',
     link: '/d',
   },
   {
-    icon: <PiAcorn className="w-8 h-8" />,
-    title: 'title5',
-    description: 'desc5',
+    icon: '/preact.svg',
+    title: 'Preact',
+    description: 'JavaScript',
     link: '/e',
   },
   {
-    icon: <PiAcorn className="w-8 h-8" />,
-    title: 'title6',
-    description: 'desc6',
+    icon: '/preact.svg',
+    title: 'Preact',
+    description: 'TypeScript',
     link: '/f',
+  },
+  {
+    icon: '/node.svg',
+    title: 'Vanilla',
+    description: 'JavaScript',
+    link: '/g',
+  },
+  {
+    icon: '/node.svg',
+    title: 'Vanilla',
+    description: 'TypeScript',
+    link: '/h',
   },
 ];
 
@@ -64,11 +76,11 @@ const socialIcons = [
 
 const router = [
   {
-    title: 'page1',
-    link: '/a',
+    title: 'Docs',
+    link: '/a1',
   },
   {
-    title: 'page2',
+    title: 'Blog',
     link: '/b',
   },
 ];
@@ -112,7 +124,7 @@ const Home: NextPage = () => {
                     '0 2px 15px -3px var(--next-devtools-widget-shadow), 0 4px 6px -4px var(--next-devtools-widget-shadow)',
                 }}
               >
-                <img alt="preview" className="object-contain" src="/images/preview.png" />
+                <img alt="preview" className="object-contain" src="/images/home.png" />
               </div>
             }
             titleComponent={
@@ -131,13 +143,21 @@ const Home: NextPage = () => {
         </header>
 
         <main className="container mt-12 mx-auto bg-[#111111]">
+          <h3 className="text-white mx-auto text-center text-3xl">
+            Boot a shareable environment in <strong className="text-[#1779ff]">milliseconds</strong>
+          </h3>
           <HoverEffect items={projects} />
         </main>
-
+        <section className="container relative mx-auto mb-20 space-y-6">
+          <hr className="border-t border-gray-300 h-px top-[-1em] absolute w-full border-dashed" />
+          <div className="flex ">
+            <UseSteps />
+          </div>
+        </section>
         <div className="container mx-auto mt-20 mb-20 space-y-6">
           <div className="text-center">{getStartedButton}</div>
         </div>
-        <Footer />
+        <Footer icons={socialIcons} />
       </div>
     </>
   );

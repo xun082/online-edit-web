@@ -2,7 +2,16 @@ import * as minimatch from 'minimatch';
 
 import { TreeViewElement } from '@/components/extension/tree-view-api';
 import { modelsType } from '@/store/editorStore';
-import { FilterFiles } from '@/utils/match';
+import { FilterFiles, MatchDetail, MatchResult, TreeMatchResult } from '@/utils/match';
+
+export interface RenderedListItem extends Partial<MatchResult & MatchDetail> {
+  kind: TreeViewElement['kind'] | 'match';
+}
+
+export interface RenderedTreeItem extends Partial<TreeMatchResult & MatchDetail> {
+  level: number;
+  kind: TreeViewElement['kind'] | 'match';
+}
 
 /**
  * 获取字符串中匹配关键字前后的子字符串,用作高光。
@@ -136,12 +145,12 @@ export function combinePatterns(
 
   // 读取 .gitignore 文件中的排除模式
   let excludePatternsFromGitIgnore: Set<string> | null = null;
-  let includePatternsFromGitIgnore: Set<string> | null = null;
+  // let includePatternsFromGitIgnore: Set<string> | null = null;
 
   if (useGitignoreFile) {
     const gitignoreFileFilter = readExcludeFileInRootDir(data);
     excludePatternsFromGitIgnore = gitignoreFileFilter.exclude;
-    includePatternsFromGitIgnore = gitignoreFileFilter.include;
+    // includePatternsFromGitIgnore = gitignoreFileFilter.include;
 
     excludePatternsFromGitIgnore.forEach((pattern) => {
       const regex = minimatch.makeRe(pattern, { nocomment: true, matchBase: true });
@@ -150,13 +159,14 @@ export function combinePatterns(
         excludePatterns.push(new RegExp(regex));
       }
     });
-    includePatternsFromGitIgnore.forEach((pattern) => {
-      const regex = minimatch.makeRe(pattern, { nocomment: true, matchBase: true });
 
-      if (regex) {
-        includePatterns?.push(new RegExp(regex));
-      }
-    });
+    // includePatternsFromGitIgnore.forEach((pattern) => {
+    //   const regex = minimatch.makeRe(pattern, { nocomment: true, matchBase: true });
+
+    //   if (regex) {
+    //     includePatterns?.push(new RegExp(regex));
+    //   }
+    // });
   }
 
   // 添加通过 excludeFiles 选项提供的排除模式

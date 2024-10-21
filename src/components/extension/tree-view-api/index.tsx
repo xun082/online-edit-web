@@ -236,6 +236,8 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
     const Ele = empty ? 'div' : AccordionPrimitive.Item;
     const Trigger = empty ? 'div' : AccordionPrimitive.Trigger;
     const Content = empty ? 'div' : AccordionPrimitive.Content;
+    const openElement = openIcon ?? <FolderOpenIcon className="h-3 w-3" />;
+    const closeElement = closeIcon ?? <FolderIcon className="h-3 w-3" />;
 
     return (
       <Ele ref={ref} {...props} value={value} className="relative overflow-hidden h-full ">
@@ -257,9 +259,7 @@ const Folder = forwardRef<HTMLDivElement, FolderProps & React.HTMLAttributes<HTM
           }}
         >
           <div className=" flex items-center justify-start gap-x-1">
-            {expendedItems?.includes(value)
-              ? (openIcon ?? <FolderOpenIcon className="h-3 w-3" />)
-              : (closeIcon ?? <FolderIcon className="h-3 w-3" />)}
+            {expendedItems?.includes(value) ? openElement : closeElement}
             <span>{element}</span>
           </div>
           <div className=" flex gap-x-1 items-center mr-1">
