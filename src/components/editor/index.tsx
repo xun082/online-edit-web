@@ -1,12 +1,15 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Editor, { Monaco, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor';
 import { useDroppable } from '@dnd-kit/core';
 import { createHighlighter } from 'shiki';
 import { shikiToMonaco } from '@shikijs/monaco';
+import * as Y from 'yjs';
+import { WebsocketProvider } from 'y-websocket';
+import { MonacoBinding } from 'y-monaco';
 import parserBabel from 'prettier/plugins/babel';
 import parserEstree from 'prettier/plugins/estree';
 // import parserTypescript from 'prettier/plugins/typescript';
@@ -30,6 +33,15 @@ interface CodeEditorProps {
 }
 export type EditorWithThemeService = monaco.editor.IStandaloneCodeEditor & { _themeService: any };
 
+interface CollaborateUser {
+  name: string;
+  color: string;
+  cursor: {
+    x: number;
+    y: number;
+  };
+}
+
 export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { webContainerInstance } = useWebContainerStore();
   const { updateItem, fileData } = useUploadFileDataStore();
@@ -38,7 +50,7 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
   const { setModels, models } = useModelsStore();
   const { activeMap, setActiveModel } = useActiveModelStore();
   const { activeEditorId, setActiveEditor } = useActiveEditorStore();
-  const thisEditor = getEditor(editorId);
+  const thisEditor = getEditor(editorId) as EditorWithThemeService;
   const currentModel = activeMap[editorId];
 
   const [_editor, _setEditor] = useState<monaco.editor.IStandaloneCodeEditor | undefined>();
@@ -49,6 +61,9 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
 
   const currentPath = (activeMap[editorId]?.model as any)?.path;
   const currentId = activeMap[editorId]?.model?.id;
+
+  const [, setUserInfo] = useState<Array<CollaborateUser>>([]);
+  const [provider, setProvider] = useState<WebsocketProvider>();
 
   const { isOver, setNodeRef } = useDroppable({
     id: editorId,
@@ -183,6 +198,64 @@ export default function CodeEditor({ editorId }: CodeEditorProps) {
     currentId && updateItem(currentId, { value });
     webContainerInstance && writeFile(currentPath, value, webContainerInstance);
   };
+
+  const ydoc = useMemo(() => new Y.Doc(), []);
+
+  useEffect(() => {
+    if (!ydoc) return;
+
+    //先用monaco官方的
+    const provider = new WebsocketProvider('wss://demos.yjs.dev/ws', 'monaco-react-2', ydoc);
+    setProvider(provider);
+
+    // 获取 provider 的 awareness 实例
+    const awareness = provider.awareness;
+
+    // 设置当前用户的状态
+    awareness.setLocalStateField('user', {
+      name: 'Alice', // 用户名，可以动态设置, 设置当前协作用户信息
+      color: '#ff0000', // 用户颜色
+      cursor: { x: 10, y: 20 }, // 光标位置信息
+    });
+
+    // 获取当前在线的用户信息
+    const getAllUsers = () => {
+      const userStates = Array.from(awareness.getStates().values()) as [CollaborateUser];
+      setUserInfo(userStates); // 更新用户状态到 state
+    };
+
+    // 初始化时获取所有在线用户
+    getAllUsers();
+
+    // 监听用户状态更新事件，当有用户加入、离开或更新状态时调用
+    awareness.on('update', () => {
+      getAllUsers();
+    });
+
+    // 清理函数，断开 WebSocket 连接
+    return () => {
+      provider.disconnect();
+    };
+  }, [ydoc]);
+
+  useEffect(() => {
+    if (provider === null || thisEditor === null || thisEditor.getModel() === null) {
+      return;
+    }
+
+    // Y.applyUpdate(ydoc, data) 这里可以把后台数据库存储的拿过来渲染
+
+    const binding = new MonacoBinding(
+      ydoc.getText('monaco'),
+      thisEditor.getModel()!,
+      new Set([thisEditor]),
+      provider?.awareness,
+    );
+
+    return () => {
+      binding.destroy();
+    };
+  }, [provider, thisEditor, ydoc]);
 
   return (
     <div

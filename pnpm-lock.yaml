@@ -142,13 +142,13 @@ importers:
         version: 0.16.0(xterm@5.3.0)
       y-monaco:
         specifier: ^0.1.6
-        version: 0.1.6(monaco-editor@0.50.0)(yjs@13.6.19)
+        version: 0.1.6(monaco-editor@0.50.0)(yjs@13.6.20)
       y-websocket:
         specifier: ^2.0.4
-        version: 2.0.4(yjs@13.6.19)
+        version: 2.0.4(yjs@13.6.20)
       yjs:
         specifier: ^13.6.19
-        version: 13.6.19
+        version: 13.6.20
       zustand:
         specifier: ^4.5.4
         version: 4.5.4(@types/react@18.3.3)(react@18.3.1)
@@ -6914,8 +6914,8 @@ packages:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
     engines: {node: '>=12'}
 
-  yjs@13.6.19:
-    resolution: {integrity: sha512-GNKw4mEUn5yWU2QPHRx8jppxmCm9KzbBhB4qJLUJFiiYD0g/tDVgXQ7aPkyh01YO28kbs2J/BEbWBagjuWyejw==}
+  yjs@13.6.20:
+    resolution: {integrity: sha512-Z2YZI+SYqK7XdWlloI3lhMiKnCdFCVC4PchpdO+mCYwtiTwncjUbnRK9R1JmkNfdmHyDXuWN3ibJAt0wsqTbLQ==}
     engines: {node: '>=16.0.0', npm: '>=8.0.0'}
 
   yocto-queue@0.1.0:
@@ -14508,33 +14508,33 @@ snapshots:
 
   xterm@5.3.0: {}
 
-  y-leveldb@0.1.2(yjs@13.6.19):
+  y-leveldb@0.1.2(yjs@13.6.20):
     dependencies:
       level: 6.0.1
       lib0: 0.2.98
-      yjs: 13.6.19
+      yjs: 13.6.20
     optional: true
 
-  y-monaco@0.1.6(monaco-editor@0.50.0)(yjs@13.6.19):
+  y-monaco@0.1.6(monaco-editor@0.50.0)(yjs@13.6.20):
     dependencies:
       lib0: 0.2.98
       monaco-editor: 0.50.0
-      yjs: 13.6.19
+      yjs: 13.6.20
 
-  y-protocols@1.0.6(yjs@13.6.19):
+  y-protocols@1.0.6(yjs@13.6.20):
     dependencies:
       lib0: 0.2.98
-      yjs: 13.6.19
+      yjs: 13.6.20
 
-  y-websocket@2.0.4(yjs@13.6.19):
+  y-websocket@2.0.4(yjs@13.6.20):
     dependencies:
       lib0: 0.2.98
       lodash.debounce: 4.0.8
-      y-protocols: 1.0.6(yjs@13.6.19)
-      yjs: 13.6.19
+      y-protocols: 1.0.6(yjs@13.6.20)
+      yjs: 13.6.20
     optionalDependencies:
       ws: 6.2.3
-      y-leveldb: 0.1.2(yjs@13.6.19)
+      y-leveldb: 0.1.2(yjs@13.6.20)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -14563,7 +14563,7 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 21.1.1
 
-  yjs@13.6.19:
+  yjs@13.6.20:
     dependencies:
       lib0: 0.2.98
 
