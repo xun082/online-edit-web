@@ -61,6 +61,9 @@
     "xterm-addon-fit": "^0.8.0",
     "xterm-addon-web-links": "^0.9.0",
     "xterm-addon-webgl": "^0.16.0",
+    "y-monaco": "^0.1.6",
+    "y-websocket": "^2.0.4",
+    "yjs": "^13.6.20",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
@@ -124,7 +127,7 @@
   },
   "engines": {
     "node": ">=18",
-    "pnpm": "9.4.0"
+    "pnpm": ">=9.0.0"
   },
   "engineStrict": true
 }
