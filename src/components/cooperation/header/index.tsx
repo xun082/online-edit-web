@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 
 import { CollaboratorAvatarList } from '@/components/cooperation/collaboratorAvatarList';
+import { useCooperationPerson } from '@/store/cooperationPersonStore';
 
 interface ProjectInfo {
   [key: string]: any;
@@ -11,14 +12,11 @@ interface HeaderProps {
   roomId: string;
 }
 
-const avatarUrls = [
-  'https://avatars.githubusercontent.com/u/16860528',
-  'https://avatars.githubusercontent.com/u/20110627',
-  'https://avatars.githubusercontent.com/u/106103625',
-  'https://avatars.githubusercontent.com/u/59228569',
-];
+const avatarUrls = ['https://avatars.githubusercontent.com/u/59228569'];
 
 export const CooperationHeader: React.FC<HeaderProps> = ({ roomId }) => {
+  const { getPersons } = useCooperationPerson();
+
   return (
     <header className=" relative flex flex-row items-center w-[100vw] justify-between bg-transparent py-6 z-[999]">
       <Link className=" text-white font-bold ml-3" href="/">
@@ -36,7 +34,12 @@ export const CooperationHeader: React.FC<HeaderProps> = ({ roomId }) => {
         {roomId}
       </div>
       <div className=" pr-20">
-        <CollaboratorAvatarList avatarUrls={avatarUrls} />
+        {getPersons().length > 0 && (
+          <CollaboratorAvatarList
+            avatarUrls={new Array(getPersons().length).fill(avatarUrls[0])}
+            avatarCount={getPersons().length}
+          />
+        )}
       </div>
     </header>
   );

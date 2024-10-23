@@ -11,3 +11,6 @@ export * from './zip';
 export * from './template';
 export * from './match';
 export * from './matchHelper';
+export * from './hexToRgba';
+export * from './throttle';
+export * from './createColorFromId';
