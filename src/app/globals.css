@@ -63,3 +63,12 @@ body,
   scrollbar-width: none; /* Firefox */
   overflow: -moz-scrollbars-none; /* Old Firefox */
 }
+
+.cursor {
+  position: fixed;
+  top: -17px;
+  left: -17px;
+  width: 35px;
+  height: 35px;
+  pointer-events: none;
+}
