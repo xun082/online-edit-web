@@ -386,6 +386,7 @@ const LoginPage: FC = () => {
             // 登录成功
             // TODO 成功提示
             setAuth(res.data);
+            localStorage.setItem('email', state.email);
             router.push(searchParams.get('redirect') ?? '/');
           } else {
             // 登录失败

@@ -8,22 +8,17 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['shiki'],
   },
-  async headers() {
-    return [
+  images: {
+    remotePatterns: [
       {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp',
-          },
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
-          },
-        ],
+        protocol: 'https',
+        hostname: '**',
       },
-    ];
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
   },
 };
 

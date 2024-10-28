@@ -17,15 +17,18 @@ const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
 type CooperationEditorProps = {
   roomId: string;
+  userInfo: Record<string, any>;
 };
 
-export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId }) => {
-  const ydoc = useMemo(() => new Y.Doc(), []);
+export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo }) => {
+  const ydoc = useMemo(() => new Y.Doc({}), []);
   const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [provider, setProvider] = useState<WebsocketProvider | null>(null);
   const [, setBinding] = useState<MonacoBinding | null>(null);
   const [awareness, setAwareness] = useState<any[]>();
-  const { addPersons, removePersons } = useCooperationPerson();
+  const { setPersons } = useCooperationPerson();
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (roomId == null) {
@@ -45,7 +48,6 @@ export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId }) 
     };
   }, [ydoc, roomId]);
 
-  // This effect manages the lifetime of the editor binding
   useEffect(() => {
     if (provider == null || editor == null || roomId === null) {
       return;
@@ -55,6 +57,7 @@ export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId }) 
       x: undefined,
       y: undefined,
     });
+    provider.awareness.setLocalStateField('userInfo', userInfo);
 
     const binding = new MonacoBinding(
       ydoc.getText(),
@@ -81,7 +84,6 @@ export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId }) 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseout', handleMouseout);
 
-    // Create a single <style> element on mount
     const styleElement = document.createElement('style');
     document.head.appendChild(styleElement);
 
@@ -96,44 +98,71 @@ export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId }) 
         added: Array<number>;
         removed: Array<number>;
       }) => {
-        type UserAwarenessData = Map<number, { firebaseUserID: string; selection: any }>;
+        type UserAwarenessData = Map<number, Record<any, any>>;
 
         let awarenessState = provider.awareness.getStates() as UserAwarenessData;
         setAwareness(Array.from(awarenessState));
 
         let newStyles = '';
-        addPersons(added.filter((id) => id !== ydoc.clientID));
-        addPersons(updated.filter((id) => id !== ydoc.clientID));
-        removePersons(removed.filter((id) => id !== ydoc.clientID));
+        // 如果一个用户打开2个标签也要处理为一个
+        const emails = new Set();
 
-        for (let addedUserID of updated) {
-          if (addedUserID === ydoc.clientID) return;
+        const updateUsers = (userIds: Array<number>, action: 'add' | 'remove') => {
+          userIds.forEach((id) => {
+            const user = awarenessState.get(id);
 
+            if (user && user.userInfo?.email) {
+              const email = user.userInfo.email;
+
+              if (action === 'add') {
+                emails.add(email);
+                setPersons(Array.from(emails));
+              } else {
+                emails.delete(email);
+                setPersons(Array.from(emails));
+              }
+            }
+          });
+        };
+
+        updateUsers(added, 'add');
+        updateUsers(updated, 'add');
+        updateUsers(removed, 'remove');
+
+        for (let addedUserClientID of updated) {
+          if (addedUserClientID === ydoc.clientID) return;
+
+          let addUserId = '';
+          Array.from(awarenessState).forEach(([o, t]) => {
+            if (o === addedUserClientID) {
+              addUserId = t.userInfo?.email;
+            }
+          });
           newStyles += `
-          .yRemoteSelection-${addedUserID} {
-            background-color: ${createColorFromId(addedUserID)};
-            color: ${createColorFromId(addedUserID)};
-          }
-          .yRemoteSelectionHead-${addedUserID} {
-            position: relative;
-            border-left: 2px solid ${createColorFromId(addedUserID)};
-            border-top: 2px solid ${createColorFromId(addedUserID)};
-            border-bottom: 2px solid ${createColorFromId(addedUserID)};
-            height: 100%;
-            box-sizing: border-box;
-          }
-          .yRemoteSelectionHead-${addedUserID}::after {
-            position: absolute;
-            content: "用户${addedUserID}";
-            color: white;
-            background-color: ${hexToRgba(createColorFromId(addedUserID), 0.5)};
-            padding: 4px;
-            margin: 4px;
-            font-size: 12px;
-            left: 0;
-            top: 100%;
-          }
-        `;
+            .yRemoteSelection-${addedUserClientID} {
+              background-color: ${createColorFromId(addUserId)};
+              color: ${createColorFromId(addUserId)};
+            }
+            .yRemoteSelectionHead-${addedUserClientID} {
+              position: relative;
+              border-left: 2px solid ${createColorFromId(addUserId)};
+              border-top: 2px solid ${createColorFromId(addUserId)};
+              border-bottom: 2px solid ${createColorFromId(addUserId)};
+              height: 100%;
+              box-sizing: border-box;
+            }
+            .yRemoteSelectionHead-${addedUserClientID}::after {
+              position: absolute;
+              content: "用户${addUserId}";
+              color: white;
+              background-color: ${hexToRgba(createColorFromId(addUserId), 0.5)};
+              padding: 4px;
+              margin: 4px;
+              font-size: 12px;
+              left: 0;
+              top: 100%;
+            }
+          `;
         }
 
         styleElement.innerHTML += newStyles;
@@ -179,15 +208,17 @@ export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId }) 
           onMount={handleEditorDidMount}
         />
         {awareness
-          ?.filter(([id]) => id !== ydoc.clientID) // Filter out self
-          .filter(([, state]) => state.cursorLocation.x !== undefined) // Filter out users who have left the page
+          ?.filter(([id]) => id !== ydoc.clientID)
+          .filter(([, state]) => state.cursorLocation?.x !== undefined)
           .map(([id, state]) => {
             return (
               <Cursor
                 key={id}
-                color={createColorFromId(id)}
-                point={[state.cursorLocation.x, state.cursorLocation.y]}
-              ></Cursor>
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                color={createColorFromId(provider?.awareness.getStates().get(id).userInfo.email)}
+                point={[state.cursorLocation?.x, state.cursorLocation?.y]}
+              />
             );
           })}
       </div>

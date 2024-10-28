@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 interface CooperationPersonState {
   persons: number[];
@@ -8,6 +8,7 @@ interface CooperationPersonActions {
   addPersons: (newPersons: number[]) => void;
   removePersons: (personsToRemove: number[]) => void;
   getPersons: () => number[];
+  setPersons: (persons: any[]) => void;
 }
 
 export const useCooperationPerson = create<CooperationPersonState & CooperationPersonActions>(
@@ -28,6 +29,9 @@ export const useCooperationPerson = create<CooperationPersonState & CooperationP
 
     getPersons: () => {
       return get().persons;
+    },
+    setPersons: (persons) => {
+      set({ persons: persons });
     },
   }),
 );

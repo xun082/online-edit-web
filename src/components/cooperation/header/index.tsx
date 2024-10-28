@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 
-import { CollaboratorAvatarList } from '@/components/cooperation/collaboratorAvatarList';
+import { AnimatedTooltip } from '@/components/cooperation/avatarList';
 import { useCooperationPerson } from '@/store/cooperationPersonStore';
 
 interface ProjectInfo {
@@ -11,8 +11,6 @@ interface HeaderProps {
   roomInfo: ProjectInfo;
   roomId: string;
 }
-
-const avatarUrls = ['https://avatars.githubusercontent.com/u/59228569'];
 
 export const CooperationHeader: React.FC<HeaderProps> = ({ roomId }) => {
   const { getPersons } = useCooperationPerson();
@@ -33,11 +31,15 @@ export const CooperationHeader: React.FC<HeaderProps> = ({ roomId }) => {
       <div className=" flex text-white items-center justify-center w-full absolute leading-[5vh] font-[500] text-[16px] pointer-events-none">
         {roomId}
       </div>
-      <div className=" pr-20">
+      <div className=" pr-20 h-full">
         {getPersons().length > 0 && (
-          <CollaboratorAvatarList
-            avatarUrls={new Array(getPersons().length).fill(avatarUrls[0])}
-            avatarCount={getPersons().length}
+          <AnimatedTooltip
+            items={getPersons().map((item) => ({
+              id: item,
+              name: String(item),
+              designation: '',
+              image: `https://api.dicebear.com/9.x/lorelei/svg?seed=${item}`,
+            }))}
           />
         )}
       </div>
