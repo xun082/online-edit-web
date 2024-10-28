@@ -9,6 +9,7 @@ import { cn } from '@/utils';
 import { RouterDataList } from '@/utils';
 import { useModal } from '@/hooks/useModal';
 import { CreateProjectModal } from '@/components/modals/create-project-modal';
+import { CreateCoopertaionModal } from '@/components/modals/create-coopertaion-modal';
 
 const Sider: React.FC = () => {
   const currentPath = usePathname();
@@ -16,12 +17,18 @@ const Sider: React.FC = () => {
 
   return (
     <aside className="flex flex-col items-center justify-between py-5 z-[999] bg-[#181a1f] h-full">
-      <div className="flex items-center justify-center w-full pb-4 border-b border-[rgba(194,202,242,.08)]">
+      <div className="flex flex-col gap-y-4 items-center justify-center w-full pb-4 border-b border-[rgba(194,202,242,.08)]">
         <Button
           onClick={() => onOpen('createProject')}
           className="w-[15vw] h-[3.8vh] bg-[#387BFF] hover:bg-blue-700 text-white"
         >
           <span className="text-lg">＋</span> 项目
+        </Button>
+        <Button
+          onClick={() => onOpen('createCooperation')}
+          className="w-[15vw] h-[3.8vh] bg-[#387BFF] hover:bg-blue-700 text-white"
+        >
+          <span className="text-lg">＋</span>协同文档
         </Button>
       </div>
 
@@ -42,6 +49,7 @@ const Sider: React.FC = () => {
       </div>
 
       <CreateProjectModal />
+      <CreateCoopertaionModal />
     </aside>
   );
 };

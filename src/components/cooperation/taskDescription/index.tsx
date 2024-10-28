@@ -4,6 +4,7 @@ import * as monaco from 'monaco-editor';
 import { LuArrowRightCircle } from 'react-icons/lu';
 
 import LoadingComponent from '@/components/edit/edit-loading';
+import { ShareDocumentButton } from '@/components/cooperation/shareDocumentButton';
 import { useTaskStore } from '@/store/taskStore';
 
 type TaskDescriptionProps = object;
@@ -20,11 +21,12 @@ export const TaskDescription: React.FC<TaskDescriptionProps> = ({}) => {
 
   return (
     <div className=" w-full h-full relative flex flex-col overflow-hidden bg-[#181a1f]">
-      <div className=" flex items-center gap-x-1 h-12 w-full border-b border-white/20 px-4 py- cursor-pointer7">
-        <div className=" font-bold flex items-center text-sm rounded-sm p-3 pr-4 py-1 bg-[#2a2c35] cursor-pointer">
+      <div className=" flex items-center justify-between gap-x-1 h-12 w-full border-b border-white/20 px-4 py- cursor-pointer7">
+        <div className=" font-bold flex justify-around items-center text-sm rounded-sm p-3 pr-4 py-1 bg-[#2a2c35] cursor-pointer">
           <LuArrowRightCircle className=" mr-[6px] text-blue-500 font-semibold text-lg rotate-90" />
           {curTask?.title}
         </div>
+        <ShareDocumentButton shareUrl={window.location.href} />
       </div>
       <div className=" w-full flex-1">
         <Editor

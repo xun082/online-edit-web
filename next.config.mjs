@@ -8,6 +8,18 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['shiki'],
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
+  },
   async headers() {
     return [
       {
