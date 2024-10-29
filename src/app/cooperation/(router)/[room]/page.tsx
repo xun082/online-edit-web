@@ -2,12 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 
 import { TASKS } from '@/utils';
 import { CooperationHeader } from '@/components/cooperation/header';
 import { TaskList } from '@/components/cooperation/taskList';
 import { TaskDescription } from '@/components/cooperation/taskDescription';
-import { CooperationEditor } from '@/components/cooperation/cooperationEditor';
+
+const CooperationEditor = dynamic(() => import('@/components/cooperation/cooperationEditor'), {
+  ssr: false,
+});
 
 interface CooperationPageProps {
   params: any;

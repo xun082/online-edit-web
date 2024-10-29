@@ -20,7 +20,7 @@ type CooperationEditorProps = {
   userInfo: Record<string, any>;
 };
 
-export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo }) => {
+const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo }) => {
   const ydoc = useMemo(() => new Y.Doc({}), []);
   const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [provider, setProvider] = useState<WebsocketProvider | null>(null);
@@ -230,3 +230,5 @@ export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, us
     </div>
   );
 };
+
+export default CooperationEditor;
