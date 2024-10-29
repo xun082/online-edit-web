@@ -35,6 +35,15 @@ const nextConfig = {
           },
         ],
       },
+      {
+        source: '/cooperation/:slug*',
+        headers: [
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'unsafe-none',
+          },
+        ],
+      },
     ];
   },
 };
