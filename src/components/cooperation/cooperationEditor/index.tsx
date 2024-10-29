@@ -47,9 +47,19 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
     );
     setProvider(provider);
 
+    const handleBeforeUnload = () => {
+      provider.awareness.setLocalStateField('cursorLocation', {
+        x: undefined,
+        y: undefined,
+      });
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     return () => {
       provider?.destroy();
       ydoc.destroy();
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [ydoc, roomId]);
 
@@ -73,12 +83,24 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
     setBinding(binding);
 
     const handleMouseMove = throttle((e: MouseEvent) => {
-      provider.awareness.setLocalStateField('cursorLocation', {
-        x: e.clientX,
-        y: e.clientY,
-      });
-    }, 5);
+      const { clientX, clientY } = e;
+      const { innerWidth, innerHeight } = window;
 
+      const isNearEdge =
+        clientX < 10 || clientX > innerWidth - 10 || clientY < 10 || clientY > innerHeight - 10;
+
+      if (isNearEdge) {
+        provider.awareness.setLocalStateField('cursorLocation', {
+          x: undefined,
+          y: undefined,
+        });
+      } else {
+        provider.awareness.setLocalStateField('cursorLocation', {
+          x: clientX,
+          y: clientY,
+        });
+      }
+    }, 10);
     const handleMouseout = () => {
       provider.awareness.setLocalStateField('cursorLocation', {
         x: undefined,
@@ -107,6 +129,7 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
 
         let awarenessState = provider.awareness.getStates() as UserAwarenessData;
         setAwareness(Array.from(awarenessState));
+        console.log('awarenessState', awarenessState);
 
         let newStyles = '';
         // 如果一个用户打开2个标签也要处理为一个
