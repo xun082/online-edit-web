@@ -15,7 +15,8 @@
     "format:ci": "prettier --list-different \"**/*.{ts,tsx,js,jsx}\"",
     "test": "vitest",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "ps": "pm2 start ecosystem.config.cjs"
   },
   "keywords": [],
   "author": "Moment",

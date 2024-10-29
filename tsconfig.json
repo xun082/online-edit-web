@@ -31,7 +31,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "eslint.config.cjs",
-    ".storybook/**/*"
+    ".storybook/**/*",
+    "ecosystem.config.cjs"
   ],
   "exclude": ["node_modules"]
 }
