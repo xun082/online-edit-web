@@ -77,7 +77,7 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
         x: e.clientX,
         y: e.clientY,
       });
-    }, 15);
+    }, 5);
 
     const handleMouseout = () => {
       provider.awareness.setLocalStateField('cursorLocation', {
