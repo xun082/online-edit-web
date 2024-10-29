@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { TASKS } from '@/utils';
 import { CooperationHeader } from '@/components/cooperation/header';
@@ -12,11 +13,12 @@ interface CooperationPageProps {
   params: any;
 }
 
-async function searchUserByEmail() {
-  const token = JSON.parse(localStorage.getItem('ONLINE_EDIT_AUTH') ?? '')?.access_token;
+async function searchUserByEmail(errCb: () => void) {
+  const storedToken = localStorage.getItem('ONLINE_EDIT_AUTH');
+  const token = storedToken ? JSON.parse(storedToken).access_token : null;
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/user`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -25,7 +27,8 @@ async function searchUserByEmail() {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      localStorage.removeItem('ONLINE_EDIT_AUTH');
+      errCb();
     }
 
     const res = await response.json();
@@ -41,10 +44,11 @@ async function searchUserByEmail() {
 
 export default function CooperationPage({ params }: CooperationPageProps) {
   const [userInfo, setUserInfo] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchUserInfo() {
-      const user = await searchUserByEmail();
+      const user = await searchUserByEmail(() => router.push('/login?redirect=/dashboard'));
       setUserInfo(user);
     }
 
