@@ -35,11 +35,16 @@ export const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, us
       return;
     }
 
-    const provider = new WebsocketProvider('ws://localhost:8080', 'collaborateDoc', ydoc, {
-      params: {
-        record_id: roomId,
+    const provider = new WebsocketProvider(
+      `${process.env.NEXT_PUBLIC_WS_URL}`,
+      'collaborateDoc',
+      ydoc,
+      {
+        params: {
+          record_id: roomId,
+        },
       },
-    });
+    );
     setProvider(provider);
 
     return () => {

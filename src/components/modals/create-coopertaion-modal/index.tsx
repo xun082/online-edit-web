@@ -21,7 +21,7 @@ export function CreateCoopertaionModal() {
 
   const handleCreate = async () => {
     // 发送 POST 请求
-    const response = await fetch('http://localhost:8080/api/v1/document/create', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/document/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

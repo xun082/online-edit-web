@@ -16,7 +16,7 @@ async function searchUserByEmail() {
   const token = JSON.parse(localStorage.getItem('ONLINE_EDIT_AUTH') ?? '')?.access_token;
 
   try {
-    const response = await fetch(`http://localhost:8080/api/v1/user`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
