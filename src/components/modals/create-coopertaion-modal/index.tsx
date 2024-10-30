@@ -38,6 +38,8 @@ export function CreateCoopertaionModal() {
 
     if (!auth.access_token) {
       router.push(`${PATHS.LOGIN}?redirect=${pathname}`);
+
+      return;
     }
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/document/create`, {
