@@ -51,7 +51,7 @@ export default function DashboardPage() {
             <div className="flex flex-col gap-y-5">
               <span className="text-[32px] font-[800] leading-[38.2px]">欢迎使用 Online Edit</span>
               <span className="text-[14px] text-[#c7ccd6]">
-                一款集成 AI 能力的 Online IDE，提供开箱即用的开发环境，简化开发过程，提高效率
+                一款基于 Webcontainer 的 Online IDE，提供开箱即用的开发环境，简化开发过程，提高效率
               </span>
             </div>
             <div className="relative flex flex-col pt-6 px-6 w-full h-[40vh] rounded-lg overflow-hidden">
@@ -95,7 +95,7 @@ export default function DashboardPage() {
                   ))}
               </div>
             </div>
-            <p className="text-[#737780] text-[14px]">阅读文档了解如何使用</p>
+            <p className="text-[#737780] text-[14px]">更多开源项目</p>
             <div className="flex gap-x-4 items-center justify-center w-full mt-[-3vh]">
               {LinkCardData.map((item) => (
                 <LinkCard
@@ -157,7 +157,7 @@ const TemplateCard: React.FC<{ title: string; fileData: string; icon: string }> 
   return (
     <div
       key={title}
-      className="group relative h-[20vh] py-[16px] px-[16px] duration-200 transition-all rounded-[8px] hover:rounded-[16px] hover:bg-black/50 bg-black/40 overflow-hidden flex flex-col w-1/3 cursor-pointer"
+      className="group relative h-[20vh] py-[16px] px-[16px] transition-all duration-100 rounded-[8px] hover:rounded-[16px] hover:bg-black/50 bg-black/40 overflow-hidden flex flex-col w-1/3 cursor-pointer"
     >
       <div className="flex items-center h-[28px]">
         <div className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center">
@@ -173,7 +173,7 @@ const TemplateCard: React.FC<{ title: string; fileData: string; icon: string }> 
       <div className="mt-[16px]">
         <div
           onClick={() => quickStartProject()}
-          className="bg-tr-1 bg-white/5 text-[14px] group-hover:bg-white/15 w-full font-[600] rounded-[4px] py-[5px] px-[16px] text-center"
+          className="bg-tr-1 bg-white/5 text-[14px] duration-200 group-hover:bg-white/15 w-full font-[600] rounded-[4px] py-[5px] px-[16px] text-center"
         >
           体验
         </div>
@@ -205,7 +205,7 @@ const LinkCard: React.FC<{ linkText: string; linkUrl: string; linkDesc: string }
           height="16"
           fill="none"
           viewBox="0 0 16 16"
-          className="hidden group-hover:inline-block"
+          className="hidden duration-200 group-hover:inline-block"
         >
           <path
             fill="#ADB0B8"
@@ -233,7 +233,7 @@ const ProjectCard: React.FC<{ projectData: any }> = ({ projectData }) => {
       onClick={() => {
         handleDirectToEdit();
       }}
-      className=" flex justify-between py-4 px-5 rounded-[6px] cursor-pointer transition-all bg-[#24262b] hover:bg-[#33363d]"
+      className=" flex justify-between py-4 px-5 rounded-[6px] cursor-pointer transition-all duration-200 bg-[#24262b] hover:bg-[#33363d]"
     >
       <div className="flex gap-5 items-center">
         <div className="flex items-center justify-center">

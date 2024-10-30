@@ -18,17 +18,17 @@ interface HeaderRouter {
 }
 
 const renderIcon = (icons: Icon[]) =>
-  icons.map((icon) => (
-    <a href={icon.link} key={icon.link} className="p-2 rounded-md text-[#ffffff]">
+  icons.map((icon, idx) => (
+    <a href={icon.link} key={icon.link + idx} className="p-2 rounded-md text-[#ffffff]">
       {icon.icon}
     </a>
   ));
 
 const renderRouter = (router: HeaderRouter[]) =>
-  router.map((item) => (
+  router.map((item, idx) => (
     <Link
       href={item.link}
-      key={item.link}
+      key={item.link + idx}
       className="p-2 rounded-md hover:text-white text-white/60 font-medium"
     >
       {item.title}
