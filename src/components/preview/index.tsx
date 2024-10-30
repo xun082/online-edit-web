@@ -53,8 +53,8 @@ export const Preview: FC = memo(function Preview() {
   };
 
   return (
-    <main className="flex flex-col h-full">
-      <header className="flex items-center p-2 bg-[#202327]/60 text-white">
+    <main className="flex flex-col h-full z-[999]">
+      <header className="flex items-center p-2 bg-[#202327]/60 text-white z-50">
         <FaUndoAlt
           className="text-slate-400 hover:text-white transition-all duration-300 ease-in-out cursor-pointer mx-2"
           onClick={() => setId(uuidv4())}

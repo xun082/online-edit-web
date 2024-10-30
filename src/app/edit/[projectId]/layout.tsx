@@ -157,7 +157,7 @@ const Page: React.FC<{ children: React.ReactNode; params: any }> = ({ children, 
       </div>
       <div className=" w-full flex flex-1 overflow-hidden">
         {/* 侧边栏 */}
-        <div className="bg-[#2e3138] text-gray-400 w-[2.9vw] flex flex-col justify-between items-center py-4">
+        <div className="bg-[#2e3138] text-gray-400 w-[2.9vw] flex flex-col justify-between items-center py-4 z-50">
           <div className="flex flex-col items-center space-y-6">
             <Link href={`/edit/${params.projectId}/file`}>
               <FaFileAlt
@@ -226,7 +226,7 @@ const Page: React.FC<{ children: React.ReactNode; params: any }> = ({ children, 
             </Panel>
             <ResizeHandle className=" w-[3px] bg-transparent" />
             <Panel className="bg-[#202327]" minSize={1} defaultSize={35}>
-              <div className=" h-full">
+              <div className=" h-full z-[999]">
                 <Preview />
               </div>
             </Panel>
