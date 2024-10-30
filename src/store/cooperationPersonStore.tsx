@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 
 interface CooperationPersonState {
-  persons: number[];
+  persons: string[];
 }
 
 interface CooperationPersonActions {
-  addPersons: (newPersons: number[]) => void;
-  removePersons: (personsToRemove: number[]) => void;
-  getPersons: () => number[];
+  addPersons: (newPersons: string[]) => void;
+  removePersons: (personsToRemove: string[]) => void;
+  getPersons: () => string[];
   setPersons: (persons: any[]) => void;
 }
 

@@ -6,13 +6,13 @@ export const AnimatedTooltip = ({
   items,
 }: {
   items: {
-    id: number;
+    id: string;
     name: string;
     designation: string;
     image: string;
   }[];
 }) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
 
   return (
     <div className="flex flex-row gap-2">

@@ -9,6 +9,7 @@ export const Cursor = React.memo(({ point, color }: { point: number[]; color: st
     const elm = rCursor.current;
     if (!elm) return;
     elm.style.setProperty('transform', `translate(${point[0]}px, ${point[1]}px)`);
+    elm.style.setProperty('transition', 'transform 0.05s ease');
   }, []);
 
   const onPointMove = usePerfectCursor(animateCursor);

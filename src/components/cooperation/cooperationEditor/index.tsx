@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import * as monaco from 'monaco-editor';
 import * as Y from 'yjs';
@@ -25,60 +25,52 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
   const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [provider, setProvider] = useState<WebsocketProvider | null>(null);
   const [, setBinding] = useState<MonacoBinding | null>(null);
-  const [awareness, setAwareness] = useState<any[]>();
-  const { setPersons } = useCooperationPerson();
+  const [awareness, setAwareness] = useState<any[]>([]);
+  const { removePersons, addPersons } = useCooperationPerson();
 
-  useEffect(() => {}, []);
+  const emailsRef = useRef(new Set());
+  const emailMapRef = useRef(new Map());
 
   useEffect(() => {
-    if (roomId == null) {
-      return;
-    }
+    if (!roomId) return;
 
     const provider = new WebsocketProvider(
       `${process.env.NEXT_PUBLIC_WS_URL}`,
       'collaborateDoc',
       ydoc,
       {
-        params: {
-          record_id: roomId,
-        },
+        params: { record_id: roomId },
       },
     );
     setProvider(provider);
 
     const handleBeforeUnload = () => {
-      provider.awareness.setLocalStateField('cursorLocation', {
-        x: undefined,
-        y: undefined,
-      });
+      provider.awareness.setLocalStateField('cursorLocation', { x: undefined, y: undefined });
+      provider.destroy();
+      ydoc.destroy();
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      provider?.destroy();
+      provider.destroy();
       ydoc.destroy();
+      setBinding(null);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [ydoc, roomId]);
 
   useEffect(() => {
-    if (provider == null || editor == null || roomId === null) {
-      return;
-    }
+    if (!provider || !editor || !roomId) return;
 
-    provider.awareness.setLocalStateField('cursorLocation', {
-      x: undefined,
-      y: undefined,
-    });
+    provider.awareness.setLocalStateField('cursorLocation', { x: undefined, y: undefined });
     provider.awareness.setLocalStateField('userInfo', userInfo);
 
     const binding = new MonacoBinding(
       ydoc.getText(),
       editor.getModel()!,
       new Set([editor]),
-      provider?.awareness,
+      provider.awareness,
     );
     setBinding(binding);
 
@@ -86,26 +78,20 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
 
-      const isNearEdge =
-        clientX < 10 || clientX > innerWidth - 10 || clientY < 10 || clientY > innerHeight - 10;
-
-      if (isNearEdge) {
-        provider.awareness.setLocalStateField('cursorLocation', {
-          x: undefined,
-          y: undefined,
-        });
-      } else {
-        provider.awareness.setLocalStateField('cursorLocation', {
-          x: clientX,
-          y: clientY,
-        });
-      }
-    }, 10);
-    const handleMouseout = () => {
       provider.awareness.setLocalStateField('cursorLocation', {
-        x: undefined,
-        y: undefined,
+        x:
+          clientX < 10 || clientX > innerWidth - 10 || clientY < 10 || clientY > innerHeight - 10
+            ? undefined
+            : clientX,
+        y:
+          clientX < 10 || clientX > innerWidth - 10 || clientY < 10 || clientY > innerHeight - 10
+            ? undefined
+            : clientY,
       });
+    }, 10);
+
+    const handleMouseout = () => {
+      provider.awareness.setLocalStateField('cursorLocation', { x: undefined, y: undefined });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -114,58 +100,58 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
     const styleElement = document.createElement('style');
     document.head.appendChild(styleElement);
 
-    provider.awareness.on(
-      'change',
-      ({
-        updated,
-        added,
-        removed,
-      }: {
-        updated: Array<number>;
-        added: Array<number>;
-        removed: Array<number>;
-      }) => {
-        type UserAwarenessData = Map<number, Record<any, any>>;
+    const updateUsers = (userIds: Array<number>, action: 'add' | 'remove' | 'update') => {
+      userIds.forEach((id) => {
+        const user = provider.awareness.getStates().get(id);
+        console.log(emailMapRef.current);
 
-        let awarenessState = provider.awareness.getStates() as UserAwarenessData;
-        setAwareness(Array.from(awarenessState));
-        console.log('awarenessState', awarenessState);
+        if (!user) {
+          const email = findKeyContainingElement(emailMapRef.current, id);
 
-        let newStyles = '';
-        // 如果一个用户打开2个标签也要处理为一个
-        const emails = new Set();
+          if (email) {
+            emailsRef.current.delete(email);
+            removePersons([email]);
+          }
+        } else if (user.userInfo?.email) {
+          const email = user.userInfo.email;
 
-        const updateUsers = (userIds: Array<number>, action: 'add' | 'remove') => {
-          userIds.forEach((id) => {
-            const user = awarenessState.get(id);
+          if (emailMapRef.current.has(email)) {
+            emailMapRef.current.set(
+              email,
+              Array.from(new Set([...emailMapRef.current.get(email), id])),
+            );
+          } else {
+            emailMapRef.current.set(email, [id]);
+          }
 
-            if (user && user.userInfo?.email) {
-              const email = user.userInfo.email;
+          if (action === 'add') {
+            emailsRef.current.add(email);
+            addPersons(Array.from(emailsRef.current) as string[]);
+          } else if (action === 'remove') {
+            emailsRef.current.delete(email);
+            removePersons([email]);
+          }
+        }
+      });
+    };
 
-              if (action === 'add') {
-                emails.add(email);
-                setPersons(Array.from(emails));
-              } else {
-                emails.delete(email);
-                setPersons(Array.from(emails));
-              }
-            }
-          });
-        };
+    const throttledUpdate = throttle((changes: Record<string, any>) => {
+      const { updated, added, removed } = changes;
+      const awarenessState = provider.awareness.getStates();
+      setAwareness(Array.from(awarenessState));
 
-        updateUsers(added, 'add');
-        updateUsers(updated, 'add');
-        updateUsers(removed, 'remove');
+      updateUsers(updated, 'update');
+      updateUsers(added, 'add');
+      updateUsers(removed, 'remove');
 
-        for (let addedUserClientID of updated) {
-          if (addedUserClientID === ydoc.clientID) return;
+      let newStyles = '';
 
-          let addUserId = '';
-          Array.from(awarenessState).forEach(([o, t]) => {
-            if (o === addedUserClientID) {
-              addUserId = t.userInfo?.email;
-            }
-          });
+      updated.forEach((addedUserClientID: any) => {
+        if (addedUserClientID === ydoc.clientID) return;
+
+        const addUserId = awarenessState.get(addedUserClientID)?.userInfo?.email;
+
+        if (addUserId) {
           newStyles += `
             .yRemoteSelection-${addedUserClientID} {
               background-color: ${createColorFromId(addUserId)};
@@ -173,9 +159,7 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
             }
             .yRemoteSelectionHead-${addedUserClientID} {
               position: relative;
-              border-left: 2px solid ${createColorFromId(addUserId)};
-              border-top: 2px solid ${createColorFromId(addUserId)};
-              border-bottom: 2px solid ${createColorFromId(addUserId)};
+              border: 2px solid ${createColorFromId(addUserId)};
               height: 100%;
               box-sizing: border-box;
             }
@@ -192,10 +176,12 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
             }
           `;
         }
+      });
 
-        styleElement.innerHTML += newStyles;
-      },
-    );
+      styleElement.innerHTML += newStyles;
+    }, 250);
+
+    provider.awareness.on('change', throttledUpdate);
 
     return () => {
       binding.destroy();
@@ -203,10 +189,11 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
       styleElement.remove();
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseout', handleMouseout);
+      provider.awareness.off('change', throttledUpdate); // 移除事件监听器
     };
-  }, [ydoc, provider, editor, roomId]);
+  }, [provider, editor, roomId, userInfo]);
 
-  const handleEditorDidMount = async (editor: monaco.editor.IStandaloneCodeEditor) => {
+  const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
     setEditor(editor);
   };
 
@@ -236,22 +223,30 @@ const CooperationEditor: React.FC<CooperationEditorProps> = ({ roomId, userInfo 
           onMount={handleEditorDidMount}
         />
         {awareness
-          ?.filter(([id]) => id !== ydoc.clientID)
+          .filter(([id]) => id !== ydoc.clientID)
           .filter(([, state]) => state.cursorLocation?.x !== undefined)
-          .map(([id, state]) => {
-            return (
-              <Cursor
-                key={id}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                color={createColorFromId(provider?.awareness.getStates().get(id).userInfo.email)}
-                point={[state.cursorLocation?.x, state.cursorLocation?.y]}
-              />
-            );
-          })}
+          .map(([id, state]) => (
+            <Cursor
+              key={id}
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-expect-error
+              color={createColorFromId(provider?.awareness.getStates().get(id).userInfo.email)}
+              point={[state.cursorLocation.x, state.cursorLocation.y]}
+            />
+          ))}
       </div>
     </div>
   );
 };
 
-export default CooperationEditor;
+function findKeyContainingElement(map: Map<string, any>, element: number) {
+  for (const [key, valueArray] of map.entries()) {
+    if (Array.isArray(valueArray) && valueArray.includes(element)) {
+      return key;
+    }
+  }
+
+  return null;
+}
+
+export default memo(CooperationEditor);
