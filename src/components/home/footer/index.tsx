@@ -86,9 +86,11 @@ const Partners: LinkProps[] = [
 ];
 // 渲染链接
 const renderLink = (products: LinkProps[]) =>
-  products.map((item) => (
+  products.map((item, idx) => (
     <li>
-      <Link href={item.link}>{item.name}</Link>
+      <Link key={item.link + idx} href={item.link}>
+        {item.name}
+      </Link>
     </li>
   ));
 

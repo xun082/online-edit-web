@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
+import { FaGithub } from 'react-icons/fa';
 
 import { Avatar } from '@/components/common/Avatar';
 import AvatarPopover from '@/components/avatarPopover';
@@ -13,9 +14,14 @@ export const Header: React.FC<HeaderProps> = () => {
       <Link className=" text-white font-bold" href="/">
         {PROJECT_Name}
       </Link>
-      <AvatarPopover>
-        <Avatar src="/kunkun.gif" className="flex h-[3.5vh] w-[3.5vh]" />
-      </AvatarPopover>
+      <div className=" flex gap-x-3">
+        <a href={'https://github.com/xun082/online-edit-web'} className="p-2 rounded-md">
+          <FaGithub className="w-[3.5vh] h-[3.5vh]" />
+        </a>
+        <AvatarPopover>
+          <Avatar src="/kunkun.gif" className="flex h-[3.5vh] w-[3.5vh]" />
+        </AvatarPopover>
+      </div>
     </header>
   );
 };

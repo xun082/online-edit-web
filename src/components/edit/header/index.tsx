@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { VscLiveShare } from 'react-icons/vsc';
-import { FaRegSave } from 'react-icons/fa';
+import { FaGithub, FaRegSave } from 'react-icons/fa';
 import { GoRepoForked } from 'react-icons/go';
 import localforage from 'localforage';
 
@@ -34,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({ projectId }) => {
   }, []);
 
   return (
-    <header className=" relative flex flex-row items-center w-[100vw] justify-between bg-transparent py-4 z-[999]">
+    <header className=" relative flex flex-row items-center w-[100vw] justify-between bg-transparent py-4">
       <Link className=" text-white font-bold ml-3" href="/">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -62,6 +62,11 @@ export const Header: React.FC<HeaderProps> = ({ projectId }) => {
       </div>
       <div className=" flex items-center justify-center w-full absolute leading-[5vh] font-[500] text-[16px] pointer-events-none">
         {projectName}
+      </div>
+      <div className=" mr-6">
+        <a href={'https://github.com/xun082/online-edit-web'} className="p-2 rounded-md">
+          <FaGithub className="w-[3.6vh] h-[3.6vh]" />
+        </a>
       </div>
       <div className="mr-4">
         <AvatarPopover>

@@ -17,37 +17,37 @@ const projects = [
     icon: '/react.svg',
     title: 'React',
     description: 'JavaScript',
-    link: '/a',
+    link: '/',
   },
   {
     icon: '/react.svg',
     title: 'React',
     description: 'TypeScript',
-    link: '/b',
+    link: '/',
   },
   {
     icon: '/vue.svg',
     title: 'Vue',
     description: 'JavaScript',
-    link: '/c',
+    link: '/',
   },
   {
     icon: '/vue.svg',
     title: 'Vue',
     description: 'TypeScript',
-    link: '/d',
+    link: '/',
   },
   {
     icon: '/preact.svg',
     title: 'Preact',
     description: 'JavaScript',
-    link: '/e',
+    link: '/',
   },
   {
     icon: '/preact.svg',
     title: 'Preact',
     description: 'TypeScript',
-    link: '/f',
+    link: '/',
   },
   {
     icon: '/node.svg',
@@ -70,7 +70,7 @@ const socialIcons = [
   },
   {
     icon: <RiTwitterXFill className="w-6 h-6" />,
-    link: 'https://github.com/xun082/online-edit-web111',
+    link: 'https://github.com/xun082/online-edit-web',
   },
 ];
 

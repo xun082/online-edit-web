@@ -1,5 +1,4 @@
 import { GoFileDirectory } from 'react-icons/go';
-import { MdComputer } from 'react-icons/md';
 
 import { PATHS } from './constants';
 
@@ -14,11 +13,6 @@ export const RouterDataList: RouterData[] = [
     title: '项目',
     icon: <GoFileDirectory className=" w-6 text-[16px] mr-3" />,
     link: PATHS.MAIN_DASHBOARD,
-  },
-  {
-    title: '文档',
-    icon: <MdComputer className=" w-6 text-[16px] mr-3" />,
-    link: PATHS.MAIN_TEMPLATES,
   },
 ];
 
@@ -39,18 +33,19 @@ export const TemplateCardData = [
 
 export const LinkCardData = [
   {
-    linkText: 'link1',
-    linkUrl: 'https://www.baidu.com',
-    linkDesc: 'desc1',
+    linkText: 'create-neat',
+    linkUrl: 'https://github.com/xun082/create-neat',
+    linkDesc: '基于 PNPM 和 Turborepo 的前端脚手架，旨在快速为用户创建各种类型的项目',
   },
   {
-    linkText: 'lin2',
-    linkUrl: 'https://www.baidu.com',
-    linkDesc: 'desc1',
+    linkText: 'create-ai-toolkit',
+    linkUrl: 'https://github.com/xun082/create-ai-toolkit',
+    linkDesc:
+      'AI驱动的前端开发工具，集成组件和钩子生成、自动提交信息和代码审查，提升开发效率和代码质量',
   },
   {
-    linkText: 'lin3',
-    linkUrl: 'https://www.baidu.com',
-    linkDesc: 'desc3',
+    linkText: 'online-edit-server',
+    linkUrl: 'https://github.com/xun082/online-edit-server',
+    linkDesc: '在线编辑器的后端',
   },
 ];
