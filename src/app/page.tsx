@@ -90,8 +90,8 @@ const Home: NextPage = () => {
     <Link href={PATHS.MAIN_DASHBOARD}>
       <button className="relative inline-block p-px text-base font-semibold leading-6 text-white no-underline rounded-full shadow-2xl cursor-pointer bg-slate-800 group shadow-zinc-900 overflow-hidden">
         <span className="absolute top-0 left-0 w-full h-1 bg-[image:linear-gradient(to_right,#0c002b,#1779ff)] animate-snakeBorderTop delay-1000"></span>
-        <span className="absolute top-0 right-0 w-1 h-full bg-[image:linear-gradient(to_bottom,#0c002b,#1779ff)] animate-snakeBorderLeft "></span>
-        <span className="absolute bottom-0 left-0 w-full h-1 bg-[image:linear-gradient(to_left,#0c002b,#1779ff)] animate-snakeBorderBottom "></span>
+        <span className="absolute top-0 right-0 w-1 h-full bg-[image:linear-gradient(to_bottom,#0c002b,#1779ff)] animate-snakeBorderLeft"></span>
+        <span className="absolute bottom-0 left-0 w-full h-1 bg-[image:linear-gradient(to_left,#0c002b,#1779ff)] animate-snakeBorderBottom"></span>
         <span className="absolute top-0 left-0 w-1 h-full bg-[image:linear-gradient(to_top,#0c002b,#1779ff)] animate-snakeBorderRight delay-1000"></span>
         <div className="relative z-10 flex items-center px-6 py-2 space-x-2 rounded-full bg-zinc-950 ring-1 ring-white/10">
           <span>Get started</span>
